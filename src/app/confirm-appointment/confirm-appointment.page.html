@@ -1,0 +1,92 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button (click)="goBack()">
+                <ion-icon name="chevron-back-outline"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title class="title">Confirm Appointment</ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content fullscreen>
+    <ion-list lines="none">
+        <ion-item class="lower-bottom">
+            <ion-avatar slot="start">
+                <img src="assets/imgs/no-img.png">
+            </ion-avatar>
+            <ion-label>
+                <h2 class="doctor-name">Dr. {{data.firstname}} {{data.lastname}} </h2>
+                <p style="font-size:12px">{{data.speciality_name}}</p>
+                <!-- <p>Exp: 36 yrs.</p> -->
+            </ion-label>
+        </ion-item>
+    </ion-list>
+    <ion-row class="lower-bottom-2">
+        <ion-col size="7">
+            <ion-item lines="none" style="margin-top: -4px;">
+                <ion-label class="time-date">
+                    <p class="time-1">Time & Date</p>
+                    <p class="time-2">{{time}}</p>
+                    <p class="time-2">{{date | date : 'mediumDate'}}</p>
+                </ion-label>
+                <ion-icon name="calendar-outline" slot="start" class="date-icon" style="margin-top: -30px;"></ion-icon>
+            </ion-item>
+        </ion-col>
+        <ion-col size="5" style="margin-top: 10px">
+
+            <ion-label class="fee">OPD Fee:<span>&#8377;</span>500</ion-label>
+
+        </ion-col>
+    </ion-row>
+    <ion-row class="lower-bottom-2">
+        <ion-col size="7">
+            <ion-item lines="none">
+                <ion-label class="location">
+                    <p class="location-1">Location</p>
+                    <p class="location-2">{{location_name}}</p>
+                </ion-label>
+                <ion-icon name="location-outline" slot="start" class="location-icon"></ion-icon>
+            </ion-item>
+        </ion-col>
+        <ion-col size="5"  (click)="showMap()">
+            <ion-item lines="none">
+                <ion-label style="margin-top: -10px;">
+                    <p class="view-map">View Map&nbsp;&nbsp;<ion-icon style="color: #363A61;" name="map-outline"></ion-icon></p>
+                    <!--   <img slot="end" src="assets/imgs/view map.png"> -->
+                </ion-label>
+            </ion-item>
+        </ion-col>
+    </ion-row>
+    <ion-row class="book-row">
+        <ion-col size="12">
+            <ion-label class="book-for">Booking For</ion-label><br><br>
+            <ng-container *ngIf="book_for == 'self'">
+                <span class="book-self">Self</span>&nbsp;&nbsp;&nbsp;
+                <span class="book-relative" (click)="addPatient()">Relative</span>
+            </ng-container>
+            <ng-container *ngIf="book_for == 'relative'">
+                <span class="book-relative" (click)="chooseSelf()">Self</span>&nbsp;&nbsp;&nbsp;
+                <span class="book-self" (click)="addPatient()">Relative</span>
+            </ng-container>
+            <ion-card>
+                <ion-card-header>
+                    <ion-card-subtitle>My Details</ion-card-subtitle>
+                    <!-- <ion-card-title>Card Title</ion-card-title> -->
+                </ion-card-header>
+                <ion-card-content>
+                    <ion-label>Name: {{user.user_name}} {{user.name}}</ion-label><br>
+                    <ion-label>Mobile: +{{user.phone_number}} {{user.mobile_no}}</ion-label><br>
+                    <ion-label>Email Id: {{user.email}}</ion-label>
+                </ion-card-content>
+            </ion-card>
+        </ion-col>
+    </ion-row>
+    <ion-row>
+        <ion-col size="12" style="text-align: center;">
+            <!-- <ion-label class="pay-now" (click)="confirmAppointment()">PAY NOW</ion-label>
+       -->
+            <ion-label class="pay-now" (click)="confirmAppointment()">BOOK NOW</ion-label>
+        </ion-col>
+    </ion-row>
+
+</ion-content>

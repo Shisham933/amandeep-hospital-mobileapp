@@ -16,7 +16,7 @@
             </ion-avatar>
             <ion-label>
                 <h2 class="doctor-name">Dr. {{data.firstname}} {{data.lastname}} </h2>
-                <p>{{data.speciality_name}}</p>
+                <p>{{speciality_name}}</p>
                 <!-- <p>Exp: 36 yrs.</p> -->
             </ion-label>
         </ion-item>
@@ -58,13 +58,13 @@
 
 <ion-footer class="ion-no-border time-slot">
     <ion-toolbar *ngIf="book_type == 'OPD'">
-        <a href="tel:{{helpline_number}}">
-            <ion-button ion-button slot="start" class="book-via-call">
-                BOOK VIA CALL
-            </ion-button>
-        </a>
-        <ion-button ion-button slot="end" class="book-via-app" (click)="bookViaApp()">
-            BOOK VIA APP
+        <!-- <a href="tel:{{helpline_number}}"> -->
+            <!-- <ion-button ion-button slot="start" class="book-via-call"> -->
+                <!-- BOOK VIA CALL -->
+            <!-- </ion-button> -->
+        <!-- </a> -->
+        <ion-button ion-button slot="end" class="book-via-app" (click)="bookViaApp()" style="width: 100%;">
+            BOOK NOW
         </ion-button>
     </ion-toolbar>
     <ion-toolbar *ngIf="book_type == 'videocall'">

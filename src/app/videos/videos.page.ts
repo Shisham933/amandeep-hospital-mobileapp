@@ -37,6 +37,7 @@ export class VideosPage implements OnInit {
     this.http.getYoutubeVideos("allVideos").subscribe((res: any) => {
       this.utility.hideLoading();
       if (res.success) {
+        console.log(res)
         this.videos = res.data;
       } else {
         this.utility.showMessageAlert("No video added", "Currently app has not video.You can check our youtube channel.");
@@ -53,7 +54,7 @@ export class VideosPage implements OnInit {
     if (ampersandPosition != -1) {
       video_id = video_id.substring(0, ampersandPosition);
     }
-    let thumbnail = "http://img.youtube.com/vi/" + video_id + "1/0.jpg";
+    let thumbnail = "https://img.youtube.com/vi/"+ video_id + "/hqdefault.jpg";
     return   this._sanitizer.bypassSecurityTrustResourceUrl(thumbnail);;
   }
 

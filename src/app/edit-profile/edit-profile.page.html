@@ -37,20 +37,20 @@
       </ion-col>
       <ion-col size="4" class="header-values-2" style="margin-left: 45px;">
         <ion-label class="title">Date Of Birth</ion-label>
-        <ion-datetime displayFormat="MMM D YYYY" [(ngModel)]="dob"></ion-datetime>
+        <ion-datetime displayFormat="MMM D YYYY" [(ngModel)]="dob" [max]="selectCurrentDate()"></ion-datetime>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col size="4" class="header-values-2">
-        <ion-label class="title">Maratial Status</ion-label>
+        <ion-label class="title">Marital Status</ion-label>
         <ion-select placeholder="" [(ngModel)]="marital_status">
           <ion-select-option value="0">Single</ion-select-option>
           <ion-select-option value="1">Married</ion-select-option>
         </ion-select>
       </ion-col>
       <ion-col size="4" class="header-values-2" style="margin-left: 45px;">
-        <ion-label class="title">Gaurdian Name</ion-label>
-        <ion-input [(ngModel)]="gaurdian_name" style="margin-left: 1px;"></ion-input>
+        <ion-label class="title">Guardian Name</ion-label>
+        <ion-textarea [(ngModel)]="gaurdian_name" style="margin-left: 1px;height: 40px;"></ion-textarea>
       </ion-col>
     </ion-row>
     <ion-row>
@@ -60,8 +60,8 @@
       </ion-col>
       <ion-col size="4" class="header-values-2" style="margin-left: 45px;">
         <ion-label class="title">Emergency Numbe</ion-label>
-        <ion-input type="tel" [(ngModel)]="emergency_number" style="margin-left: 1px;"></ion-input>
-     </ion-col>
+        <ion-input type="text" (keypress)="onKeyPress($event)" pattern="[0-9]" inputmode="numeric" maxlength="10" decimal="true" [(ngModel)]="emergency_number" style="margin-left: 1px;"></ion-input>
+     </ion-col> 
     </ion-row>
   </div>
 </ion-content>

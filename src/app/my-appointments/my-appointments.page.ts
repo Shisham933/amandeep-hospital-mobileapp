@@ -24,7 +24,7 @@ export class MyAppointmentsPage implements OnInit {
   getMyAppointments() {
     this.utility.showLoading();
     let user = JSON.parse(localStorage.getItem('user_details'))
-    this.http.getDoctorsLocationwise('allAppointments/user/' + user.id, {}).subscribe(
+    this.http.getMyAppointments('allAppointments/user/' + user.id).subscribe(
       (res: any) => {
         console.log(res);
         this.utility.hideLoading();

@@ -51,7 +51,13 @@ export class SelectSpecilityPage implements OnInit {
   }
 
   goBack() {
-    this.location.back();
+    // this.location.back();
+    let navigationExtras: NavigationExtras = {
+      state: {
+        book_type: this.book_type
+      },
+    };
+    this.router.navigate(['/select-location'], navigationExtras);
   }
 
   selectSpeciality(speciality_name, id) {
@@ -62,7 +68,7 @@ export class SelectSpecilityPage implements OnInit {
         helpline_number: this.helpline_number,
         speciality_id: id,
         speciality_name: speciality_name,
-        book_type:this.book_type
+        book_type: this.book_type
       },
     };
     this.router.navigate(['/book-appointment'], navigationExtras);

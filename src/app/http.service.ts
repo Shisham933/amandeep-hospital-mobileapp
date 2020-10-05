@@ -53,20 +53,21 @@ export class HttpService {
         'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('token'))
       })
     };
-    this.http.get(this.url + endpoint, httpOptions).subscribe((res : any) => {
-      // let data = JSON.parse(res)
-       if(res.status == "Token is Expired"){
-           this.utility.showMessageAlert("Token expired!","Please login again");
-           this.router.navigateByUrl("/login");
-      }else{
-        this.utility.locations = res['data']
-        this.utility.locations.map((x, i) => {
-          x.choose = false;
-        })
-      }
+    // this.http.get(this.url + endpoint, httpOptions).subscribe((res : any) => {
+    //   // let data = JSON.parse(res)
+    //    if(res.status == "Token is Expired"){
+    //        this.utility.showMessageAlert("Token expired!","Please login again");
+    //        this.router.navigateByUrl("/login");
+    //   }else{
+    //     this.utility.locations = res['data']
+    //     this.utility.locations.map((x, i) => {
+    //       x.choose = false;
+    //     })
+    //   }
    
-    }
-    );
+    // }
+    // );
+    return this.http.get(this.url + endpoint, httpOptions);
   }
 
   getSpeciality(endpoint: string) {
@@ -157,6 +158,17 @@ export class HttpService {
       })
     };
    return this.http.get(this.url + endpoint, httpOptions);
+  }
+
+  addQuery(endpoint: string, body: any) {
+    let httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Accept': '*/*',
+        'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('token'))
+      })
+    };
+    return this.http.post(this.url + endpoint, body, httpOptions);
   }
 
 }

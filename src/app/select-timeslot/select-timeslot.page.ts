@@ -13,7 +13,7 @@ import { ThrowStmt } from '@angular/compiler';
   styleUrls: ['./select-timeslot.page.scss'],
 })
 export class SelectTimeslotPage implements OnInit {
-  date: string;
+  date: any;
   type: 'string';
   choose_scheduleID: any;
   choose_date: any;
@@ -22,7 +22,7 @@ export class SelectTimeslotPage implements OnInit {
   data: any;
   location_id: any;
   location_name: any;
-  helpline_number : any;
+  helpline_number: any;
   doctor_id: any;
   last_selected_time: any;
   last_parentIndex: any;
@@ -30,35 +30,38 @@ export class SelectTimeslotPage implements OnInit {
   time_range: any = [{
     title: "Morning 6 AM to 12 Noon",
     showslots: false,
-    time_slots:[]
+    time_slots: []
   },
   {
     title: "Afternoon 12 PM to 4 PM",
     showslots: false,
-    time_slots:[]
+    time_slots: []
   },
   {
     title: "Evening 4 PM to 8 PM",
     showslots: false,
-    time_slots:[]
+    time_slots: []
   },
   {
     title: "Night 8 PM to 10 PM",
     showslots: false,
-    time_slots:[]
+    time_slots: []
   }]
   time_slots: any = [];
   timeSlots: any = [];
   book_type;
-
-  constructor(private statusBar:StatusBar,private route: ActivatedRoute, private location: Location, private router: Router, private http: HttpService, private utility: UtilityService) {
+  speciality_id;
+  speciality_name;
+  constructor(private statusBar: StatusBar, private route: ActivatedRoute, private location: Location, private router: Router, private http: HttpService, private utility: UtilityService) {
     this.statusBar.backgroundColorByHexString('#ffffff');
     this.route.queryParams.subscribe((params) => {
       this.location_name = this.router.getCurrentNavigation().extras.state.location_name;
       this.data = this.router.getCurrentNavigation().extras.state.data;
-      this.helpline_number =  this.router.getCurrentNavigation().extras.state.helpline_number;
+      this.helpline_number = this.router.getCurrentNavigation().extras.state.helpline_number;
       this.location_id = this.data.location_id;
       this.doctor_id = this.data.doctor_id;
+      this.speciality_id = this.router.getCurrentNavigation().extras.state.speciality_id;
+      this.speciality_name = this.router.getCurrentNavigation().extras.state.speciality_name;
       this.book_type = this.router.getCurrentNavigation().extras.state.book_type;
       this.getTimeSlots();
     });
@@ -68,11 +71,23 @@ export class SelectTimeslotPage implements OnInit {
   }
 
   goBack() {
-    this.location.back();
+    // this.location.back();
+    let navigationExtras: NavigationExtras = {
+      state: {
+        location_id: this.location_id,
+        location_name: this.location_name,
+        helpline_number: this.helpline_number,
+        speciality_id: this.speciality_id,
+        speciality_name: this.speciality_name,
+        book_type: this.book_type
+      },
+    };
+    this.router.navigate(['/book-appointment'], navigationExtras);
   }
 
   onChange(val) {
     let date = val._d;
+    console.log(date)
     this.choose_date = date;
     var day = date.getDay();
     if (day == 1) {
@@ -380,7 +395,11 @@ export class SelectTimeslotPage implements OnInit {
   }
 
   chooseTimeslot(parentindex, childindex, time) {
-
+    // debugger
+    console.log("parentindex", parentindex)
+    console.log("childindex", childindex)
+    console.log("this.last_parentIndex", this.last_parentIndex)
+    console.log("this.last_selected_time", this.last_selected_time)
     if (this.last_selected_time == undefined) {
       this.choose_scheduleID = time.id;
       this.choose_time = time.time_slots;
@@ -390,8 +409,25 @@ export class SelectTimeslotPage implements OnInit {
     } else {
       this.choose_scheduleID = time.id;
       this.choose_time = time.time_slots;
-      this.time_range[parentindex].time_slots[childindex]['is_time_selected'] = true;
-      this.time_range[this.last_parentIndex].time_slots[this.last_selected_time]['is_time_selected'] = false;
+      if (this.last_parentIndex == parentindex && this.last_selected_time == childindex) {
+
+      } else {
+        this.time_range[parentindex].time_slots[childindex]['is_time_selected'] = true;
+      }
+      if (this.last_parentIndex != parentindex && this.last_selected_time != childindex) {
+        // this.time_range[this.last_parentIndex].time_slots[this.last_selected_time]['is_time_selected'] = false;
+        if (this.time_range[this.last_parentIndex].time_slots[this.last_selected_time]['is_time_selected']) {
+          this.time_range[this.last_parentIndex].time_slots[this.last_selected_time]['is_time_selected'] = false;
+        } else {
+          this.time_range[this.last_parentIndex].time_slots[this.last_selected_time]['is_time_selected'] = true;
+        }
+      } else {
+        if (this.time_range[this.last_parentIndex].time_slots[this.last_selected_time]['is_time_selected']) {
+          this.time_range[this.last_parentIndex].time_slots[this.last_selected_time]['is_time_selected'] = false;
+        } else {
+          this.time_range[this.last_parentIndex].time_slots[this.last_selected_time]['is_time_selected'] = true;
+        }
+      }
       this.last_selected_time = childindex;
       this.last_parentIndex = parentindex;
     }
@@ -399,12 +435,21 @@ export class SelectTimeslotPage implements OnInit {
 
 
   expandItem(val, index) {
+    //debugger
     if (this.last_slot_index == undefined) {
       this.time_range[index].showslots = true;
       this.last_slot_index = index;
     } else {
-      this.time_range[index].showslots = true;
-      this.time_range[this.last_slot_index].showslots = false;
+      if (index == this.last_slot_index) {
+        if (this.time_range[index].showslots) {
+          this.time_range[this.last_slot_index].showslots = false;
+        } else {
+          this.time_range[this.last_slot_index].showslots = true;
+        }
+      } else {
+        this.time_range[index].showslots = true;
+        this.time_range[this.last_slot_index].showslots = false;
+      }
       this.last_slot_index = index;
     }
   }
@@ -413,7 +458,9 @@ export class SelectTimeslotPage implements OnInit {
   todayTimeslot(date) {
 
     var day = date.getDay();
-    this.choose_date = day;
+    this.choose_date = date;
+    this.date = date;
+
     if (day == 1) {
       var t = this.timeSlots.filter(x => x.days == 'Monday');
       t.map(y => {
@@ -733,14 +780,13 @@ export class SelectTimeslotPage implements OnInit {
         }
       }, err => {
         this.utility.showMessageAlert("Network error!", "Please check your network connection.")
-     })
+      })
   }
 
   bookViaApp() {
     if (this.choose_time == undefined) {
-      this.utility.showMessageAlert("Time slot required!",'Please choose time slot of your appointment')
+      this.utility.showMessageAlert("Time slot required!", 'Please choose time slot of your appointment')
     } else {
-      this.router.navigate(['/confirm-appointment']);
       let navigationExtras: NavigationExtras = {
         state: {
           location_name: this.location_name,
@@ -750,9 +796,12 @@ export class SelectTimeslotPage implements OnInit {
           schedule_id: this.choose_scheduleID,
           date: this.choose_date,
           time: this.choose_time,
-          book_type:this.book_type
+          book_type: this.book_type,
+          speciality_name: this.speciality_name
         },
       };
+      console.log(navigationExtras)
+
       this.router.navigate(['/confirm-appointment'], navigationExtras);
     }
 

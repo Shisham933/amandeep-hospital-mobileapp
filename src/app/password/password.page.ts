@@ -15,7 +15,7 @@ export class PasswordPage implements OnInit {
     public password;
     public user_id;
     public mobile_no;
-    constructor(private statusBar: StatusBar,private navCtrl: NavController, private router: Router, private route: ActivatedRoute, private location: Location, private http: HttpService, private utility: UtilityService) {
+    constructor(private statusBar: StatusBar, private navCtrl: NavController, private router: Router, private route: ActivatedRoute, private location: Location, private http: HttpService, private utility: UtilityService) {
         this.statusBar.backgroundColorByHexString('#ffffff');
         this.route.queryParams.subscribe((params) => {
             this.user_id = this.router.getCurrentNavigation().extras.state.user_id;
@@ -34,7 +34,7 @@ export class PasswordPage implements OnInit {
             (res: any) => {
                 this.utility.hideLoading();
                 if (res.success) {
-                    this.utility.showMessageAlert("OTP sent!",res.message);
+                    this.utility.showMessageAlert("OTP sent!", res.message);
                     let navigationExtras: NavigationExtras = {
                         state: {
                             user_id: this.user_id
@@ -42,11 +42,11 @@ export class PasswordPage implements OnInit {
                     };
                     this.router.navigate(['/forgot-password'], navigationExtras);
                 }
-               
+
             }, err => {
                 this.utility.hideLoading();
                 this.utility.showMessageAlert("Network error!", "Please check your network connection.")
-    
+
             })
     }
 
@@ -56,31 +56,39 @@ export class PasswordPage implements OnInit {
 
     checkPassword() {
         //this.router.navigate(['/home']);
-        if (this.password == undefined) {
-            this.utility.showMessageAlert("Password required!",'Please enter password')
+        if (this.password == undefined || this.password == '') {
+            this.utility.showMessageAlert("Password required!", 'Please enter password')
         } else {
 
             this.utility.showLoading();
             let params = {
                 user_id: this.user_id,
-                password: this.password
+                password: this.password,
+                device_token : this.utility.device_token == undefined ? 'devicetoken' : this.utility.device_token,
+                device_type : this.utility.device_type == undefined ? 'devicetype' : this.utility.device_type
+            
             }
             this.http.post("login", params).subscribe(
                 (res: any) => {
                     this.utility.hideLoading();
                     if (res.success || res.message == 'Login Successful') {
-                        this.utility.showMessageAlert("Welcome " + res.data['user'].user_name + '!',"You are hoping to provide you best services.");
+                        this.utility.showMessageAlert("Welcome " + res.data['user'].user_name + '!', "We are hoping to provide you the best.");
                         this.utility.user = res.data['user'];
+                        if (this.utility.user.profile_photo != null) {
+                            this.utility.image = this.utility.user.profile_photo;
+                        } else {
+                            this.utility.image = "assets/imgs/no-profile.png";
+                        }
                         localStorage.setItem('user_details', JSON.stringify(res.data['user']));
                         localStorage.setItem('token', JSON.stringify(res.data['token']))
                         this.router.navigateByUrl("/home");
                     } else {
-                        this.utility.showMessageAlert("Error","You have entered wrong password");
+                        this.utility.showMessageAlert("Error", "You have entered wrong password");
                     }
-                   
+
                 }, err => {
                     this.utility.hideLoading();
-                    this.utility.showMessageAlert("Setup your profile","You have not setup your profile yet.")
+                    this.utility.showMessageAlert("Setup your profile", "You have not setup your profile yet.")
                     let navigationExtras: NavigationExtras = {
                         state: {
                             user_id: this.user_id,

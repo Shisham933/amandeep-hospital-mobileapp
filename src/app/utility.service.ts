@@ -11,6 +11,10 @@ export class UtilityService {
   locations : any = [];
   user : any;
   user_profile : any;
+  image : any;
+  device_token : string;
+  device_type : string;
+  
   constructor(private route: ActivatedRoute,private router: Router,private loadingController: LoadingController,
     private alertController: AlertController,
     private toastController: ToastController) {
@@ -44,17 +48,17 @@ export class UtilityService {
           text: 'Yes',
           handler: () => {
             console.log('Buy clicked');
-            let navigationExtras: NavigationExtras = {
-              state: {
-                patient:state.patient,
-                location_name: state.location_name,
-                data: state.data,
-                date: state.date,
-                time: state.time,
-                schedule_id: state.schedule_id
-              },
-            };
-            this.router.navigateByUrl("/confirm-appointment",navigationExtras);
+            // let navigationExtras: NavigationExtras = {
+              // state: {
+                // patient:state.patient,
+                // location_name: state.location_name,
+                // data: state.data,
+                // date: state.date,
+                // time: state.time,
+                // schedule_id: state.schedule_id
+              // },
+            // };
+            // this.router.navigateByUrl("/confirm-appointment",navigationExtras);
           }
         }
       ]

@@ -34,7 +34,16 @@ export class BookAppointmentPage implements OnInit {
     ngOnInit() {}
 
     goBack() {
-        this.location.back();
+        // this.location.back();
+        let navigationExtras: NavigationExtras = {
+          state: {
+            location_id: this.location_id,
+            location_name: this.location_name,
+            helpline_number: this.helpline_number,
+            book_type: this.book_type
+          },
+        };
+        this.router.navigate(['/select-specility'], navigationExtras);
     }
     
     bookAppointment(data) {
@@ -43,6 +52,8 @@ export class BookAppointmentPage implements OnInit {
               location_name:this.location_name,
               helpline_number:this.helpline_number,
               data: data,
+              speciality_id:  this.speciality_id,
+              speciality_name:this.speciality_name,
               book_type:this.book_type
             },
           };
@@ -56,6 +67,7 @@ export class BookAppointmentPage implements OnInit {
           if (res.success) {
             this.utility.hideLoading();
             this.doctors = res.data;
+            console.log(JSON.stringify(res))
             if(  this.doctors.length == 0){
               this.utility.showMessageAlert("No Doctors!","There is no doctor available for this specialty yet.")
            

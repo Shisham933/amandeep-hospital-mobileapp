@@ -31,6 +31,15 @@ export class SignUpPage implements OnInit {
 
     ngOnInit() { }
 
+    onKeyPress(event) {
+        if ((event.keyCode >= 65 && event.keyCode <= 90) || (event.keyCode >= 97 && event.keyCode <= 122) || event.keyCode == 32 || event.keyCode == 46) {
+            return true
+        }
+        else {
+            return false
+        }
+    }
+
     signup() {
         var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
         if (this.name == undefined) {
@@ -53,8 +62,13 @@ export class SignUpPage implements OnInit {
                 (res: any) => {
                     this.utility.hideLoading();
                     if (res.success || res.message == 'Details updated Successfully') {
-                        this.utility.showMessageAlert("Welcome " + res.data['user'].user_name + '!',"You are hoping to provide you best services.");
+                        this.utility.showMessageAlert("Welcome " + res.data['user'].user_name + '!',"We are hoping to provide you the best.");
                         this.utility.user = res.data['user'];
+                        if(this.utility.user.profile_photo != null){
+                            this.utility.image = this.utility.user.profile_photo;
+                          }else{
+                            this.utility.image = "assets/imgs/no-profile.png";
+                          }
                         localStorage.setItem('user_details', JSON.stringify(res.data['user']));
                         localStorage.setItem('token', JSON.stringify(res.data['token']))
                         this.router.navigate(["home"]);

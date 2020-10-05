@@ -23,7 +23,8 @@ export class LoginPage implements OnInit {
     login() {
         if (this.mobile_no == undefined) {
             this.utility.showMessageAlert("Mobile number required!", "Please enter your mobile number.")
-        } else if (this.mobile_no.length != 10) {
+        } 
+        else if (this.mobile_no.length != 10) {
             this.utility.showMessageAlert("Invalid mobile number!", "The mobile number you have entered is not valid.")
         } else {
             this.utility.showLoading();
@@ -60,7 +61,6 @@ export class LoginPage implements OnInit {
                     }
                     this.utility.hideLoading();
                 }, err => {
-                    console.log("err");
                     this.utility.hideLoading();
                     // this.utility.showMessageAlert("error", err);
                     // this.utility.showMessageAlert("error", JSON.stringify(err));

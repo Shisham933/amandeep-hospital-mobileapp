@@ -80,9 +80,38 @@ const routes: Routes = [
     path: 'play-video',
     loadChildren: () => import('./play-video/play-video.module').then( m => m.PlayVideoPageModule)
   },
+  
   {
-    path: 'vidoe-call-appointment',
-    loadChildren: () => import('./vidoe-call-appointment/vidoe-call-appointment.module').then( m => m.VidoeCallAppointmentPageModule)
+    path: 'query',
+    loadChildren: () => import('./query/query.module').then( m => m.QueryPageModule)
+  },
+  {
+    path: 'blogs',
+    loadChildren: () => import('./blogs/blogs.module').then( m => m.BlogsPageModule)
+  },
+  {
+    path: 'contact',
+    loadChildren: () => import('./contact/contact.module').then( m => m.ContactPageModule)
+  },
+  {
+    path: 'about',
+    loadChildren: () => import('./about/about.module').then( m => m.AboutPageModule)
+  },
+  {
+    path: 'add-reports',
+    loadChildren: () => import('./add-reports/add-reports.module').then( m => m.AddReportsPageModule)
+  },
+  {
+    path: 'my-reports',
+    loadChildren: () => import('./my-reports/my-reports.module').then( m => m.MyReportsPageModule)
+  },
+  {
+    path: 'video-call-appointment',
+    loadChildren: () => import('./video-call-appointment/video-call-appointment.module').then( m => m.VideoCallAppointmentPageModule)
+  },
+  {
+    path: 'chat-with-doctor',
+    loadChildren: () => import('./chat-with-doctor/chat-with-doctor.module').then( m => m.ChatWithDoctorPageModule)
   },
 ];
 

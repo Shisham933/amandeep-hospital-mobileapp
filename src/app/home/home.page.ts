@@ -28,6 +28,10 @@ export class HomePage {
     this.router.navigate(['/select-location'], navigationExtras);
   }
 
+  myReports(){
+    this.router.navigateByUrl('/my-reports')
+  }
+
   bookVideoCall() {
     this.http.getLocations('allLocations');
     let navigationExtras: NavigationExtras = {
@@ -36,6 +40,10 @@ export class HomePage {
       },
     };
    this.router.navigate(['/select-location'],navigationExtras);
+  }
+
+  aboutUs(){
+    this.router.navigateByUrl("/about");
   }
 
 

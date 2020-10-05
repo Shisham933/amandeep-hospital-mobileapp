@@ -15,17 +15,19 @@
         <img src="assets/imgs/no-img.png">
       </ion-avatar>
       <ion-label>
-        <h2 class="doctor-name">Dr. {{a['DR firstname']}} {{a['DR lastname']}}  <ion-icon class="map-icon" name="map-outline" (click)="showMap(a.location_name,a.address)"></ion-icon></h2>
-        <p>{{a.speciality_name}}</p>
+        <h2 class="doctor-name">Dr. {{a['DR firstname']}} {{a['DR lastname']}}
+          <ion-icon class="map-icon" name="map-outline" (click)="showMap(a.location_name,a.address)"></ion-icon>
+
+
+        </h2>
+        <p>{{a.speciality_name}}
+          <ion-icon class="map-icon" name="calendar-outline" *ngIf="a.type == 'OPD'"></ion-icon>
+          <ion-icon class="map-icon" name="videocam-outline" *ngIf="a.type == 'Video'"></ion-icon>
+        </p>
         <p style="margin-top: 10px;">{{a.time_slots}}, {{a.date | date : 'mediumDate'}}</p>
         <p style="margin-top: 10px;">{{a.location_name}}{{a.address}}</p>
       </ion-label>
-      <!-- <div>
-        <ion-label slot="end" class="book-btn" >
-          <ion-icon style="color: #363A61;" name="map-outline"></ion-icon>
-        </ion-label>
-      </div> -->
     </ion-item>
-    
+
   </ion-list>
 </ion-content>

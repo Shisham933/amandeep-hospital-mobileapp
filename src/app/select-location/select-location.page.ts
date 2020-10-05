@@ -17,52 +17,58 @@ export class SelectLocationPage implements OnInit {
   public location_name;
   public helpline_number;
   public book_type;
-  constructor(private route:ActivatedRoute,private statusBar: StatusBar,private location: Location, private router: Router, private http: HttpService, public utility: UtilityService) {
+  constructor(private route: ActivatedRoute, private statusBar: StatusBar, private location: Location, private router: Router, private http: HttpService, public utility: UtilityService) {
     this.statusBar.backgroundColorByHexString('#ffffff');
     this.route.queryParams.subscribe((params) => {
       this.book_type = this.router.getCurrentNavigation().extras.state.book_type;
-     });
-   }
-
-  ngOnInit() {
-   // this.getLocations();
+    });
   }
 
-  ionViewWillLeave(){
+  ngOnInit() {
+    this.getLocations();
+  }
+
+  ionViewWillLeave() {
     this.utility.locations.map((x, i) => {
       x.choose = false;
     })
   }
-  // getLocations() {
+  getLocations() {
+   this.utility.showLoading();
+    this.http.getLocations("allLocations").subscribe(
+      (res: any) => {
+        this.utility.hideLoading();
+        if (res.success) {
+          this.utility.locations = res.data;
+          this.utility.locations.map((x, i) => {
+            x.choose = false;
+          })
+        }
+        else if(res.status == 'Token is Expired'){
+          this.utility.showMessageAlert("Error","Token is Expired");
+          this.router.navigateByUrl('/login');
+        }
 
-  //   this.http.getLocations("allLocations").subscribe(
-  //     (res: any) => {
-  //       if (res.success) {
-  //         this.utility.locations = res.data;
-  //         this.utilitylocations.map((x, i) => {
-  //           x.choose = false;
-  //         })
-  //       }
-       
-  //     }, err => {
-  //       this.utility.showToast("Sorry!! Try again")
-  //     })
-  // }
+      }, err => {
+        this.utility.showToast("Sorry!! Try again")
+      })
+  }
 
   goBack() {
-    this.location.back();
+    // this.location.back();
+    this.router.navigateByUrl('/home')
   }
 
   next() {
-    if(this.choose_locationID == undefined){
-      this.utility.showMessageAlert("Location required!","Please select location")
-    }else{
+    if (this.choose_locationID == undefined) {
+      this.utility.showMessageAlert("Location required!", "Please select location");
+    } else {
       let navigationExtras: NavigationExtras = {
         state: {
           location_id: this.choose_locationID,
           location_name: this.location_name,
-          helpline_number:this.helpline_number,
-          book_type :  this.book_type
+          helpline_number: this.helpline_number,
+          book_type: this.book_type
         },
       };
       this.router.navigate(['/select-specility'], navigationExtras);
@@ -75,7 +81,7 @@ export class SelectLocationPage implements OnInit {
       if (index == 0) {
         return 'assets/imgs/amritsar-2.png'
       }
-      if(index == 1){
+      if (index == 1) {
         return 'assets/imgs/medicity.png'
       }
       if (index == 2) {
@@ -95,14 +101,14 @@ export class SelectLocationPage implements OnInit {
         return 'assets/imgs/amritsar-2.png'
       } if (index == 8) {
         return 'assets/imgs/amritsar-2.png'
-      }else{
+      } else {
         return 'assets/imgs/amritsar-2.png'
       }
     } else {
       if (index == 0) {
         return 'assets/imgs/amritsar.png'
       }
-      if(index == 1){
+      if (index == 1) {
         return 'assets/imgs/medicity red.png'
       }
       if (index == 2) {
@@ -122,7 +128,7 @@ export class SelectLocationPage implements OnInit {
         return 'assets/imgs/amritsar.png'
       } if (index == 8) {
         return 'assets/imgs/amritsar.png'
-      }else{
+      } else {
         return 'assets/imgs/amritsar.png'
       }
     }
@@ -135,10 +141,12 @@ export class SelectLocationPage implements OnInit {
     if (this.last_location_choose == undefined) {
       this.utility.locations[index].choose = true;
       this.last_location_choose = index;
+      this.next();
     } else {
       this.utility.locations[this.last_location_choose].choose = false;
       this.utility.locations[index].choose = true;
       this.last_location_choose = index;
+      this.next();
     }
   }
 }

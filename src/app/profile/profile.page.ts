@@ -17,35 +17,39 @@ export class ProfilePage implements OnInit {
   public mobile_no: any;
   public email_id: any;
   public dob: any;
-  public gaurdian_name : any;
-  public marital_status : any;
-  public emergency_number : any;
-  public image : any;
-  constructor(private statusBar: StatusBar,private location: Location, private router: Router, private http: HttpService, private utility: UtilityService) {
+  public gaurdian_name: any;
+  public marital_status: any;
+  public emergency_number: any;
+  public image: any;
+  constructor(private statusBar: StatusBar, private location: Location, private route: ActivatedRoute, private router: Router, private http: HttpService, private utility: UtilityService) {
     this.statusBar.backgroundColorByHexString('#FF0000');
-    let user = JSON.parse(localStorage.getItem('user_details'));
-    console.log(user)
-    this.user_id = user.id;
-    this.name = user.user_name;
-    this.gender = user.gender;
-    this.mobile_no = user.phone_number.substring(2);
-    this.dob = user.dob;
-    this.email_id = user.email;
-    this.gaurdian_name = user.guardian_name == null ? 'NA' : user.guardian_name;
-    this.emergency_number = user.emergency_num == null ? 'NA' : user.emergency_num;
-    this.marital_status = user.marital_status == null ? 'NA' : user.marital_status;
-    if(user.profile_photo != null){
-      this.image = user.profile_photo;
-    }else{
-      this.image = "assets/imgs/no-profile.png";
-    }
+    this.route.queryParams.subscribe((params) => {
+      let user = JSON.parse(localStorage.getItem('user_details'));
+      console.log(user)
+      this.user_id = user.id;
+      this.name = user.user_name;
+      this.gender = user.gender;
+      this.mobile_no = user.phone_number.substring(2);
+      this.dob = user.dob;
+      this.email_id = user.email;
+      this.gaurdian_name = user.guardian_name == null ? 'NA' : user.guardian_name;
+      this.emergency_number = user.emergency_num == null ? 'NA' : user.emergency_num;
+      this.marital_status = user.marital_status == null ? 'NA' : user.marital_status;
+      if (user.profile_photo != null) {
+        this.image = user.profile_photo;
+      } else {
+        this.image = "assets/imgs/no-profile.png";
+      }
+    })
+
   }
 
   ngOnInit() {
+  
   }
 
   goBack() {
-    this.location.back();
+    this.router.navigateByUrl('/home');
   }
 
   editProfile() {

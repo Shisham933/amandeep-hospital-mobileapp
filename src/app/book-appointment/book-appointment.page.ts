@@ -67,7 +67,6 @@ export class BookAppointmentPage implements OnInit {
           if (res.success) {
             this.utility.hideLoading();
             this.doctors = res.data;
-            console.log(JSON.stringify(res))
             if(  this.doctors.length == 0){
               this.utility.showMessageAlert("No Doctors!","There is no doctor available for this specialty yet.")
            

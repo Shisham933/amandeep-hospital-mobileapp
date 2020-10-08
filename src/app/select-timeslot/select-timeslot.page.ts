@@ -87,9 +87,10 @@ export class SelectTimeslotPage implements OnInit {
 
   onChange(val) {
     let date = val._d;
-    console.log(date)
+    //console.log(date)
     this.choose_date = date;
     var day = date.getDay();
+    console.log(day)
     if (day == 1) {
       var t = this.timeSlots.filter(x => x.days == 'Monday');
       t.map(y => {
@@ -348,7 +349,7 @@ export class SelectTimeslotPage implements OnInit {
         }
       })
     }
-    if (day == 7) {
+    if (day == 0) {
       var t = this.timeSlots.filter(x => x.days == 'Sunday');
       t.map(y => {
         y.time_value = (y.time_slots.split(' ')[0]).split(':')[0];
@@ -769,6 +770,7 @@ export class SelectTimeslotPage implements OnInit {
     this.utility.showLoading();
     this.http.getDoctorTimeslot('getSchedules/location/' + this.location_id + '/doctor/' + this.doctor_id, {}).subscribe(
       (res: any) => {
+        console.log(res)
         if (res.success) {
           this.utility.hideLoading();
           this.timeSlots = res.data;
@@ -777,6 +779,9 @@ export class SelectTimeslotPage implements OnInit {
           } else {
             this.todayTimeslot(new Date());
           }
+        }else{
+          this.utility.hideLoading();
+          this.utility.showMessageAlert("No schedules!", res.message)
         }
       }, err => {
         this.utility.showMessageAlert("Network error!", "Please check your network connection.")
@@ -784,6 +789,7 @@ export class SelectTimeslotPage implements OnInit {
   }
 
   bookViaApp() {
+    console.log(this.choose_date)
     if (this.choose_time == undefined) {
       this.utility.showMessageAlert("Time slot required!", 'Please choose time slot of your appointment')
     } else {

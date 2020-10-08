@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
+import { Badge } from '@ionic-native/badge/ngx';
 import { MenuController } from '@ionic/angular';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { HttpService } from '../http.service';
@@ -11,11 +12,13 @@ import { UtilityService } from '../utility.service';
 })
 export class HomePage {
 
-  constructor(private statusBar: StatusBar, private menu: MenuController, private route: ActivatedRoute, private router: Router, private http: HttpService) {
+  constructor(private statusBar: StatusBar, private menu: MenuController,private badge:Badge, private route: ActivatedRoute, private router: Router, private http: HttpService) {
     this.statusBar.backgroundColorByHexString('#ffffff');
     this.route.queryParams.subscribe((params) => {
+      this.badge.clear();
       this.http.getLocations('allLocations');
     });
+    
   }
 
   bookOPD() {

@@ -1,25 +1,37 @@
 import { Injectable } from '@angular/core';
 import { LoadingController, AlertController, ToastController } from "@ionic/angular";
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
-
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UtilityService {
   loading: any;
-  locations : any = [];
-  user : any;
-  user_profile : any;
-  image : any;
-  device_token : string;
-  device_type : string;
-  
-  constructor(private route: ActivatedRoute,private router: Router,private loadingController: LoadingController,
+  locations: any = [];
+  user: any;
+  user_profile: any;
+  image: any;
+  device_token: string;
+  device_type: string;
+
+  private events = new Subject<any>();
+
+  constructor(private route: ActivatedRoute, private router: Router, private loadingController: LoadingController,
     private alertController: AlertController,
     private toastController: ToastController) {
 
-     }
+  }
+
+  publishEvent(data: any) {
+    this.events.next(data);
+  }
+
+  getevent(): Subject<any> {
+    return this.events;
+  }
+
+
   async showLoading(message?: string) {
     this.loading = await this.loadingController.create({
       cssClass: 'custom-class spinner-class',
@@ -31,7 +43,7 @@ export class UtilityService {
     this.loadingController.dismiss();
   }
 
-  async showAlert(header: string, message: string,state) {
+  async showAlert(header: string, message: string, state) {
     const alert = await this.alertController.create({
       cssClass: "alert-container",
       header: header,
@@ -49,14 +61,14 @@ export class UtilityService {
           handler: () => {
             console.log('Buy clicked');
             // let navigationExtras: NavigationExtras = {
-              // state: {
-                // patient:state.patient,
-                // location_name: state.location_name,
-                // data: state.data,
-                // date: state.date,
-                // time: state.time,
-                // schedule_id: state.schedule_id
-              // },
+            // state: {
+            // patient:state.patient,
+            // location_name: state.location_name,
+            // data: state.data,
+            // date: state.date,
+            // time: state.time,
+            // schedule_id: state.schedule_id
+            // },
             // };
             // this.router.navigateByUrl("/confirm-appointment",navigationExtras);
           }

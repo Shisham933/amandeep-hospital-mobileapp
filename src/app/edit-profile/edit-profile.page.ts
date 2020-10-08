@@ -36,7 +36,7 @@ export class EditProfilePage implements OnInit {
     this.user_id = user.id;
     this.name = user.user_name;
     this.gender = user.gender;
-    this.mobile_no = user.phone_number.substring(2);
+    this.mobile_no = user.phone_number;
     this.dob = user.dob;
     this.email_id = user.email;
     this.gaurdian_name = user.guardian_name == null ? '' : user.guardian_name;
@@ -67,14 +67,19 @@ export class EditProfilePage implements OnInit {
   }
 
   selectCurrentDate() {
-    // let d = new Date();
-    // console.log(d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate())
-    // return new Date(new Date().setFullYear(new Date().getFullYear())).toISOString();
+    let d = new Date();
+    console.log(d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate())
+    return new Date(new Date().setFullYear(new Date().getFullYear())).toISOString();
   }
 
   editProfile() {
-
-    this.utility.showLoading();
+    
+    if(this.gaurdian_name.length > 25){
+     this.utility.showMessageAlert("Invalid guardian name!","Guardian name should not be more than 25 characters.")
+    }else if (this.emergency_number.length != 10){
+      this.utility.showMessageAlert("Invalid emergency mobile number!", "The mobile number you have entered is not valid.")
+    }else {
+      this.utility.showLoading();
     let params = {
       "user_id": this.user_id,
       "name": this.name,
@@ -100,6 +105,8 @@ export class EditProfilePage implements OnInit {
         this.utility.hideLoading();
         this.utility.showMessageAlert("Network error!", "Please check your network connection.")
       })
+    }
+    
   }
 
 

@@ -64,7 +64,9 @@
         color: #363A61;
         font-family: sans-serif;
         margin-top: 10px;
-        white-space: nowrap;
+        white-space: normal;
+        /* font-size: 14px; */
+        width: 100%;
       }
   }
   .header-values-2{

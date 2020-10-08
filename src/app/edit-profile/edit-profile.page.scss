@@ -63,6 +63,7 @@
         color: #363A61;
         font-family: sans-serif;
         margin-top: 10px;
+        
       }
   }
   .header-values-2{
@@ -90,12 +91,14 @@
     font-size: 16px;
     font-family: sans-serif;
     margin-left: -10px;
+    text-transform: capitalize;
   }
   ion-textarea{
     color: #363A61;
     font-size: 16px;
     font-family: sans-serif;
     margin-left: -10px;
+    text-transform: capitalize;
   }
   ion-select{
     margin-left: -19px;

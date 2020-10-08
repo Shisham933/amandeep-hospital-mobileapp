@@ -29,7 +29,7 @@ export class LoginPage implements OnInit {
         } else {
             this.utility.showLoading();
             let params = {
-                mobile: '91' + this.mobile_no
+                mobile: this.mobile_no
             }
             this.http.post("generateOTP", params).subscribe(
                 (res: any) => {
@@ -72,4 +72,5 @@ export class LoginPage implements OnInit {
     signup() {
         this.router.navigate(['/sign-up']);
     }
+
 }

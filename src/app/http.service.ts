@@ -160,6 +160,17 @@ export class HttpService {
    return this.http.get(this.url + endpoint, httpOptions);
   }
 
+  getMyReports(endpoint: string) {
+    let httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Accept': '*/*',
+        'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('token'))
+      })
+    };
+   return this.http.get(this.url + endpoint, httpOptions);
+  }
+
   addQuery(endpoint: string, body: any) {
     let httpOptions = {
       headers: new HttpHeaders({
@@ -171,4 +182,16 @@ export class HttpService {
     return this.http.post(this.url + endpoint, body, httpOptions);
   }
 
+  videoCallPatient(endpoint: string, body: any) {
+    console.log(body)
+    let httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Accept': '*/*',
+        'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('token'))
+      })
+    };
+    return this.http.post(this.url + endpoint, body, httpOptions);
+  }
+  
 }

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { HttpService } from '../http.service';
 import { UtilityService } from '../utility.service';
 
@@ -9,10 +10,15 @@ import { UtilityService } from '../utility.service';
 })
 export class ChatWithDoctorPage implements OnInit {
 
-  constructor( private http: HttpService,
+  constructor( private router:Router,
+    private http: HttpService,
     public utility: UtilityService) { }
 
   ngOnInit() {
+  }
+
+  goBack() {
+    this.router.navigate(["home"])
   }
 
 }

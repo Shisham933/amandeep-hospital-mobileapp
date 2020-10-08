@@ -36,9 +36,12 @@ export class VideoCallAppointmentPage implements OnInit {
   doctor_id: any;
   appointment_id: any;
 
-  stream_id : any;
-  
-  constructor(private agoraService: AngularAgoraRtcService,private platform:Platform,private nativeAudio: NativeAudio,public audioman: AudioManagement, private route: ActivatedRoute, private router: Router, private http: HttpService, private utility: UtilityService) {
+  stream_id: any;
+  call_started : any;
+  audio: any;
+
+
+  constructor(private agoraService: AngularAgoraRtcService, private platform: Platform, private nativeAudio: NativeAudio, public audioman: AudioManagement, private route: ActivatedRoute, private router: Router, private http: HttpService, private utility: UtilityService) {
     this.agoraService.createClient();
     this.route.queryParams.subscribe((params) => {
       this.user_id = this.router.getCurrentNavigation().extras.state.user_id;
@@ -46,7 +49,17 @@ export class VideoCallAppointmentPage implements OnInit {
       this.appointment_id = this.router.getCurrentNavigation().extras.state.appointment_id;
       this.stream_id = this.router.getCurrentNavigation().extras.state.streamId;
       this.channel_name = this.router.getCurrentNavigation().extras.state.channel_name;
-    })
+    });
+   
+    this.utility.getevent().subscribe((message) => {
+      console.log("call:ended",message)
+      if (this.audio) {
+        this.audio.pause();
+        this.audio = null;
+      }
+      //this.utility.showMessageAlert("Call ended!",message['call:ended']);
+      this.router.navigate(["home"])
+  });
   }
 
   ionViewDidEnter() {
@@ -55,24 +68,36 @@ export class VideoCallAppointmentPage implements OnInit {
     })
   }
 
+
   ngOnInit() {
     this.setAudioMode();
-    this.startCall();
+    // this.startCall();
+    this.audio = new Audio();
+    this.audio.src = '../../assets/tone/iphone_6-30.mp3';
+    this.audio.load();
+    this.playAudio();
   }
+
 
   startCall() {
     this.getDevices();
-   }
+  }
 
-   setAudioMode() {
+  playAudio() {
+    this.audio.play();
+    this.audio.loop = true;
+  }
+
+
+  setAudioMode() {
     this.audioman.setAudioMode(AudioManagement.AudioMode.NORMAL)
       .then(() => {
-       console.log('Device audio mode is now NORMAL');
+        console.log('Device audio mode is now NORMAL');
       })
       .catch((reason) => {
         console.log(reason);
       });
-   }
+  }
 
   getDevices() {
     getDevices((devices) => {
@@ -90,15 +115,15 @@ export class VideoCallAppointmentPage implements OnInit {
       this.videoDevices = videoDevices;
       console.log(this.audioDevices);
       console.log(this.videoDevices);
-      console.log("his.channel_name",this.channel_name)
-      this.agoraService.client.join(null,this.channel_name, null, (streamID) => { // stream id created
+      console.log("his.channel_name", this.channel_name)
+      this.agoraService.client.join(null, this.channel_name, null, (streamID) => { // stream id created
         console.log(streamID);
         let audio = true;
         let video = true;
         let screen = false;
         let cameraId = this.videoDevices[0].deviceId;
         let microphoneId = this.audioDevices[0].deviceId;
-        let incoming_id = this.stream_id 
+        let incoming_id = this.stream_id
         // this.localStream = this.agoraService.createStream(uid, true, cameraId, microphoneId, true, false); // join stream
         this.localStream = createStream({ incoming_id, audio, cameraId, microphoneId, video, screen })
         console.log("this.localStream", this.localStream);
@@ -115,6 +140,16 @@ export class VideoCallAppointmentPage implements OnInit {
       });
 
     });
+  }
+
+  acceptCall() {
+    this.startCall();
+    this.activeCall = true;
+    if (this.audio) {
+      this.audio.pause();
+      this.audio = null;
+      this.call_started = new Date();
+    }
   }
 
   private subscribeToStreams() {
@@ -137,6 +172,7 @@ export class VideoCallAppointmentPage implements OnInit {
     }, function (err) {
       console.log("getUserMedia failed", err);
     });
+    console.log(" this.localStream.........", this.localStream)
     this.agoraService.client.on('error', (err) => {
       console.log("Got error msg:", err.reason);
       if (err.reason === 'DYNAMIC_KEY_TIMEOUT') {
@@ -155,13 +191,20 @@ export class VideoCallAppointmentPage implements OnInit {
     });
     this.agoraService.client.on('stream-subscribed', (evt) => {
       const stream = evt.stream;
-      console.log("agora remote id.....",`agora_remote${stream.getId()}`)
+      console.log("agora remote id.....", `agora_remote${stream.getId()}`)
       if (!this.remoteCalls.includes(`agora_remote${stream.getId()}`)) this.remoteCalls.push(`agora_remote${stream.getId()}`);
       setTimeout(() => stream.play(`agora_remote${stream.getId()}`), 2000);
       // this.remote_screen = true;
       // this.local_screen = false;
     });
     this.agoraService.client.on('stream-removed', (evt) => {
+      this.localStream.stop();
+      if (this.audio) {
+        this.audio.pause();
+        this.audio = null;
+      }
+      this.utility.showMessageAlert("Call ended!", "Call has ended due to poor network connection");
+      this.router.navigate(["home"])
       const stream = evt.stream;
       stream.stop();
       this.remoteCalls = this.remoteCalls.filter(call => call !== `#agora_remote${stream.getId()}`);
@@ -173,18 +216,30 @@ export class VideoCallAppointmentPage implements OnInit {
         stream.stop();
         this.remoteCalls = this.remoteCalls.filter(call => call === `#agora_remote${stream.getId()}`);
         console.log(`${evt.uid} left from this channel`);
-        this.utility.showMessageAlert("Call ended!","");
+        this.localStream.stop();
+        if (this.audio) {
+          this.audio.pause();
+          this.audio = null;
+        }
+        this.utility.showMessageAlert("Call ended!", "");
         this.router.navigate(["home"])
       }
     });
-    console.log("this.remoteCalls.........",this.remoteCalls);
+    console.log("this.remoteCalls.........", this.remoteCalls);
   }
 
   leave() {
+    if (this.audio) {
+      this.audio.pause();
+      this.audio = null;
+    }
     this.agoraService.client.leave(() => {
       this.activeCall = false;
-      this.utility.showMessageAlert("Call ended!","");
-      this.router.navigate(["home"])
+      if (this.localStream) {
+        this.localStream.stop();
+      }
+      this.utility.showMessageAlert("Call ended!", "");
+      this.router.navigate(["home"]);
       console.log("Leavel channel successfully");
     }, (err) => {
       console.log("Leave channel failed");
@@ -201,6 +256,38 @@ export class VideoCallAppointmentPage implements OnInit {
     else this.localStream.disableVideo();
   }
 
- 
+
+  callEnded() {
+
+    let user = JSON.parse(localStorage.getItem('user_details'));
+
+    let params = {
+      "user_id": this.user_id,
+      "doctor_id": this.doctor_id,
+      "uid": this.stream_id,
+      "call_started": this.call_started,
+      "call_ended": new Date(),
+      "ended_by": "Patient"
+    }
+
+    console.log("params.............", JSON.stringify(params));
+
+    this.http.videoCallPatient('callDuration', params).subscribe(
+      (res: any) => {
+        console.log("callDuration  ended call............", JSON.stringify(res));
+        if (res.success) {
+          this.utility.showMessageAlert("Call ended!", "");
+          this.router.navigate(["my-appointments"])
+          console.log("Leavel channel successfully");
+        }
+      }, err => {
+        console.log("err.............", err)
+        this.utility.hideLoading();
+        this.utility.showMessageAlert("Network error!", "Please check your network connection.")
+      })
+  }
+
+
+
 
 }

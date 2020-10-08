@@ -289,3 +289,11 @@ textarea {
     font: inherit;
     color: inherit;
 }
+.numeric-input-container {
+    display: -webkit-box;
+    display: flex;
+    text-align: left;
+    margin-top: 8px;
+    font-size: 12px;
+    color: #ADADAD;
+}

@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { Push, PushObject, PushOptions } from '@ionic-native/push/ngx';
+import { Badge } from '@ionic-native/badge/ngx';
 import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 import { HttpService } from './http.service';
@@ -92,8 +94,10 @@ export class AppComponent {
     private statusBar: StatusBar,
     private router: Router,
     private push: Push,
+    private badge:Badge,
     private androidPermissions: AndroidPermissions,
     private backgroundMode: BackgroundMode,
+    public localNotifications: LocalNotifications,
     private http: HttpService,
     public utility: UtilityService
   ) {
@@ -111,18 +115,18 @@ export class AppComponent {
       if (this.platform.is('ios')) {
         this.utility.device_type = 'ios';
       }
-      this.backgroundMode.enable();
+     // this.backgroundMode.enable();
       this.pushNotification();
       this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.CAMERA).then(
         result => {
-          console.log('Has permission?',result.hasPermission)
-          if(result.hasPermission == false){
+          console.log('Has permission?', result.hasPermission)
+          if (result.hasPermission == false) {
             console.log("ask permission")
-            this.androidPermissions.requestPermissions(   [
-              this.androidPermissions.PERMISSION.CAMERA, 
+            this.androidPermissions.requestPermissions([
+              this.androidPermissions.PERMISSION.CAMERA,
               this.androidPermissions.PERMISSION.MODIFY_AUDIO_SETTINGS,
               this.androidPermissions.PERMISSION.RECORD_AUDIO
-          ])
+            ])
           }
         },
         err => {
@@ -143,6 +147,9 @@ export class AppComponent {
         this.router.navigate(["login"])
         this.http.getLocations("allLocations");
       }
+      this.platform.resume.subscribe(() => {
+        console.log('****UserdashboardPage RESUMED****');
+      });
     });
   }
   chooseOption(page) {
@@ -176,7 +183,11 @@ export class AppComponent {
 
   pushNotification() {
     const options: PushOptions = {
-      android: {},
+      android: {
+       // badge:true,
+        sound:true,
+        vibrate:true
+      },
       ios: {
         alert: 'true',
         badge: true,
@@ -189,21 +200,41 @@ export class AppComponent {
     }
 
     const pushObject: PushObject = this.push.init(options);
-    
+
     pushObject.on('notification').subscribe((notification: any) => {
-      console.log('Received a notification', notification);
+      console.log('Received a notification', notification); 
+      this.badge.set(1);
       // cordova.plugins.CordovaCall.setVideo(true);
       // cordova.plugins.CordovaCall.receiveCall('David Marcus');
-      if(notification.additionalData['foreground'] == true){
+      if (notification.additionalData['notification_type'] == 'start_call') {
+        this.localNotifications.schedule({
+          id: 1,
+          title: notification.title,
+          text: notification.message
+        });
+
         let navigationExtras: NavigationExtras = {
           state: {
             streamId: notification.additionalData['unique ID'],
-            channel_name : notification.additionalData['channel'],
+            channel_name: notification.additionalData['channel'],
           },
         };
-        this.router.navigateByUrl('/video-call-appointment',navigationExtras)
+        this.router.navigateByUrl('/video-call-appointment', navigationExtras)
       }
-      
+
+      if (notification.additionalData['notification_type'] == 'end_call') {
+        this.localNotifications.schedule({
+          id: 1,
+          title: notification.title,
+          text: notification.message
+        });
+        
+        this.utility.showMessageAlert(notification.title,notification.message)
+        this.utility.publishEvent({
+          'call:ended': notification.title
+        });
+       }
+
     });
 
     pushObject.on('registration').subscribe((registration: any) => {

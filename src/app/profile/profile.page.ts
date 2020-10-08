@@ -29,7 +29,7 @@ export class ProfilePage implements OnInit {
       this.user_id = user.id;
       this.name = user.user_name;
       this.gender = user.gender;
-      this.mobile_no = user.phone_number.substring(2);
+      this.mobile_no = user.phone_number;
       this.dob = user.dob;
       this.email_id = user.email;
       this.gaurdian_name = user.guardian_name == null ? 'NA' : user.guardian_name;

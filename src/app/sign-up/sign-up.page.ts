@@ -50,13 +50,17 @@ export class SignUpPage implements OnInit {
             this.utility.showToast("Please enter valid email address")
         } else if (this.password == undefined) {
             this.utility.showToast("Please enter password")
+        } else if (this.password.length < 8) {
+            this.utility.showToast("Password should be atlest 8 characters")
         } else {
             this.utility.showLoading();
             let params = {
                 user_id: this.user_id,
                 name: this.name,
                 email: this.email_id,
-                password: this.password
+                password: this.password,
+                device_token : this.utility.device_token == undefined ? 'devicetoken' : this.utility.device_token,
+                device_type : this.utility.device_type == undefined ? 'devicetype' : this.utility.device_type
             }
             this.http.post("register", params).subscribe(
                 (res: any) => {

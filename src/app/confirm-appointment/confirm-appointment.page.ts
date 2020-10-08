@@ -25,10 +25,10 @@ export class ConfirmAppointmentPage implements OnInit {
   book_type;
   show_patient_details: boolean = false;
   show_patient_form: boolean = false;
-  name: string;
+  name: any;
   mobile_no: any;
-  age: number;
-  speciality_name:string;
+  age: any;
+  speciality_name: string;
   choose_self: boolean = false;
   choose_relative: boolean = false;
   booking_options: any = [{
@@ -47,6 +47,7 @@ export class ConfirmAppointmentPage implements OnInit {
       this.location_id = this.data.location_id;
       this.doctor_id = this.data.doctor_id;
       this.date = this.router.getCurrentNavigation().extras.state.date;
+      console.log(this.date ,"this.date ")
       this.time = this.router.getCurrentNavigation().extras.state.time;
       this.schedule_id = this.router.getCurrentNavigation().extras.state.schedule_id;
       this.speciality_name = this.router.getCurrentNavigation().extras.state.speciality_name;
@@ -67,24 +68,6 @@ export class ConfirmAppointmentPage implements OnInit {
   goBack() {
     this.location.back();
   }
-
-  onKeyPress(event) {
-    if ((event.keyCode >= 65 && event.keyCode <= 90) || (event.keyCode >= 97 && event.keyCode <= 122) || event.keyCode == 32 || event.keyCode == 46) {
-        return true
-    }
-    else {
-        return false
-    }
-}
-
-onKeyPress2(event) {
-  if ((event.keyCode >= 65 && event.keyCode <= 90) || (event.keyCode >= 97 && event.keyCode <= 122) || event.keyCode == 32 || event.keyCode == 46) {
-      return false
-  }
-  else {
-      return true
-  }
-}
 
   chooseSelf() {
     // this.choose_self = true;
@@ -115,12 +98,7 @@ onKeyPress2(event) {
     this.show_patient_form = true;
     this.show_patient_details = false;
     this.book_for = 'relative';
-    // if(!this.choose_self){
-    // this.choose_self = true
-    // }else{
-    // this.choose_self = false;
-    // }
-    debugger
+    
     if (!this.choose_relative) {
       this.choose_relative = true;
       this.choose_self = false;
@@ -151,20 +129,25 @@ onKeyPress2(event) {
   }
 
   addPatient() {
+    debugger
+    let regx =  /^[A-Za-z]+$/;
     if (this.name == undefined || this.name == '' || this.age == undefined || this.mobile_no == undefined || this.mobile_no == '') {
       this.utility.showMessageAlert("Error!", "All fields are required.")
-    } else if (this.mobile_no.length != 10) {
+    }else if(!this.name.match(regx)){
+      this.utility.showMessageAlert("Invalid Patient name","Only alphabets are allowed to enter in patient name field.")
+    } else if (this.mobile_no.toString().length != 10) {
       this.utility.showMessageAlert("Invalid mobile number!", "The mobile number you have entered is not valid.")
+    } else if (this.age.toString().length > 2) {
+      this.utility.showMessageAlert("Invalid age !", "The age  you have entered is not valid.")
     } else {
       this.utility.showLoading();
       let params = {
         "name": this.name,
-        "mobile_no": '91' + this.mobile_no,
+        "mobile_no": this.mobile_no,
         "age": this.age
       }
       this.http.addPatient("addPatient", params).subscribe(
         (res: any) => {
-
           this.utility.hideLoading();
           if (res.success || res.message == 'Patient added successfully') {
             this.utility.showMessageAlert("Patient added!", "Your patient has been added.");
@@ -242,7 +225,7 @@ onKeyPress2(event) {
         let params = {
           "speciality_id": this.data.speciality_id,
           "doctor_id": this.doctor_id,
-          "date": this.date,
+          "date": this.date.getFullYear() + '-' + (this.date.getMonth() + 1) + '-' + this.date.getDate(),
           "location_id": this.location_id,
           "fee": "500",
           "schedule_id": this.schedule_id,
@@ -250,7 +233,8 @@ onKeyPress2(event) {
           "patient_id": this.user.id,
           "created_by": user.id
         }
-        debugger
+        // debugger
+        console.log("params.....", params);
         this.http.confirmAppointment("confirmAppointment", params).subscribe(
           (res: any) => {
             if (res.success || res.message == 'Appointment booked successfully') {
@@ -261,7 +245,8 @@ onKeyPress2(event) {
               let navigationExtras: NavigationExtras = {
                 state: {
                   location_name: this.location_name,
-                  data: this.data
+                  data: this.data,
+                  book_type: this.book_type
                 },
               };
               this.router.navigateByUrl("/select-timeslot", navigationExtras);
@@ -281,7 +266,7 @@ onKeyPress2(event) {
         let params = {
           "speciality_id": this.data.speciality_id,
           "doctor_id": this.doctor_id,
-          "date": this.date,
+          "date": this.date.getFullYear() + '-' + (this.date.getMonth() + 1) + '-' + this.date.getDate(),
           "location_id": this.location_id,
           "fee": "500",
           "schedule_id": this.schedule_id,
@@ -299,7 +284,8 @@ onKeyPress2(event) {
               let navigationExtras: NavigationExtras = {
                 state: {
                   location_name: this.location_name,
-                  data: this.data
+                  data: this.data,
+                  book_type: this.book_type
                 },
               };
               this.router.navigateByUrl("/select-timeslot", navigationExtras);

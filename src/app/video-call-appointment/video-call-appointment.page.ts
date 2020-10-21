@@ -15,11 +15,13 @@ import { UtilityService } from '../utility.service';
   styleUrls: ['./video-call-appointment.page.scss'],
 })
 export class VideoCallAppointmentPage implements OnInit {
-  localStream: Stream
+  localStream: Stream;
+  stream : any;
   remoteCalls: any = [];
   activeCall: boolean = false;
   audioEnabled: boolean = true;
   videoEnabled: boolean = true;
+  speakerEnabled : boolean = false;
 
   token: string;
   udid: string;
@@ -191,6 +193,7 @@ export class VideoCallAppointmentPage implements OnInit {
     });
     this.agoraService.client.on('stream-subscribed', (evt) => {
       const stream = evt.stream;
+      this.stream = stream;
       console.log("agora remote id.....", `agora_remote${stream.getId()}`)
       if (!this.remoteCalls.includes(`agora_remote${stream.getId()}`)) this.remoteCalls.push(`agora_remote${stream.getId()}`);
       setTimeout(() => stream.play(`agora_remote${stream.getId()}`), 2000);
@@ -255,7 +258,11 @@ export class VideoCallAppointmentPage implements OnInit {
     if (this.videoEnabled) this.localStream.enableVideo();
     else this.localStream.disableVideo();
   }
-
+  toggleSpeaker(){
+    this.speakerEnabled = !this.speakerEnabled;
+    if (this.speakerEnabled) this.stream.adjustPlaybackSignalVolume(200);
+    else this.stream.adjustPlaybackSignalVolume(50);
+  }
 
   callEnded() {
 

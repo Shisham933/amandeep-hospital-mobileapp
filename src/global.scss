@@ -36,6 +36,7 @@ ion-searchbar ion-icon {
     height: 36px;
     border: 2px solid #3C3737;
     border-radius: 10px;
+    background: white;
 }
 .searchbar-left-aligned.sc-ion-searchbar-ios-h .searchbar-input.sc-ion-searchbar-ios {
     padding-left: unset;
@@ -293,7 +294,68 @@ textarea {
     display: -webkit-box;
     display: flex;
     text-align: left;
-    margin-top: 8px;
+    margin-top: 9px;
     font-size: 12px;
     color: #ADADAD;
+}
+ion-toolbar.ion-color.sc-ion-searchbar-ios-h:not(.ion-color) .searchbar-input.sc-ion-searchbar-ios, ion-toolbar.ion-color .sc-ion-searchbar-ios-h:not(.ion-color) .searchbar-input.sc-ion-searchbar-ios {
+    background: rgba(var(--ion-color-contrast-rgb), 0.07);
+    color: black;
+}
+.native-input.sc-ion-input-ios {
+    padding-left: unset;
+    padding-right: unset;
+    -webkit-padding-start: var(--padding-start);
+    padding-inline-start: var(--padding-start);
+    -webkit-padding-end: var(--padding-end);
+    padding-inline-end: var(--padding-end);
+    margin-left: 10px !important;
+}
+.sc-ion-modal-ios-h {
+    --width: 80%;
+    --min-width: auto;
+    --max-width: auto;
+    --height: 100%;
+    --min-height: auto;
+    --max-height: auto;
+    --overflow: hidden;
+    --border-radius: 0;
+    --border-width: 0;
+    --border-style: none;
+    --border-color: transparent;
+    --background: var(--ion-background-color, #fff);
+    --box-shadow: none;
+    --backdrop-opacity: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: -ms-flexbox;
+    display: flex;
+    position: absolute;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    outline: none;
+    contain: strict;
+    --height: 60%;
+}
+.modal-wrapper.sc-ion-modal-ios, .modal-shadow.sc-ion-modal-ios {
+    border-radius: var(--border-radius);
+    width: var(--width);
+    min-width: var(--min-width);
+    max-width: var(--max-width);
+    height: var(--height);
+    min-height: var(--min-height);
+    max-height: var(--max-height);
+    border-width: var(--border-width);
+    border-style: var(--border-style);
+    border-color: var(--border-color);
+    background: var(--background);
+    -webkit-box-shadow: var(--box-shadow);
+    box-shadow: var(--box-shadow);
+    overflow: var(--overflow);
+    z-index: 10;
+    border-radius: 13px;
 }

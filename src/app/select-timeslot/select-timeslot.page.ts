@@ -82,15 +82,14 @@ export class SelectTimeslotPage implements OnInit {
         book_type: this.book_type
       },
     };
+    debugger
     this.router.navigate(['/book-appointment'], navigationExtras);
   }
 
   onChange(val) {
     let date = val._d;
-    //console.log(date)
     this.choose_date = date;
     var day = date.getDay();
-    console.log(day)
     if (day == 1) {
       var t = this.timeSlots.filter(x => x.days == 'Monday');
       t.map(y => {
@@ -397,10 +396,6 @@ export class SelectTimeslotPage implements OnInit {
 
   chooseTimeslot(parentindex, childindex, time) {
     // debugger
-    console.log("parentindex", parentindex)
-    console.log("childindex", childindex)
-    console.log("this.last_parentIndex", this.last_parentIndex)
-    console.log("this.last_selected_time", this.last_selected_time)
     if (this.last_selected_time == undefined) {
       this.choose_scheduleID = time.id;
       this.choose_time = time.time_slots;
@@ -770,7 +765,6 @@ export class SelectTimeslotPage implements OnInit {
     this.utility.showLoading();
     this.http.getDoctorTimeslot('getSchedules/location/' + this.location_id + '/doctor/' + this.doctor_id, {}).subscribe(
       (res: any) => {
-        console.log(res)
         if (res.success) {
           this.utility.hideLoading();
           this.timeSlots = res.data;
@@ -789,7 +783,6 @@ export class SelectTimeslotPage implements OnInit {
   }
 
   bookViaApp() {
-    console.log(this.choose_date)
     if (this.choose_time == undefined) {
       this.utility.showMessageAlert("Time slot required!", 'Please choose time slot of your appointment')
     } else {
@@ -803,10 +796,10 @@ export class SelectTimeslotPage implements OnInit {
           date: this.choose_date,
           time: this.choose_time,
           book_type: this.book_type,
-          speciality_name: this.speciality_name
+          speciality_name: this.speciality_name,
+          speciality_id:this.speciality_id
         },
       };
-      console.log(navigationExtras)
 
       this.router.navigate(['/confirm-appointment'], navigationExtras);
     }

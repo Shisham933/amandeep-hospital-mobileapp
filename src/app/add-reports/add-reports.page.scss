@@ -21,6 +21,22 @@ ion-icon{
         height: 50px;
     }
 }
+
+.description-img{
+    // padding-left: 15px;
+    // padding-right: 15px;
+    ion-label{
+        color: #222C3C;
+        font-family: sans-serif;
+        font-size: 14px;
+    }
+    img{
+        width: 100px;
+        height: 65px;
+        margin-top: 1px;
+    }
+}
+
 .label{
     margin-top: 20px;
 }
@@ -45,6 +61,22 @@ ion-textarea{
         font-weight: bolder;
     }
 }
+
+.img-col{
+    text-align: center;
+    border: 2px solid #363A61;
+    margin-left: 15px;
+    margin-top: 15px;
+    border-radius: 10px;
+    // padding: 20px;
+    ion-icon{
+        color: #363A61;
+        font-size: 35px;
+        font-weight: bolder;
+    }
+}
+
+
 .upload-report{
     margin-left: 30px;
     text-align: center;

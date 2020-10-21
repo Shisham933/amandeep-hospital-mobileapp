@@ -36,9 +36,9 @@ export class ProfilePage implements OnInit {
       this.emergency_number = user.emergency_num == null ? 'NA' : user.emergency_num;
       this.marital_status = user.marital_status == null ? 'NA' : user.marital_status;
       if (user.profile_photo != null) {
-        this.image = user.profile_photo;
+        this.utility.user_profile = user.profile_photo;
       } else {
-        this.image = "assets/imgs/no-profile.png";
+        this.utility.user_profile  = "assets/imgs/no-profile.png";
       }
     })
 

@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 // import { Http, RequestOptions, URLSearchParams } from "@angular/http";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
-
+import { Stripe } from '@ionic-native/stripe/ngx';
 import { UtilityService } from './utility.service';
 
 @Injectable({
@@ -15,9 +15,9 @@ export class HttpService {
   private url: string = this.testingUrl;
 
 
-  constructor(private http: HttpClient, private utility: UtilityService,private router : Router) {
+  constructor(private http: HttpClient, private stripe: Stripe, private utility: UtilityService, private router: Router) {
     // this.getLocations('allLocations');
-   }
+  }
 
   getWithoutBaseUrl(endpoint: string) {
     return this.http.get(endpoint);
@@ -64,7 +64,7 @@ export class HttpService {
     //       x.choose = false;
     //     })
     //   }
-   
+
     // }
     // );
     return this.http.get(this.url + endpoint, httpOptions);
@@ -136,7 +136,7 @@ export class HttpService {
     return this.http.post(this.url + endpoint, body, httpOptions);
   }
 
-  
+
 
   getMyAppointments(endpoint: string) {
     let httpOptions = {
@@ -157,7 +157,7 @@ export class HttpService {
         'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('token'))
       })
     };
-   return this.http.get(this.url + endpoint, httpOptions);
+    return this.http.get(this.url + endpoint, httpOptions);
   }
 
   getMyReports(endpoint: string) {
@@ -168,7 +168,7 @@ export class HttpService {
         'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('token'))
       })
     };
-   return this.http.get(this.url + endpoint, httpOptions);
+    return this.http.get(this.url + endpoint, httpOptions);
   }
 
   addQuery(endpoint: string, body: any) {
@@ -193,5 +193,63 @@ export class HttpService {
     };
     return this.http.post(this.url + endpoint, body, httpOptions);
   }
-  
+
+  getAllDoctors(endpoint) {
+    let httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Accept': '*/*',
+        'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('token'))
+      })
+    };
+    return this.http.get(this.url + endpoint, httpOptions);
+  }
+
+  getChatSubscriptionStatus(endpoint) {
+    let httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Accept': '*/*',
+        'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('token'))
+      })
+    };
+    return this.http.get(this.url + endpoint, httpOptions);
+  }
+
+  buyChatSubscription(endpoint: string, body: any) {
+    console.log(body)
+    let httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Accept': '*/*',
+        'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('token'))
+      })
+    };
+    return this.http.post(this.url + endpoint, body, httpOptions);
+  }
+
+  sendPushNotification(endpoint: string, body: any) {
+    console.log(body)
+    let httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Accept': '*/*',
+        'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('token'))
+      })
+    };
+    return this.http.post(this.url + endpoint, body, httpOptions);
+  }
+
+  makePayement(card) {
+    this.stripe.setPublishableKey('pk_test_51HY4PWGxS7HD5LRgl5KhFtxE52opZIcvtAbE5qqeoo2rt5kQJxiIUJ9tsStai5yNldou1fjEROeYQNlzQ8BUrPi400W1MBjnEa');
+    this.stripe.createCardToken(card)
+      .then(token => {
+        console.log(token.id)
+        return token
+      })
+      .catch(error =>{
+        console.error(error)
+      });
+  }
+
 }

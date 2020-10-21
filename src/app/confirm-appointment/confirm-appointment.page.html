@@ -12,7 +12,8 @@
     <ion-list lines="none">
         <ion-item class="lower-bottom">
             <ion-avatar slot="start">
-                <img src="assets/imgs/no-img.png">
+                <img src="assets/imgs/no-profile.png" *ngIf="data.profile_picture == null">
+                <img src="{{data.profile_picture}}" *ngIf="data.profile_picture != null">
             </ion-avatar>
             <ion-label>
                 <h2 class="doctor-name">Dr. {{data.firstname}} {{data.lastname}} </h2>
@@ -33,7 +34,7 @@
             </ion-item>
         </ion-col>
         <ion-col size="5" style="margin-top: 10px">
-            <ion-label class="fee">OPD Fee:&nbsp;<span>&#8377;</span>500</ion-label>
+            <ion-label class="fee">OPD Fee:&nbsp;<span>&#8377;</span>{{data.opdfee}}</ion-label>
         </ion-col>
     </ion-row>
     <ion-row class="lower-bottom-2">
@@ -68,10 +69,7 @@
                     </ion-checkbox>
                 </ion-item>
             </ion-list>
-            <ng-container *ngIf="book_for == 'self'">
-            </ng-container>
-            <ng-container *ngIf="book_for == 'relative'">
-            </ng-container>
+
             <ion-card *ngIf="show_patient_details">
                 <ion-card-header>
                     <ion-card-subtitle>My Details</ion-card-subtitle>
@@ -145,12 +143,15 @@
             </ng-container>
         </ion-col>
     </ion-row>
-    <ion-row>
-        <ion-col size="12" style="text-align: center;">
-            <!-- <ion-label class="pay-now" (click)="confirmAppointment()">PAY NOW</ion-label>
-       -->
-            <ion-label class="pay-now" (click)="confirmAppointment()">BOOK NOW</ion-label>
-        </ion-col>
-    </ion-row>
 
 </ion-content>
+<ion-footer class="ion-no-border time-slot">
+    <ion-toolbar>
+        <ion-button ion-button color="danger" class="pay-now" (click)="confirmAppointment()" style="width: 93%;">
+            BOOk NOW
+        </ion-button>
+    </ion-toolbar>
+
+</ion-footer>
+
+<ion-footer>

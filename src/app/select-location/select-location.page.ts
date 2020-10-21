@@ -25,8 +25,10 @@ export class SelectLocationPage implements OnInit {
   }
 
   ngOnInit() {
-    this.getLocations();
-  }
+    if(this.utility.locations.length == 0){
+      this.getLocations();
+    }
+ }
 
   ionViewWillLeave() {
     this.utility.locations.map((x, i) => {

@@ -240,7 +240,7 @@ export class AddReportsPage implements OnInit {
         (res: any) => {
           this.utility.hideLoading();
           if (res.success) {
-            this.utility.showMessageAlert("Reports sent to doctor!", res.message);
+            this.utility.showMessageAlert("Reports uploaded!", res.message);
             this.router.navigateByUrl('/my-reports');
           } else {
             this.utility.showMessageAlert("Error!", res.message);

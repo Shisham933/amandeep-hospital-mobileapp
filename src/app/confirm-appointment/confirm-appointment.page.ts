@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
-import { LoadingController, AlertController, ToastController } from "@ionic/angular";
+import { LoadingController, ModalController, AlertController, ToastController } from "@ionic/angular";
 import { Location } from '@angular/common';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { HttpService } from '../http.service';
 import { UtilityService } from '../utility.service';
 import { LaunchNavigator, LaunchNavigatorOptions } from '@ionic-native/launch-navigator/ngx';
+import { CardPaymentPage } from '../card-payment/card-payment.page';
+
 
 @Component({
   selector: 'app-confirm-appointment',
@@ -18,6 +20,7 @@ export class ConfirmAppointmentPage implements OnInit {
   location_id: any;
   doctor_id: any;
   schedule_id: any;
+  speciality_id:any;
   date: any;
   time: any;
   user: any;
@@ -39,15 +42,16 @@ export class ConfirmAppointmentPage implements OnInit {
     isChecked: false
   }]
 
-  constructor(private statusBar: StatusBar, private alertController: AlertController, private launchNavigator: LaunchNavigator, private route: ActivatedRoute, private location: Location, private router: Router, private http: HttpService, private utility: UtilityService) {
+  constructor(private statusBar: StatusBar, public modalController: ModalController, private alertController: AlertController, private launchNavigator: LaunchNavigator, private route: ActivatedRoute, private location: Location, private router: Router, private http: HttpService, private utility: UtilityService) {
     this.statusBar.backgroundColorByHexString('#ffffff');
     this.route.queryParams.subscribe((params) => {
+      this.speciality_id = this.router.getCurrentNavigation().extras.state.speciality_id;
       this.location_name = this.router.getCurrentNavigation().extras.state.location_name;
       this.data = this.router.getCurrentNavigation().extras.state.data;
       this.location_id = this.data.location_id;
       this.doctor_id = this.data.doctor_id;
       this.date = this.router.getCurrentNavigation().extras.state.date;
-      console.log(this.date ,"this.date ")
+      console.log(this.date, "this.date ")
       this.time = this.router.getCurrentNavigation().extras.state.time;
       this.schedule_id = this.router.getCurrentNavigation().extras.state.schedule_id;
       this.speciality_name = this.router.getCurrentNavigation().extras.state.speciality_name;
@@ -98,7 +102,7 @@ export class ConfirmAppointmentPage implements OnInit {
     this.show_patient_form = true;
     this.show_patient_details = false;
     this.book_for = 'relative';
-    
+
     if (!this.choose_relative) {
       this.choose_relative = true;
       this.choose_self = false;
@@ -130,11 +134,11 @@ export class ConfirmAppointmentPage implements OnInit {
 
   addPatient() {
     debugger
-    let regx =  /^[A-Za-z]+$/;
+    let regx = /^[A-Za-z]+$/;
     if (this.name == undefined || this.name == '' || this.age == undefined || this.mobile_no == undefined || this.mobile_no == '') {
       this.utility.showMessageAlert("Error!", "All fields are required.")
-    }else if(!this.name.match(regx)){
-      this.utility.showMessageAlert("Invalid Patient name","Only alphabets are allowed to enter in patient name field.")
+    } else if (!this.name.match(regx)) {
+      this.utility.showMessageAlert("Invalid Patient name", "Only alphabets are allowed to enter in patient name field.")
     } else if (this.mobile_no.toString().length != 10) {
       this.utility.showMessageAlert("Invalid mobile number!", "The mobile number you have entered is not valid.")
     } else if (this.age.toString().length > 2) {
@@ -217,11 +221,8 @@ export class ConfirmAppointmentPage implements OnInit {
     if (this.book_for == '' || this.book_for == undefined) {
       this.utility.showMessageAlert("Patient info required!", "Please select one option for whom you are booking this appointment.")
     } else {
-
-
       if (this.book_type == 'OPD') {
-        this.utility.showLoading();
-        let user = JSON.parse(localStorage.getItem('user_details'))
+       let user = JSON.parse(localStorage.getItem('user_details'))
         let params = {
           "speciality_id": this.data.speciality_id,
           "doctor_id": this.doctor_id,
@@ -231,38 +232,47 @@ export class ConfirmAppointmentPage implements OnInit {
           "schedule_id": this.schedule_id,
           "book_for": this.book_for,
           "patient_id": this.user.id,
-          "created_by": user.id
+          "created_by": user.id,
+          "type":"OPD"
         }
         // debugger
         console.log("params.....", params);
+
+        //this.presentModal(params);
+        this.utility.showLoading();
         this.http.confirmAppointment("confirmAppointment", params).subscribe(
           (res: any) => {
+            console.log(res)
+            this.utility.hideLoading();
             if (res.success || res.message == 'Appointment booked successfully') {
               this.utility.showMessageAlert("Appointment booked!", "Appointment booked successfully.")
               this.router.navigateByUrl("/home");
-            } else if (res.success == false || res.message == 'Slot is already booked.') {
-              this.utility.showMessageAlert("Slot not available!", "This slot is already booked.Please choose another time slot.")
+            } else if (res.success == false) {
+              this.utility.showMessageAlert("Slot not available!",res.message )
               let navigationExtras: NavigationExtras = {
                 state: {
                   location_name: this.location_name,
                   data: this.data,
-                  book_type: this.book_type
+                  book_type: this.book_type,
+                  speciality_id:this.speciality_id,
+                  speciality_name: this.speciality_name,
+
                 },
               };
+              debugger
               this.router.navigateByUrl("/select-timeslot", navigationExtras);
             } else {
               this.utility.showMessageAlert("Appointment not booked!", "Plese try again.")
 
             }
-            this.utility.hideLoading();
+           
           }, err => {
             this.utility.hideLoading();
             this.utility.showMessageAlert("Network error!", "Please check your network connection.")
           })
       }
       if (this.book_type == 'videocall') {
-        this.utility.showLoading();
-        let user = JSON.parse(localStorage.getItem('user_details'))
+       let user = JSON.parse(localStorage.getItem('user_details'))
         let params = {
           "speciality_id": this.data.speciality_id,
           "doctor_id": this.doctor_id,
@@ -272,10 +282,15 @@ export class ConfirmAppointmentPage implements OnInit {
           "schedule_id": this.schedule_id,
           "book_for": this.book_for,
           "patient_id": this.user.id,
-          "created_by": user.id
+          "created_by": user.id,
+          "type":"video"
         }
+
+        //this.presentModal(params);
+        this.utility.showLoading();
         this.http.confirmAppointment("confirmVideoAppointment", params).subscribe(
           (res: any) => {
+            this.utility.hideLoading();
             if (res.success || res.message == 'Appointment booked successfully') {
               this.utility.showMessageAlert("Appointment booked!", "Appointment booked successfully.")
               this.router.navigateByUrl("/home");
@@ -285,20 +300,36 @@ export class ConfirmAppointmentPage implements OnInit {
                 state: {
                   location_name: this.location_name,
                   data: this.data,
-                  book_type: this.book_type
+                  book_type: this.book_type,
+                  speciality_id:this.speciality_id,
+                  speciality_name: this.speciality_name,
                 },
               };
               this.router.navigateByUrl("/select-timeslot", navigationExtras);
             } else {
               this.utility.showMessageAlert("Appointment not booked!", "Plese try again.")
             }
-            this.utility.hideLoading();
+           
           }, err => {
             this.utility.hideLoading();
             this.utility.showMessageAlert("Network error!", "Please check your network connection.")
           })
       }
     }
+
+  }
+
+  async presentModal(data) {
+    const modal = await this.modalController.create({
+      component: CardPaymentPage,
+      animated: true,
+      backdropDismiss: true,
+      showBackdrop: true,
+      componentProps: {
+        'params': 'data'
+      }
+    });
+    return await modal.present();
   }
 
 }

@@ -148,6 +148,22 @@ cursor: pointer;
   }
 }
 
+
+.disable-speaker:after {
+  position: absolute;
+  content: "/";
+  color: white;
+  font-weight: bold;
+  font-size: 50px;
+  left: 0;
+  top: 0;
+  text-shadow: 3px 0px 0px rgba(0, 0, 0, 1);
+  line-height: 32px;
+  left: 18%;
+  font-family: Arial;
+}
+
+
 .startCall{
 color: white;
 }

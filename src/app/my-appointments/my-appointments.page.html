@@ -12,14 +12,13 @@
   <ion-list lines="none">
     <ion-item class="lower-bottom" *ngFor="let a of appointments">
       <ion-avatar slot="start" style="margin-top: -50px;">
-        <img src="assets/imgs/no-img.png">
+        <img src="assets/imgs/no-profile.png" *ngIf="a['DR picture'] == null">
+        <img src="{{a['DR picture']}}" *ngIf="a['DR picture'] != null">
       </ion-avatar>
       <ion-label>
         <h2 class="doctor-name">Dr. {{a['DR firstname']}} {{a['DR lastname']}}
           <ion-icon class="map-icon" name="map-outline" (click)="showMap(a.location_name,a.address)"></ion-icon>
-
-
-        </h2>
+         </h2>
         <p>{{a.speciality_name}}
           <ion-icon class="map-icon" name="calendar-outline" *ngIf="a.type == 'OPD'"></ion-icon>
           <ion-icon class="map-icon" name="videocam-outline" *ngIf="a.type == 'Video'"></ion-icon>

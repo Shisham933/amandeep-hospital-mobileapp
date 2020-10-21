@@ -12,7 +12,8 @@
     <ion-list lines="none">
         <ion-item class="lower-bottom">
             <ion-avatar slot="start">
-                <img src="assets/imgs/no-img.png">
+                <img src="assets/imgs/no-profile.png" *ngIf="data.profile_picture == null">
+                <img src="{{data.profile_picture}}" *ngIf="data.profile_picture != null">
             </ion-avatar>
             <ion-label>
                 <h2 class="doctor-name">Dr. {{data.firstname}} {{data.lastname}} </h2>

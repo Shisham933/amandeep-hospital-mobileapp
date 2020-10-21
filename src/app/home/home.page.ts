@@ -5,6 +5,7 @@ import { MenuController } from '@ionic/angular';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { HttpService } from '../http.service';
 import { UtilityService } from '../utility.service';
+
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -12,11 +13,12 @@ import { UtilityService } from '../utility.service';
 })
 export class HomePage {
 
-  constructor(private statusBar: StatusBar, private menu: MenuController,private badge:Badge, private route: ActivatedRoute, private router: Router, private http: HttpService) {
+  constructor(private statusBar: StatusBar, private menu: MenuController,private badge:Badge, private utility:UtilityService,private route: ActivatedRoute, private router: Router, private http: HttpService) {
     this.statusBar.backgroundColorByHexString('#ffffff');
     this.route.queryParams.subscribe((params) => {
       this.badge.clear();
-      this.http.getLocations('allLocations');
+      this.getAllDoctors();
+      this.getChatSubscriptionStatus();
     });
     
   }
@@ -58,5 +60,29 @@ export class HomePage {
   }
   openMenu() {
     this.menu.enable(true, 'first');
+  }
+
+  getAllDoctors(){
+    this.http.getAllDoctors("allDoctors").subscribe((res: any) => {
+       if (res.success) {
+        this.utility.all_doctors = res.data;
+      } else {
+       
+      }
+    }, err => {
+     
+    })
+  }
+
+  getChatSubscriptionStatus(){
+    let user = JSON.parse(localStorage.getItem('user_details'));
+    this.http.getChatSubscriptionStatus("chatPaymentStatus/user/" + user.id).subscribe((res: any) => {
+       if (res.success) {
+        this.utility.chat_payment_status = res.data['payment_status'];
+      } else {
+      }
+    }, err => {
+     
+    })
   }
 }

@@ -4,12 +4,12 @@
       <ion-toolbar color="danger">
         <ion-row class="header">
           <ion-col size="3">
-             <img class="user-img" src="{{utility.image}}" />
+             <img class="user-img" src="{{utility.image}}" *ngIf="utility.image"/>
           </ion-col>
           <ion-col size="6">
             <ion-label class="user" style="text-transform: capitalize;">{{utility.user?.user_name}}</ion-label>
-            <p class="user" style="font-size: 12px;margin-top: 0px;">+{{utility.user?.phone_number}}</p>
-            <p class="user" style="font-size: 12px;margin-top: 0px;">{{utility.user?.email}}</p>
+            <p class="user" style="font-size: 12px;margin-top: 3px;">+91 {{utility.user?.phone_number}}</p>
+            <p class="user" style="font-size: 12px;margin-top: 3px;">{{utility.user?.email}}</p>
          </ion-col>
         </ion-row>
       </ion-toolbar>

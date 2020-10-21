@@ -43,7 +43,7 @@ export class MyReportsPage implements OnInit {
         this.utility.hideLoading();
       } else {
         this.utility.hideLoading();
-        this.utility.showMessageAlert("No reports added!", "You have not added any reports.");
+        this.utility.showMessageAlert("No Reports Added!", "You have not added any reports.");
       }
     }, err => {
       this.utility.hideLoading();
@@ -54,24 +54,24 @@ export class MyReportsPage implements OnInit {
 
 
   downloadReport(uri){
-//     console.log(uri)
-//     console.log(uri.split('/')[1])
-//     var request: DownloadRequest = {
-//       uri: uri,
-//       title: 'Amandeep Hospital Reports',
-//       description: '',
-//       mimeType: '',
-//       visibleInDownloadsUi: true,
-//       notificationVisibility: NotificationVisibility.VisibleNotifyCompleted,
-//       destinationInExternalFilesDir: {
-//           dirType: 'Downloads',
-//           subPath: uri.split('/')[1]
-//       }
-//   };
+    console.log(uri)
+    console.log(uri.split('/')[1])
+    var request: DownloadRequest = {
+      uri: uri,
+      title: 'Amandeep Hospital Reports',
+      description: '',
+      mimeType: '',
+      visibleInDownloadsUi: true,
+      notificationVisibility: NotificationVisibility.VisibleNotifyCompleted,
+      destinationInExternalFilesDir: {
+          dirType: 'Downloads',
+          subPath: uri.split('/')[1]
+      }
+  };
 
 
-// this.downloader.download(request)
-//           .catch((error: any) => console.error(error));
+this.downloader.download(request)
+          .catch((error: any) => console.error(error));
   }
 
 }

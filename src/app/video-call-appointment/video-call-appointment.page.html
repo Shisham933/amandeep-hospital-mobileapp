@@ -22,8 +22,9 @@
             <ion-icon name="mic-off" (click)="toggleAudio()" *ngIf="!audioEnabled"></ion-icon>
             <ion-icon name="mic" (click)="toggleAudio()" *ngIf="audioEnabled"></ion-icon>
           </span>&nbsp;&nbsp;
-          <span class="mute-icon" (click)="setVolume()">
-            <ion-icon name="volume-high"></ion-icon>
+          <span class="mute-icon">
+            <ion-icon name="volume-high" *ngIf="!speakerEnabled" (click)="toggleSpeaker()"></ion-icon>
+            <ion-icon name="volume-high" class="disable-speaker" *ngIf="speakerEnabled" (click)="toggleSpeaker()"></ion-icon>
           </span>&nbsp;&nbsp;
           <span class="mute-icon">
             <ion-icon name="videocam" (click)="toggleVideo()" *ngIf="videoEnabled"></ion-icon>

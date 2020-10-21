@@ -113,6 +113,18 @@ const routes: Routes = [
     path: 'chat-with-doctor',
     loadChildren: () => import('./chat-with-doctor/chat-with-doctor.module').then( m => m.ChatWithDoctorPageModule)
   },
+  {
+    path: 'chat-lists',
+    loadChildren: () => import('./chat-lists/chat-lists.module').then( m => m.ChatListsPageModule)
+  },
+  {
+    path: 'chat-window',
+    loadChildren: () => import('./chat-window/chat-window.module').then( m => m.ChatWindowPageModule)
+  },
+  {
+    path: 'card-payment',
+    loadChildren: () => import('./card-payment/card-payment.module').then( m => m.CardPaymentPageModule)
+  },
 ];
 
 @NgModule({

@@ -42,12 +42,6 @@ export class EditProfilePage implements OnInit {
     this.gaurdian_name = user.guardian_name == null ? '' : user.guardian_name;
     this.emergency_number = user.emergency_num == null ? '' : user.emergency_num;
     this.marital_status = user.marital_status == null ? '' : user.marital_status;
-    if (user.profile_photo != null) {
-      this.image = user.profile_photo;
-    } else {
-      this.image = "assets/imgs/no-profile.png";
-    }
-
   }
 
   ngOnInit() {
@@ -151,6 +145,7 @@ export class EditProfilePage implements OnInit {
 
     this.camera.getPicture(options).then((imagePath) => {
       this.image = 'data:image/jpeg;base64,' + imagePath;
+      this.utility.user_profile = 'data:image/jpeg;base64,' + imagePath;
       let imageName = "user-profile";
       this.uploadImage(imagePath, imageName).then((res: any) => {
         if (res.Location) {
@@ -223,9 +218,10 @@ export class EditProfilePage implements OnInit {
         if (res.success) {
           localStorage.setItem('user_details', JSON.stringify(res.data));
           // this.image = url;
-          this.image = 'data:image/jpeg;base64,' + imagePath;
+         // this.image = 'data:image/jpeg;base64,' + imagePath;
           this.utility.user_profile = this.image;
           this.utility.image = this.image;
+          localStorage.setItem('user-profile-image',this.image);
           this.utility.showMessageAlert("Profile Picture Updated!", "Your profile image has been updated.");
           this.router.navigateByUrl('/profile');
         } else {

@@ -8,6 +8,7 @@ import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
+import { ChatsService } from './chats.service';
 import { HttpService } from './http.service';
 import { UtilityService } from './utility.service';
 
@@ -28,22 +29,22 @@ export class AppComponent {
       icon: "home-outline",
     },
     {
-      title: "Book OPD Consulation",
+      title: "Book OPD Consultation",
       url: "",
       icon: "calendar",
     },
     {
-      title: "Book Video Consulation",
+      title: "Book Video Consultation",
       url: "",
       icon: "phone-portrait-outline",
     },
     {
-      title: "Chat with doctor",
-      url: "chat-with-doctor",
+      title: "Chat with Doctor",
+      url: "",
       icon: "chatbox-ellipses-outline",
     },
     {
-      title: "Ask a query",
+      title: "Ask a Query",
       url: "/query",
       icon: "help",
     },
@@ -94,11 +95,12 @@ export class AppComponent {
     private statusBar: StatusBar,
     private router: Router,
     private push: Push,
-    private badge:Badge,
+    private badge: Badge,
     private androidPermissions: AndroidPermissions,
     private backgroundMode: BackgroundMode,
     public localNotifications: LocalNotifications,
     private http: HttpService,
+    private chats: ChatsService,
     public utility: UtilityService
   ) {
     this.initializeApp();
@@ -115,13 +117,11 @@ export class AppComponent {
       if (this.platform.is('ios')) {
         this.utility.device_type = 'ios';
       }
-     // this.backgroundMode.enable();
+      // this.backgroundMode.enable();
       this.pushNotification();
       this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.CAMERA).then(
         result => {
-          console.log('Has permission?', result.hasPermission)
           if (result.hasPermission == false) {
-            console.log("ask permission")
             this.androidPermissions.requestPermissions([
               this.androidPermissions.PERMISSION.CAMERA,
               this.androidPermissions.PERMISSION.MODIFY_AUDIO_SETTINGS,
@@ -130,13 +130,14 @@ export class AppComponent {
           }
         },
         err => {
-          console.log(err)
           this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.CAMERA)
         }
       );
       if (JSON.parse(localStorage.getItem('token')) != undefined) {
+        this.getChats();
         this.user = JSON.parse(localStorage.getItem('user_details'));
         this.utility.user = JSON.parse(localStorage.getItem('user_details'));
+        console.log(this.utility.user)
         if (this.utility.user.profile_photo != null) {
           this.utility.image = this.utility.user.profile_photo;
         } else {
@@ -145,13 +146,21 @@ export class AppComponent {
         this.router.navigate(["home"])
       } else {
         this.router.navigate(["login"])
-        this.http.getLocations("allLocations");
+        //this.http.getLocations("allLocations");
       }
-      this.platform.resume.subscribe(() => {
-        console.log('****UserdashboardPage RESUMED****');
-      });
+       
     });
   }
+
+  getChats(){
+    let user = JSON.parse(localStorage.getItem('user_details'));
+    this.chats.getChatUsersList(user.id).subscribe((res: any) => {
+     // alert(res)
+     localStorage.setItem('chat_lists', JSON.stringify(res));
+    }, err => {
+    });
+  }
+
   chooseOption(page) {
     if (page == 'Logout') {
       localStorage.removeItem('token');
@@ -159,7 +168,7 @@ export class AppComponent {
       // this.utility.showMessageAlert("Logout","You have been logout");
       this.router.navigate(["login"])
     }
-    if (page == 'Book OPD Consulation') {
+    if (page == 'Book OPD Consultation') {
 
       let navigationExtras: NavigationExtras = {
         state: {
@@ -169,7 +178,7 @@ export class AppComponent {
       this.router.navigate(['/select-location'], navigationExtras);
 
     }
-    if (page == 'Book Video Consulation') {
+    if (page == 'Book Video Consultation') {
 
       let navigationExtras: NavigationExtras = {
         state: {
@@ -178,15 +187,22 @@ export class AppComponent {
       };
       this.router.navigate(['/select-location'], navigationExtras);
 
+    }
+    if (page == 'Chat with Doctor') {
+      if (this.utility.chat_payment_status == 1) {
+        this.router.navigateByUrl('/chat-lists')
+      } else {
+        this.router.navigateByUrl('/chat-with-doctor');
+      }
     }
   }
 
   pushNotification() {
     const options: PushOptions = {
       android: {
-       // badge:true,
-        sound:true,
-        vibrate:true
+        // badge:true,
+        sound: true,
+        vibrate: true
       },
       ios: {
         alert: 'true',
@@ -202,7 +218,6 @@ export class AppComponent {
     const pushObject: PushObject = this.push.init(options);
 
     pushObject.on('notification').subscribe((notification: any) => {
-      console.log('Received a notification', notification); 
       this.badge.set(1);
       // cordova.plugins.CordovaCall.setVideo(true);
       // cordova.plugins.CordovaCall.receiveCall('David Marcus');
@@ -228,17 +243,24 @@ export class AppComponent {
           title: notification.title,
           text: notification.message
         });
-        
-        this.utility.showMessageAlert(notification.title,notification.message)
+
+        this.utility.showMessageAlert(notification.title, notification.message)
         this.utility.publishEvent({
           'call:ended': notification.title
+        });
+      }
+
+       if (notification.additionalData['notification_type'] == 'chat') {
+        this.localNotifications.schedule({
+          id: 1,
+          title: notification.title,
+          text: notification.message
         });
        }
 
     });
 
     pushObject.on('registration').subscribe((registration: any) => {
-      console.log('Device registered', registration);
       this.utility.device_token = registration.registrationId;
 
     });

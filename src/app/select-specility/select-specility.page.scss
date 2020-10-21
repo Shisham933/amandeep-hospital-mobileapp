@@ -20,3 +20,29 @@ ion-icon{
         font-size:12px;
     }
 }
+ion-searchbar ion-icon {
+    right: 16px !important;
+    left: auto !important;
+  }
+  .searchbar-input-container.sc-ion-searchbar-ios {
+    height: 36px;
+    border: 2px solid #3C3737;
+    border-radius: 10px;
+}
+.searchbar-left-aligned.sc-ion-searchbar-ios-h .searchbar-input.sc-ion-searchbar-ios {
+    padding-left: unset;
+    -webkit-padding-start: 30px;
+    padding-inline-start: 30px;
+    background: white;
+    font-size: 12px;
+
+}
+.searchbar-left-aligned.sc-ion-searchbar-ios-h .searchbar-search-icon.sc-ion-searchbar-ios {
+    margin-left: unset;
+    -webkit-margin-start: 0;
+    margin-inline-start: 0;
+    color: #3C3737;
+}
+.searchbar-clear-icon {
+    display: none !important;
+}

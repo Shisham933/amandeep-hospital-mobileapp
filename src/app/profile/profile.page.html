@@ -16,7 +16,7 @@
 <ion-content>
   <ion-row class="profile-img">
     <ion-col size="12">
-      <img src="{{image}}" />
+      <img src="{{utility.user_profile}}" />
     </ion-col>
     <ion-col size="12">
       <ion-label>{{name}}</ion-label>
@@ -65,13 +65,14 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col size="4" class="header-values" style="margin-left: 25px;">
+      <ion-col size="4" class="header-values">
         <ion-label class="title">Mobile Number</ion-label>
         <p class="value" style="white-space: nowrap;">+91 {{mobile_no}}</p>
       </ion-col>
       <ion-col size="4" class="header-values">
-        <ion-label class="title">Emergency Number</ion-label>
-        <p class="value" style="white-space: nowrap;">+91 {{emergency_number}}</p>
+        <ion-label class="title" style="white-space: normal;">Emergency Number</ion-label>
+        <p class="value" style="white-space: nowrap;" *ngIf="emergency_number == 'NA'">{{emergency_number}}</p>
+        <p class="value" style="white-space: nowrap;" *ngIf="emergency_number!= 'NA'">+91 {{emergency_number}}</p>
       </ion-col>
     </ion-row>
   </div>

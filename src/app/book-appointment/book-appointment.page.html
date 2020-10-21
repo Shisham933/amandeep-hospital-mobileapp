@@ -13,7 +13,8 @@
   <ion-list lines="none">
     <ion-item class="lower-bottom" *ngFor="let d of doctors" (click)="bookAppointment(d)">
       <ion-avatar slot="start">
-        <img src="assets/imgs/no-img.png">
+        <img src="assets/imgs/no-profile.png" *ngIf="d.profile_picture == null">
+        <img src="{{d.profile_picture}}" *ngIf="d.profile_picture != null">
       </ion-avatar>
       <ion-label>
         <h2 class="doctor-name">Dr. {{d.firstname}} {{d.lastname}} </h2>

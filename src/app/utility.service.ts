@@ -9,6 +9,8 @@ import { Subject } from 'rxjs';
 export class UtilityService {
   loading: any;
   locations: any = [];
+  all_doctors : any = [];
+  chat_payment_status : any; 
   user: any;
   user_profile: any;
   image: any;

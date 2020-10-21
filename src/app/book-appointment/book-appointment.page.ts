@@ -21,6 +21,7 @@ export class BookAppointmentPage implements OnInit {
     constructor(private statusBar: StatusBar,private route: ActivatedRoute,private location: Location, private router: Router, private http: HttpService, private utility: UtilityService) {
       this.statusBar.backgroundColorByHexString('#ffffff'); 
       this.route.queryParams.subscribe((params) => {
+        debugger
             this.location_id = this.router.getCurrentNavigation().extras.state.location_id;
             this.location_name = this.router.getCurrentNavigation().extras.state.location_name;
             this.helpline_number = this.router.getCurrentNavigation().extras.state.helpline_number;
@@ -65,7 +66,7 @@ export class BookAppointmentPage implements OnInit {
       this.http.getDoctorsLocationwise('getDoctors/location/'+ this.location_id + '/speciality/' + this.speciality_id,{}).subscribe(
         (res: any) => {
           if (res.success) {
-            this.utility.hideLoading();
+           this.utility.hideLoading();
             this.doctors = res.data;
             if(  this.doctors.length == 0){
               this.utility.showMessageAlert("No Doctors!","There is no doctor available for this specialty yet.")

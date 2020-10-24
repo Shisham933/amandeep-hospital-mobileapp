@@ -1,5 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
+import { ModalController, AlertController } from "@ionic/angular";
+import { Stripe } from '@ionic-native/stripe/ngx';
 import { HttpService } from '../http.service';
+import { UtilityService } from '../utility.service';
 
 @Component({
   selector: 'app-card-payment',
@@ -7,26 +11,126 @@ import { HttpService } from '../http.service';
   styleUrls: ['./card-payment.page.scss'],
 })
 export class CardPaymentPage implements OnInit {
+  private data: any;
+  public name: string;
+  public number;
+  public cvv;
+  public expiry_date;
 
-  constructor(private http:HttpService) { }
+  constructor(private modalCtrl: ModalController, private route: ActivatedRoute, private stripe: Stripe, private router: Router,
+    private http: HttpService, private utility: UtilityService) {
+    this.data = JSON.parse(localStorage.getItem('confirm-appointment'));
+  }
 
   ngOnInit() {
   }
-  
+
   selectCurrentDate() {
     let d = new Date();
-    console.log(d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate())
     return new Date(new Date().setFullYear(new Date().getFullYear())).toISOString();
   }
-  
-  payNow(){
-    let card = {
-      number: '4242424242424242',
-      expMonth: 12,
-      expYear: 2020,
-      cvc: '220'
-     }
-     this.http.makePayement(card);
+
+  payNow() {
+    if (this.name == undefined || this.number == undefined || this.cvv == undefined || this.expiry_date == undefined) {
+      this.utility.showMessageAlert('Missing Fields!', "Some of the fields are missing")
+    }
+    //  else if (this.number.length < 16 || this.number.length > 16) {
+    //   this.utility.showMessageAlert('Invalid card!', "Your card is not valid for payments.")
+    // } 
+    else {
+      this.utility.showLoading();
+      let card = {
+        number: '4242424242424242',
+        expMonth: 12,
+        expYear: 2020,
+        cvc: '220'
+      }
+      this.stripe.setPublishableKey('pk_test_51HY4PWGxS7HD5LRgl5KhFtxE52opZIcvtAbE5qqeoo2rt5kQJxiIUJ9tsStai5yNldou1fjEROeYQNlzQ8BUrPi400W1MBjnEa');
+      this.stripe.createCardToken(card)
+        .then(token => {
+          if (this.data.type == 'OPD') {
+            let params = {
+              "speciality_id": this.data.speciality_id,
+              "doctor_id": this.data.doctor_id,
+              "date": this.data.date,
+              "location_id": this.data.location_id,
+              "fee": this.data.fee,
+              "schedule_id": this.data.schedule_id,
+              "book_for": this.data.book_for,
+              "created_by": this.data.created_by,
+              "amount": this.data.amount,
+              "stripe_token": token.id,
+              "name": this.data.name,
+              "age": this.data.age,
+              "mobile_no": this.data.mobile_no
+            }
+            this.http.confirmAppointment("confirmAppointment", params).subscribe(
+              (res: any) => {
+                this.utility.hideLoading();
+                if (res.success || res.message == 'Appointment booked successfully') {
+                  this.utility.showMessageAlert("Appointment booked!", "Appointment booked successfully.");
+                  this.dismiss();
+                  this.router.navigateByUrl("/home");
+                } else if (res.success == false) {
+                  this.utility.showMessageAlert("Appointment not booked!", res.message);
+                  this.dismiss();
+                } else {
+                  this.utility.showMessageAlert("Appointment not booked!", "Plese try again.")
+                }
+              }, err => {
+                this.utility.hideLoading();
+                this.utility.showMessageAlert("Network error!", "Please check your network connection.")
+              })
+
+          }
+
+          else {
+            let params = {
+              "speciality_id": this.data.speciality_id,
+              "doctor_id": this.data.doctor_id,
+              "date": this.data.date,
+              "location_id": this.data.location_id,
+              "fee": this.data.fee,
+              "schedule_id": this.data.schedule_id,
+              "book_for": this.data.book_for,
+              "created_by": this.data.created_by,
+              "amount": this.data.amount,
+              "stripe_token": token.id,
+              "name": this.data.name,
+              "age": this.data.age,
+              "mobile_no": this.data.mobile_no
+            }
+            this.http.confirmAppointment("confirmVideoAppointment", params).subscribe(
+              (res: any) => {
+                this.utility.hideLoading();
+                if (res.success || res.message == 'Appointment booked successfully') {
+                  this.utility.showMessageAlert("Appointment booked successfully!", "You will also get notified before call.");
+                  this.dismiss();
+                  this.router.navigateByUrl("/home");
+                } else if (res.success == false) {
+                  this.utility.showMessageAlert("Appointment not booked!", res.message);
+                  this.dismiss();
+                } else {
+                  this.utility.showMessageAlert("Appointment not booked!", "Plese try again.")
+                }
+
+              }, err => {
+                this.utility.hideLoading();
+                this.utility.showMessageAlert("Network error!", "Please check your network connection.")
+              })
+          }
+        })
+        .catch(error => {
+          console.error(error)
+        });
+    }
+
+  }
+
+  dismiss() {
+    this.modalCtrl.dismiss({
+      'dismissed': true
+    });
   }
 
 }

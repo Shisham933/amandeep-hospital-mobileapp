@@ -264,6 +264,10 @@ ion-card-content{
     font-weight: 100;
     }
 }
+ion-checkbox{
+    width: 20px;
+    height: 20px;
+}
 .pay-now{
     background: red;
     font-weight: bold;
@@ -354,4 +358,9 @@ ion-select {
 ion-icon{
     color: #3C3737;
     
+}
+.relative_name{
+    text-transform: capitalize;
+    font-size: 14px;
+    font-family: sans-serif;
 }

@@ -21,7 +21,6 @@ export class BookAppointmentPage implements OnInit {
     constructor(private statusBar: StatusBar,private route: ActivatedRoute,private location: Location, private router: Router, private http: HttpService, private utility: UtilityService) {
       this.statusBar.backgroundColorByHexString('#ffffff'); 
       this.route.queryParams.subscribe((params) => {
-        debugger
             this.location_id = this.router.getCurrentNavigation().extras.state.location_id;
             this.location_name = this.router.getCurrentNavigation().extras.state.location_name;
             this.helpline_number = this.router.getCurrentNavigation().extras.state.helpline_number;

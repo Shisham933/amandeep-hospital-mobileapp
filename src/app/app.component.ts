@@ -43,11 +43,11 @@ export class AppComponent {
       url: "",
       icon: "chatbox-ellipses-outline",
     },
-    {
-      title: "Ask a Query",
-      url: "/query",
-      icon: "help",
-    },
+    // {
+    //   title: "Ask a Query",
+    //   url: "/query",
+    //   icon: "help",
+    // },
     {
       title: "Videos",
       url: "/videos",
@@ -148,7 +148,7 @@ export class AppComponent {
         this.router.navigate(["login"])
         //this.http.getLocations("allLocations");
       }
-       
+      
     });
   }
 
@@ -194,6 +194,7 @@ export class AppComponent {
       } else {
         this.router.navigateByUrl('/chat-with-doctor');
       }
+      //this.utility.showMessageAlert("Work in progress","Discussion reuqired")
     }
   }
 
@@ -235,9 +236,7 @@ export class AppComponent {
           },
         };
         this.router.navigateByUrl('/video-call-appointment', navigationExtras)
-      }
-
-      if (notification.additionalData['notification_type'] == 'end_call') {
+      }else if (notification.additionalData['notification_type'] == 'end_call') {
         this.localNotifications.schedule({
           id: 1,
           title: notification.title,
@@ -248,14 +247,19 @@ export class AppComponent {
         this.utility.publishEvent({
           'call:ended': notification.title
         });
-      }
-
-       if (notification.additionalData['notification_type'] == 'chat') {
+      }else if (notification.additionalData['notification_type'] == 'chat') {
         this.localNotifications.schedule({
           id: 1,
           title: notification.title,
           text: notification.message
         });
+       }else{
+        this.localNotifications.schedule({
+          id: 1,
+          title: notification.title,
+          text: notification.message
+        });
+        this.utility.showMessageAlert( notification.title, notification.message);
        }
 
     });

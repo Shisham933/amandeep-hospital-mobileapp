@@ -26,7 +26,8 @@ export class SelectTimeslotPage implements OnInit {
   doctor_id: any;
   last_selected_time: any;
   last_parentIndex: any;
-  last_slot_index: any;
+  last_slot_index : any;
+  available_slots = 0;
   time_range: any = [{
     title: "Morning 6 AM to 12 Noon",
     showslots: false,
@@ -82,12 +83,49 @@ export class SelectTimeslotPage implements OnInit {
         book_type: this.book_type
       },
     };
-    debugger
     this.router.navigate(['/book-appointment'], navigationExtras);
+  }
+  
+  checkAvailibitityTimeslots(parentindex,childindex){
+    let user = JSON.parse(localStorage.getItem('user_details'));
+    let params = {
+      "type": this.book_type == 'OPD' ? this.book_type : 'video',
+      "date": this.choose_date.getFullYear() + '-' + (this.choose_date.getMonth() + 1) + '-' + this.choose_date.getDate(),
+      "schedule_id":this.choose_scheduleID,
+      "user_id": user.id
+    }
+     this.http.checkAvailibitityTimeslots('getSlotBookings', params).subscribe(
+      (res: any) => {
+        console.log(res)
+        if (res.success) {
+        
+         if(res.data.bookedAppointments == res.data.maxAppointments && !res.data.slot_booked_by_me){
+           this.utility.showMessageAlert("No Slot available!","Please choose another slot. All appointments are booked for this slot.");
+           this.time_range[parentindex].time_slots[childindex]['is_time_selected'] = true;
+           this.choose_scheduleID = undefined;
+           this.choose_time = undefined;
+          }else if(res.data.bookedAppointments == 0 && !res.data.slot_booked_by_me){
+            this.available_slots = res.data.maxAppointments;
+          }else if(res.data.bookedAppointments > 0 && !res.data.slot_booked_by_me){
+            this.available_slots = res.data.maxAppointments - res.data.bookedAppointments;
+          }else if(res.data.slot_booked_by_me){
+            this.utility.showMessageAlert("Slot already booked by you!","You  already have appointment for this slot.");
+           this.time_range[parentindex].time_slots[childindex]['is_time_selected'] = true;
+           this.choose_scheduleID = undefined;
+           this.choose_time = undefined;
+          }
+        }else{
+          //this.utility.hideLoading();
+          this.utility.showMessageAlert("No schedules!", res.message)
+        }
+      }, err => {
+        this.utility.showMessageAlert("Network error!", "Please check your network connection.")
+      })
   }
 
   onChange(val) {
     let date = val._d;
+    this.available_slots = 0;
     this.choose_date = date;
     var day = date.getDay();
     if (day == 1) {
@@ -396,23 +434,25 @@ export class SelectTimeslotPage implements OnInit {
 
   chooseTimeslot(parentindex, childindex, time) {
     // debugger
+    this.available_slots = 0;
     if (this.last_selected_time == undefined) {
       this.choose_scheduleID = time.id;
       this.choose_time = time.time_slots;
       this.time_range[parentindex].time_slots[childindex]['is_time_selected'] = true;
       this.last_selected_time = childindex;
       this.last_parentIndex = parentindex;
+      this.checkAvailibitityTimeslots(parentindex,childindex);
     } else {
       this.choose_scheduleID = time.id;
       this.choose_time = time.time_slots;
+      this.checkAvailibitityTimeslots(parentindex,childindex);
       if (this.last_parentIndex == parentindex && this.last_selected_time == childindex) {
 
       } else {
         this.time_range[parentindex].time_slots[childindex]['is_time_selected'] = true;
       }
       if (this.last_parentIndex != parentindex && this.last_selected_time != childindex) {
-        // this.time_range[this.last_parentIndex].time_slots[this.last_selected_time]['is_time_selected'] = false;
-        if (this.time_range[this.last_parentIndex].time_slots[this.last_selected_time]['is_time_selected']) {
+         if (this.time_range[this.last_parentIndex].time_slots[this.last_selected_time]['is_time_selected']) {
           this.time_range[this.last_parentIndex].time_slots[this.last_selected_time]['is_time_selected'] = false;
         } else {
           this.time_range[this.last_parentIndex].time_slots[this.last_selected_time]['is_time_selected'] = true;

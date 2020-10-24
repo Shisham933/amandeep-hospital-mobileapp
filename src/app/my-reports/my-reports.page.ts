@@ -54,11 +54,9 @@ export class MyReportsPage implements OnInit {
 
 
   downloadReport(uri){
-    console.log(uri)
-    console.log(uri.split('/')[1])
     var request: DownloadRequest = {
       uri: uri,
-      title: 'Amandeep Hospital Reports',
+      title: this.utility.user.user_name + new Date().getTime(),
       description: '',
       mimeType: '',
       visibleInDownloadsUi: true,

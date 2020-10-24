@@ -38,3 +38,24 @@ p{
         margin-left: -10px;
     }
 }
+.pending{
+    float: right;
+    background: green;
+    color: white;
+    padding: 3px;
+    border-radius: 5px;
+}
+.completed{
+    float: right;
+    background: #363A61;
+    color: white;
+    padding: 3px;
+    border-radius: 5px;
+}
+.cancel{
+    float: right;
+    background: red;
+    color: white;
+    padding: 3px;
+    border-radius: 5px;
+}

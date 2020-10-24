@@ -25,6 +25,9 @@
         </p>
         <p style="margin-top: 10px;">{{a.time_slots}}, {{a.date | date : 'mediumDate'}}</p>
         <p style="margin-top: 10px;">{{a.location_name}}{{a.address}}</p>
+        <p class="pending" *ngIf="a.appointment_status == 1">Pending</p>
+        <p class="completed" *ngIf="a.appointment_status == 2">Completed</p>
+        <p class="cancel" *ngIf="a.appointment_status == 0">Cancelled</p>
       </ion-label>
     </ion-item>
 

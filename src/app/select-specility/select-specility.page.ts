@@ -35,7 +35,6 @@ export class SelectSpecilityPage implements OnInit {
   getSpeciality() {
     this.http.getSpeciality("getSpecialities/location/" + this.location_id).subscribe(
       (res: any) => {
-        console.log(res);
         if (res.success) {
           this.specialities = res.data;
           this.searchArray = this.specialities;

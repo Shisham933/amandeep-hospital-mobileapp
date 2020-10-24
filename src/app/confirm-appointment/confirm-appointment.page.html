@@ -62,7 +62,7 @@
         <ion-col size="12">
             <ion-label class="book-for">Booking For</ion-label><br><br>
             <ion-list class="booking-for">
-                <ion-item *ngFor="let b of booking_options; let i = index" (click)="chooseBookingOption(b.title,i)">
+                <ion-item lines="none" *ngFor="let b of booking_options; let i = index" (click)="chooseBookingOption(b.title,i)">
                     <ion-label>{{b.title}}</ion-label>
                     <ion-checkbox style="--background-checked: #363A61;--border-color-checked: #363A61;" slot="end"
                         [(ngModel)]="b.isChecked">
@@ -72,17 +72,30 @@
 
             <ion-card *ngIf="show_patient_details">
                 <ion-card-header>
-                    <ion-card-subtitle>My Details</ion-card-subtitle>
-                    <!-- <ion-card-title>Card Title</ion-card-title> -->
+                    <ion-card-subtitle>Patient Details</ion-card-subtitle>
                 </ion-card-header>
                 <ion-card-content>
                     <ion-label>Name: {{user.user_name}} {{user.name}}</ion-label><br>
                     <ion-label>Mobile: +91 {{user.phone_number}} {{user.mobile_no}}</ion-label><br>
-                    <!-- <ion-label>Email Id: {{user.email}}</ion-label> -->
                 </ion-card-content>
+            </ion-card>
+            <ion-card *ngIf="registered_patients?.length > 0 && book_for == 'relative' && show_registered_patients">
+                <ion-card-header>
+                    <ion-card-subtitle>Registered Patients</ion-card-subtitle>
+                </ion-card-header>
+                <ion-item lines="none" *ngFor="let p of registered_patients; let i = index" (click)="choosePatient(p,i)" style="margin-top: -10px;">
+                    <ion-label class="relative_name">{{p.name}}</ion-label>
+                    <ion-checkbox style="--background-checked: #363A61;--border-color-checked: #363A61;" slot="end"
+                        [(ngModel)]="p.isChecked">
+                    </ion-checkbox>
+                </ion-item>
             </ion-card>
             <ng-container *ngIf="show_patient_form">
                 <ion-card>
+                    <ion-card-header>
+                        <ion-card-subtitle>Add New Patient</ion-card-subtitle>
+                    </ion-card-header>
+
                     <ion-row class="header-title">
                         <ion-col size="12" class="phone-number">
                             <ion-label>Name</ion-label>
@@ -110,7 +123,7 @@
                         </ion-col>
                         <ion-col size="6" style="margin-left: -12px;">
                             <!-- <ion-input placeholder="Contact Number"  (keypress)="numberOnlyValidation($event)" type="text" inputmode="numeric" maxlength="10"  [(ngModel)]="mobile_no"></ion-input>
-                     -->
+                         -->
                             <ng-numeric-input [layout]="'tel'" [entertext]="''" [placeholder]="'Contact Number'"
                                 [disabled]="false" [(ngModel)]="mobile_no" [maxlength]="10">
                             </ng-numeric-input>
@@ -133,12 +146,14 @@
                         </ion-col>
                     </ion-row>
                     <ion-row style="padding:40px">
-                        <ion-col>
-                            <ion-button style="--background:linear-gradient(to right, #C23F3A , #E80C0A);--padding-bottom: 25px;
-                      --padding-top: 25px;--background-activated:#E80C0A" shape="round" expand="full"
-                                (click)="addPatient()" class="ion-activatable ripple-parent">Add Patient</ion-button>
-                        </ion-col>
+                        <!-- <ion-col>
+                                <ion-button style="--background:linear-gradient(to right, #C23F3A , #E80C0A);--padding-bottom: 25px;
+                          --padding-top: 25px;--background-activated:#E80C0A" shape="round" expand="full"
+                                    (click)="addPatient()" class="ion-activatable ripple-parent">Add Patient</ion-button>
+                            </ion-col> -->
                     </ion-row>
+
+
                 </ion-card>
             </ng-container>
         </ion-col>
@@ -148,7 +163,7 @@
 <ion-footer class="ion-no-border time-slot">
     <ion-toolbar>
         <ion-button ion-button color="danger" class="pay-now" (click)="confirmAppointment()" style="width: 93%;">
-            BOOk NOW
+            PAY NOW
         </ion-button>
     </ion-toolbar>
 

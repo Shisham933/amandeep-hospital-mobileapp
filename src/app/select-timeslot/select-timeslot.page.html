@@ -46,13 +46,14 @@
             <ion-row *ngFor="let s of t.time_slots;let i = index">
                 <ion-col size="3" *ngIf="s.is_time_selected" class="choose-time" (click)="chooseTimeslot(z,i,s)">
                     <ion-label>{{s.time_slots}}</ion-label>
-                </ion-col>&nbsp;
+                   </ion-col>&nbsp;
                 <ion-col size="3" *ngIf="!s.is_time_selected" class="other-time" (click)="chooseTimeslot(z,i,s)">
                     <ion-label>{{s.time_slots}}</ion-label>
                 </ion-col>&nbsp;
             </ion-row>
             <h6 *ngIf="t.time_slots.length == 0" style="text-align: center;">No slots available</h6>
-        </ng-container>
+            <p class="available-slots" *ngIf="available_slots != 0">Available Slots {{available_slots}}</p>
+            </ng-container>
  
     </ion-list>
 </ion-content>

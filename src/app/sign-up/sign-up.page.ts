@@ -22,10 +22,10 @@ export class SignUpPage implements OnInit {
     constructor(private statusBar: StatusBar,private location: Location, private router: Router, private route: ActivatedRoute, private http: HttpService, private utility: UtilityService) {
         this.statusBar.backgroundColorByHexString('#ffffff');
         this.codes = codes;
-        this.route.queryParams.subscribe((params) => {
-            this.user_id = this.router.getCurrentNavigation().extras.state.user_id;
-            this.mobile_no = this.router.getCurrentNavigation().extras.state.mobile_no;
-        });
+        // this.route.queryParams.subscribe((params) => {
+        //     this.user_id = this.router.getCurrentNavigation().extras.state.user_id;
+        //     this.mobile_no = this.router.getCurrentNavigation().extras.state.mobile_no;
+        // });
 
     }
 
@@ -55,7 +55,7 @@ export class SignUpPage implements OnInit {
         } else {
             this.utility.showLoading();
             let params = {
-                user_id: this.user_id,
+                mobile:this.mobile_no,
                 name: this.name,
                 email: this.email_id,
                 password: this.password,

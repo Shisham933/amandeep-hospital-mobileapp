@@ -125,6 +125,10 @@ const routes: Routes = [
     path: 'card-payment',
     loadChildren: () => import('./card-payment/card-payment.module').then( m => m.CardPaymentPageModule)
   },
+  {
+    path: 'contact-us',
+    loadChildren: () => import('./contact-us/contact-us.module').then( m => m.ContactUsPageModule)
+  },
 ];
 
 @NgModule({

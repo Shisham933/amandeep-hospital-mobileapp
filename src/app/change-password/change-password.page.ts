@@ -18,7 +18,13 @@ export class ChangePasswordPage implements OnInit {
     constructor(private statusBar: StatusBar,private router: Router, private route: ActivatedRoute, private location: Location, private http: HttpService, private utility: UtilityService) {
         this.statusBar.backgroundColorByHexString('#ffffff'); 
         this.route.queryParams.subscribe((params) => {
-            this.user_id = this.router.getCurrentNavigation().extras.state.user_id;
+            if(this.router.getCurrentNavigation().extras.state != undefined){
+                this.user_id = this.router.getCurrentNavigation().extras.state.user_id;
+            }else{
+                let user = JSON.parse(localStorage.getItem('user_details'));
+                this.user_id = user.id
+            }
+           
         });
     }
 

@@ -30,6 +30,7 @@
     "@ionic-native/core": "^5.0.0",
     "@ionic-native/crop": "^5.28.0",
     "@ionic-native/downloader": "^5.28.0",
+    "@ionic-native/facebook": "^5.29.0",
     "@ionic-native/file": "^5.28.0",
     "@ionic-native/file-chooser": "^5.28.0",
     "@ionic-native/file-path": "^5.28.0",
@@ -53,6 +54,7 @@
     "angular-agora-rtc": "^0.1.0",
     "angularfire2": "^5.4.2",
     "aws-sdk": "^2.754.0",
+    "cordova-android": "9.0.0",
     "cordova-common": "^4.0.2",
     "country-calling-code": "0.0.3",
     "firebase": "^7.23.0",
@@ -88,13 +90,13 @@
     "com-badrit-base64": "^0.2.0",
     "cordova-plugin-actionsheet": "^2.3.3",
     "cordova-plugin-android-permissions": "^1.1.0",
-    "cordova-plugin-background-fetch": "^6.1.1",
     "cordova-plugin-background-mode": "^0.7.3",
     "cordova-plugin-badge": "^0.8.8",
     "cordova-plugin-camera": "^4.1.0",
     "cordova-plugin-crop": "^0.4.0",
     "cordova-plugin-device": "^2.0.2",
     "cordova-plugin-dialogs": "^2.0.2",
+    "cordova-plugin-facebook4": "^6.4.0",
     "cordova-plugin-file": "^6.0.2",
     "cordova-plugin-file-transfer": "^1.7.1",
     "cordova-plugin-filechooser": "^1.2.0",
@@ -170,6 +172,7 @@
       "cordova-plugin-android-permissions": {},
       "cordova-plugin-badge": {},
       "cordova-plugin-stripe": {}
+     
     },
     "platforms": [
       "android"

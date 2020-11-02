@@ -20,33 +20,40 @@
   <ion-row>
     <ion-col size="12"></ion-col>
   </ion-row>
-  <ion-row>
+  <!-- <ion-row>
     <ion-col size="12" class="phone-number">
       <ion-label>Phone Number</ion-label>
     </ion-col>
-  </ion-row>
+  </ion-row> -->
   <ion-row class="lower-bottom">
-    <!-- <ion-col size="1" class="phone-number call-icon">
-      <ion-icon name="call-outline"></ion-icon>
-    </ion-col>
-    <ion-col size="2">
-       <ion-select placeholder="" value="91" interface="popover" class="dial-code" appNoArrow>
-        <ion-select-option value="{{c.countryCodes[0]}}" *ngFor="let c of codes">+{{c.countryCodes[0]}}
-        </ion-select-option>
-      </ion-select> 
-      
-    </ion-col> -->
     <ion-col size="1" class="phone-number call-icon">
       <ion-icon name="call-outline" style="font-size: 15px;"></ion-icon>
     </ion-col>
     <ion-col size="2" class="dial-code">
       <ion-label>+91</ion-label>
     </ion-col>
-    <ion-col size="6" style="margin-left: -17px;">
-      <ion-input  [maxlength]="10" type="tel" pattern="^[0-9]*$" placeholder="Contact Number" style="--padding-top: 4px;" [(ngModel)]="mobile_no"></ion-input>
-
+    <ion-col size="6" style="margin-left: -30px;">
+      <ion-input [maxlength]="10" type="tel" pattern="^[0-9]*$" placeholder="Contact Number" style="--padding-top: 4px;"
+        [(ngModel)]="mobile_no"></ion-input>
     </ion-col>
   </ion-row>
+  <ion-row class="lower-bottom" style="margin-top: 10px;">
+    <ion-col size="1" class="phone-number call-icon">
+      <ion-icon name="lock-closed-outline" style="font-size: 15px;"></ion-icon>
+    </ion-col>
+    <ion-col size="6">
+      <ion-input type="password" placeholder="Enter Password" style="--padding-top: 7px;"
+        [(ngModel)]="password"></ion-input>
+    </ion-col>
+  </ion-row>
+  <!-- <ion-row class="lower-bottom">
+    <ion-col size="12">
+      <ion-item  lines="none" style="margin-top: -8px;">
+         <ion-input type="password" placeholder='Enter Password' class="lock" [(ngModel)]="password"></ion-input>
+        <ion-icon name="lock-closed-outline" slot="start" class="lock" style="margin-left: -20px;"></ion-icon>
+      </ion-item>
+    </ion-col>
+  </ion-row> -->
   <ion-row style="margin-top: 40px;">
     <ion-col>
       <ion-button style="--background:linear-gradient(to right, #C23F3A , #E80C0A);--padding-bottom: 25px;
@@ -56,13 +63,36 @@
         class="ion-activatable ripple-parent">Continue</ion-button>
     </ion-col>
   </ion-row>
- <!--  <ion-row (click)="signup()">
+  <ion-row>
+    <ion-col size="12" class="logo-text">
+      <h6>----------&nbsp;&nbsp;OR&nbsp;&nbsp;----------</h6>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col>
+      <ion-button style="--background:#3b5998;--padding-bottom: 25px;
+      --padding-top: 25px;--background-activated:#3b5998;--background-activated:#3b5998;
+        --background-hover:#3b5998;
+        --background-focused:#3b5998;" shape="round" expand="full" (click)="facebookLogin()"
+        class="ion-activatable ripple-parent"><ion-icon name="logo-facebook"></ion-icon> &nbsp;Login with Facebook</ion-button>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col>
+      <ion-button style="--background:#db4a39;--padding-bottom: 25px;
+      --padding-top: 25px;--background-activated:#db4a39;--background-activated:#db4a39;
+        --background-hover:#db4a39;
+        --background-focused:#db4a39;" shape="round" expand="full" (click)="login()"
+        class="ion-activatable ripple-parent"><ion-icon name="logo-google"></ion-icon> &nbsp;Login with Google +</ion-button>
+    </ion-col>
+  </ion-row>
+   <ion-row (click)="signup()">
     <ion-col size="12" class="footer-col sign-up-col">
       <ion-label class="sign-up">
-        Don't have an account? Sign up here
+        Don't have an account?&nbsp;&nbsp;<a>Sign up here</a> 
       </ion-label>
     </ion-col>
-  </ion-row> -->
-  
+  </ion-row>
+
 
 </ion-content>

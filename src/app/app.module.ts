@@ -35,6 +35,7 @@ import { Media, MediaObject } from '@ionic-native/media/ngx';
 import { Stripe } from '@ionic-native/stripe/ngx';
 import { FileChooser } from '@ionic-native/file-chooser/ngx';
 import { NativeAudio } from '@ionic-native/native-audio/ngx';
+import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook/ngx';
 import { Downloader } from '@ionic-native/downloader/ngx';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { AngularAgoraRtcModule, AgoraConfig } from 'angular-agora-rtc';
@@ -92,6 +93,7 @@ const agoraConfig: AgoraConfig = {
     Downloader,
     ForegroundService,
     Base64,
+    Facebook,
     Badge,
     Push,
     Media,

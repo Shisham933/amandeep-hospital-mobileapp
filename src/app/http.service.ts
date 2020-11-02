@@ -27,8 +27,6 @@ export class HttpService {
   }
 
   post(endpoint: string, body: any) {
-    console.log(endpoint);
-    console.log(body)
     return this.http.post(this.url + endpoint, body);
   }
 
@@ -194,7 +192,6 @@ export class HttpService {
   }
 
   videoCallPatient(endpoint: string, body: any) {
-    console.log(body)
     let httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -228,7 +225,6 @@ export class HttpService {
   }
 
   buyChatSubscription(endpoint: string, body: any) {
-    console.log(body)
     let httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -240,7 +236,17 @@ export class HttpService {
   }
 
   sendPushNotification(endpoint: string, body: any) {
-    console.log(body)
+    let httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Accept': '*/*',
+        'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('token'))
+      })
+    };
+    return this.http.post(this.url + endpoint, body, httpOptions);
+  }
+  
+  contactUs(endpoint: string, body: any) {
     let httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',

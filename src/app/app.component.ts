@@ -43,11 +43,11 @@ export class AppComponent {
       url: "",
       icon: "chatbox-ellipses-outline",
     },
-    // {
-    //   title: "Ask a Query",
-    //   url: "/query",
-    //   icon: "help",
-    // },
+    {
+      title: "Ask a Query",
+      url: "/query",
+      icon: "help",
+    },
     {
       title: "Videos",
       url: "/videos",
@@ -74,13 +74,18 @@ export class AppComponent {
       icon: "person-outline",
     },
     {
+      title: "Change Password",
+      url: "/change-password",
+      icon: "lock-closed-outline",
+    },
+    {
       title: "About Us",
       url: "/about",
       icon: "help",
     },
     {
       title: "Contact Us",
-      url: "/contact",
+      url: "/contact-us",
       icon: "call"
     },
     {

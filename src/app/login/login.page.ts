@@ -3,6 +3,7 @@ import { Router, NavigationExtras } from '@angular/router';
 import codes from 'country-calling-code';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook/ngx';
+import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { HttpService } from '../http.service';
 import { UtilityService } from '../utility.service';
@@ -16,7 +17,7 @@ export class LoginPage implements OnInit {
     public dial_code;
     public mobile_no;
     public password;
-    constructor(private statusBar: StatusBar, private fb: Facebook, private afAuth: AngularFireAuth, private router: Router, private http: HttpService, private utility: UtilityService) {
+    constructor(private statusBar: StatusBar, private googlePlus: GooglePlus, private fb: Facebook, private afAuth: AngularFireAuth, private router: Router, private http: HttpService, private utility: UtilityService) {
         this.statusBar.backgroundColorByHexString('#ffffff');
         this.codes = codes;
     }
@@ -205,10 +206,59 @@ export class LoginPage implements OnInit {
     }
 
     facebookLogin() {
-        this.fb.login(['public_profile', 'user_friends', 'email'])
+        this.fb.login(['public_profile', 'email'])
             .then((res: FacebookLoginResponse) => console.log('Logged into Facebook!', res))
             .catch(e => console.log('Error logging into Facebook', e));
 
+    }
+
+    googlePlusLogin() {
+
+        this.googlePlus.login({
+            'scopes': '', // optional, space-separated list of scopes, If not included or empty, defaults to `profile` and `email`.
+            'webClientId': '334231413507-niuqt6qqoptmank5jsmkqck901logsk9.apps.googleusercontent.com', // optional clientId of your Web application from Credentials settings of your project - On Android, this MUST be included to get an idToken. On iOS, it is not required.
+            'offline': true
+        })
+            .then(res => {
+                console.log(res);
+                this.utility.showLoading();
+
+                let params = {
+                    social_id: res.userId,
+                    type: 3,
+                    user_name: res.displayName,
+                    email: res.email,
+                    profile_photo: res.imageUrl,
+                    device_token: this.utility.device_token == undefined ? 'devicetoken' : this.utility.device_token,
+                    device_type: this.utility.device_type == undefined ? 'devicetype' : this.utility.device_type
+                }
+
+                this.http.socialLogin('socialLogin', params).subscribe((res: any) => {
+                    console.log(res)
+                    this.utility.hideLoading();
+                    if (res.success == true) {
+                        this.utility.showMessageAlert("Welcome " + res.data['user'].user_name + '!', "We are hoping to provide you the best.");
+                        this.utility.user = res.data['user'];
+                        if (this.utility.user.profile_photo != null) {
+                            this.utility.image = this.utility.user.profile_photo;
+                        } else {
+                            this.utility.image = "assets/imgs/no-profile.png";
+                        }
+                        localStorage.setItem('user_details', JSON.stringify(res.data['user']));
+                        localStorage.setItem('token', JSON.stringify(res.data['token']))
+                        this.router.navigateByUrl("/home");
+                    } else {
+                        this.utility.showMessageAlert("Error", res.message);
+                    }
+                }, err => {
+                    this.utility.hideLoading();
+                })
+            })
+            .catch(err => {
+                console.error(err);
+                this.utility.showMessageAlert("Google login error", "Please try again.");
+
+            });
     }
 
     signup() {

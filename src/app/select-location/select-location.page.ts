@@ -23,7 +23,7 @@ export class SelectLocationPage implements OnInit {
       this.book_type = this.router.getCurrentNavigation().extras.state.book_type;
     });
   }
-
+ 
   ngOnInit() {
     if(this.utility.locations.length == 0){
       this.getLocations();
@@ -65,6 +65,9 @@ export class SelectLocationPage implements OnInit {
     if (this.choose_locationID == undefined) {
       this.utility.showMessageAlert("Location required!", "Please select location");
     } else {
+      localStorage.setItem('location_id',this.choose_locationID);
+      localStorage.setItem('location_name',this.location_name);
+      localStorage.setItem('helpline_number',this.helpline_number);
       let navigationExtras: NavigationExtras = {
         state: {
           location_id: this.choose_locationID,

@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
+import { ActionSheetController } from "@ionic/angular";
 import { Push, PushObject, PushOptions } from '@ionic-native/push/ngx';
 import { Badge } from '@ionic-native/badge/ngx';
 import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 import { ChatsService } from './chats.service';
@@ -89,6 +91,11 @@ export class AppComponent {
       icon: "call"
     },
     {
+      title: "Share via",
+      url: "",
+      icon: "share-social-outline"
+    },
+    {
       title: "Logout",
       url: "/login",
       icon: "log-in-outline",
@@ -98,11 +105,13 @@ export class AppComponent {
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
+    private actionSheetController: ActionSheetController,
     private router: Router,
     private push: Push,
     private badge: Badge,
     private androidPermissions: AndroidPermissions,
     private backgroundMode: BackgroundMode,
+    private socialSharing: SocialSharing,
     public localNotifications: LocalNotifications,
     private http: HttpService,
     private chats: ChatsService,
@@ -153,15 +162,15 @@ export class AppComponent {
         this.router.navigate(["login"])
         //this.http.getLocations("allLocations");
       }
-      
+
     });
   }
 
-  getChats(){
+  getChats() {
     let user = JSON.parse(localStorage.getItem('user_details'));
     this.chats.getChatUsersList(user.id).subscribe((res: any) => {
-     // alert(res)
-     localStorage.setItem('chat_lists', JSON.stringify(res));
+      // alert(res)
+      localStorage.setItem('chat_lists', JSON.stringify(res));
     }, err => {
     });
   }
@@ -174,24 +183,48 @@ export class AppComponent {
       this.router.navigate(["login"])
     }
     if (page == 'Book OPD Consultation') {
-
-      let navigationExtras: NavigationExtras = {
-        state: {
-          book_type: 'OPD'
-        },
-      };
-      this.router.navigate(['/select-location'], navigationExtras);
-
+      if (localStorage.getItem('location_id') == undefined) {
+        this.http.getLocations('allLocations');
+        let navigationExtras: NavigationExtras = {
+          state: {
+            book_type: 'OPD'
+          },
+        };
+        this.router.navigate(['/select-location'], navigationExtras);
+      } else {
+        this.http.getLocations('allLocations');
+        let navigationExtras: NavigationExtras = {
+          state: {
+            location_id: localStorage.getItem('location_id'),
+            location_name: localStorage.getItem('location_name'),
+            helpline_number: localStorage.getItem('helpline_number'),
+            book_type: 'OPD'
+          },
+        };
+        this.router.navigate(['/select-specility'], navigationExtras);
+      }
     }
     if (page == 'Book Video Consultation') {
-
-      let navigationExtras: NavigationExtras = {
-        state: {
-          book_type: 'OPD'
-        },
-      };
-      this.router.navigate(['/select-location'], navigationExtras);
-
+      if (localStorage.getItem('location_id') == undefined) {
+        this.http.getLocations('allLocations');
+        let navigationExtras: NavigationExtras = {
+          state: {
+            book_type: 'videocall'
+          },
+        };
+        this.router.navigate(['/select-location'], navigationExtras);
+      } else {
+        this.http.getLocations('allLocations');
+        let navigationExtras: NavigationExtras = {
+          state: {
+            location_id: localStorage.getItem('location_id'),
+            location_name: localStorage.getItem('location_name'),
+            helpline_number: localStorage.getItem('helpline_number'),
+            book_type: 'videocall'
+          },
+        };
+        this.router.navigate(['/select-specility'], navigationExtras);
+      }
     }
     if (page == 'Chat with Doctor') {
       if (this.utility.chat_payment_status == 1) {
@@ -201,6 +234,54 @@ export class AppComponent {
       }
       //this.utility.showMessageAlert("Work in progress","Discussion reuqired")
     }
+    if (page == 'Share via') {
+      this.socialSharingApp()
+    }
+  }
+
+  async socialSharingApp() {
+    const actionSheet = await this.actionSheetController.create({
+      header: "Share our app on your social handels",
+      cssClass: "my-custom-class",
+      buttons: [
+        {
+          text: "Share via facebook",
+          icon: "logo-facebook",
+          handler: () => {
+            this.socialSharing.shareViaFacebook('Amandeep hospital has a very user friendly app for connecting to thier patients.Please install it.',null,null).then(() => {
+              // Success!
+            }).catch(() => {
+              // Error!
+            });
+          },
+        },
+        {
+          text: "Share via whatsapp ",
+          icon: "logo-whatsapp",
+          handler: () => {
+            // this.takePicture(this.camera.PictureSourceType.CAMERA);
+          },
+        },
+        {
+          text: "Share via email ",
+          icon: "mail-outline",
+          handler: () => {
+            this.socialSharing.shareViaEmail('Body', 'Subject', ['recipient@example.org']).then(() => {
+              // Success!
+            }).catch(() => {
+              // Error!
+            });
+          },
+        },
+        {
+          text: "Cancel",
+          role: "destructive",
+          icon: "close",
+          handler: () => { },
+        },
+      ],
+    });
+    await actionSheet.present();
   }
 
   pushNotification() {
@@ -241,7 +322,7 @@ export class AppComponent {
           },
         };
         this.router.navigateByUrl('/video-call-appointment', navigationExtras)
-      }else if (notification.additionalData['notification_type'] == 'end_call') {
+      } else if (notification.additionalData['notification_type'] == 'end_call') {
         this.localNotifications.schedule({
           id: 1,
           title: notification.title,
@@ -252,20 +333,20 @@ export class AppComponent {
         this.utility.publishEvent({
           'call:ended': notification.title
         });
-      }else if (notification.additionalData['notification_type'] == 'chat') {
+      } else if (notification.additionalData['notification_type'] == 'chat') {
         this.localNotifications.schedule({
           id: 1,
           title: notification.title,
           text: notification.message
         });
-       }else{
+      } else {
         this.localNotifications.schedule({
           id: 1,
           title: notification.title,
           text: notification.message
         });
-        this.utility.showMessageAlert( notification.title, notification.message);
-       }
+        this.utility.showMessageAlert(notification.title, notification.message);
+      }
 
     });
 

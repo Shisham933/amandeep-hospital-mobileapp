@@ -8,7 +8,7 @@
           </ion-col>
           <ion-col size="6">
             <ion-label class="user" style="text-transform: capitalize;">{{utility.user?.user_name}}</ion-label>
-            <p class="user" style="font-size: 12px;margin-top: 3px;">+91 {{utility.user?.phone_number}}</p>
+            <p class="user" style="font-size: 12px;margin-top: 3px;" *ngIf="utility.user?.phone_number != ''">+91 {{utility.user?.phone_number}}</p>
             <p class="user" style="font-size: 12px;margin-top: 3px;">{{utility.user?.email}}</p>
          </ion-col>
         </ion-row>

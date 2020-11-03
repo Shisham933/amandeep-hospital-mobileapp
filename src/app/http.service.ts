@@ -256,7 +256,17 @@ export class HttpService {
     };
     return this.http.post(this.url + endpoint, body, httpOptions);
   }
-
+  
+  socialLogin(endpoint: string, body: any) {
+    // let httpOptions = {
+    //   headers: new HttpHeaders({
+    //     'Content-Type': 'application/json',
+    //     'Accept': '*/*',
+    //     'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('token'))
+    //   })
+    // };
+    return this.http.post(this.url + endpoint, body);
+  }
 
 
 }

@@ -36,6 +36,8 @@ import { Stripe } from '@ionic-native/stripe/ngx';
 import { FileChooser } from '@ionic-native/file-chooser/ngx';
 import { NativeAudio } from '@ionic-native/native-audio/ngx';
 import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook/ngx';
+import { GooglePlus } from '@ionic-native/google-plus/ngx';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { Downloader } from '@ionic-native/downloader/ngx';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { AngularAgoraRtcModule, AgoraConfig } from 'angular-agora-rtc';
@@ -94,6 +96,8 @@ const agoraConfig: AgoraConfig = {
     ForegroundService,
     Base64,
     Facebook,
+    SocialSharing,
+    GooglePlus,
     Badge,
     Push,
     Media,

@@ -359,3 +359,10 @@ ion-toolbar.ion-color.sc-ion-searchbar-ios-h:not(.ion-color) .searchbar-input.sc
     z-index: 10;
     border-radius: 13px;
 }
+
+.header-top.fixed-top {
+    position: relative!important;
+    left: auto;
+    top: auto;
+    display:none
+}

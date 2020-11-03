@@ -50,7 +50,24 @@ export class SelectSpecilityPage implements OnInit {
   }
 
   goBack() {
-    // this.location.back();
+    if (localStorage.getItem('location_id') == undefined) {
+      let navigationExtras: NavigationExtras = {
+        state: {
+          book_type: this.book_type
+        },
+      };
+      this.router.navigate(['/select-location'], navigationExtras);
+    } else {
+      let navigationExtras: NavigationExtras = {
+        state: {
+          book_type: this.book_type
+        },
+      };
+      this.router.navigate(['/home'], navigationExtras);
+    }
+  }
+
+  goToLocations() {
     let navigationExtras: NavigationExtras = {
       state: {
         book_type: this.book_type

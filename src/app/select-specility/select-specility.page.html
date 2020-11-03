@@ -5,7 +5,13 @@
         <ion-icon name="chevron-back-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title class="title">Select Speciality</ion-title>
+    <!-- <ion-title class="title">Select Speciality</ion-title> -->
+    <ion-buttons slot="end">
+      <ion-button (click)="goToLocations()">
+        <ion-label class="title">{{location_name}}</ion-label>
+        <ion-icon name="location-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 

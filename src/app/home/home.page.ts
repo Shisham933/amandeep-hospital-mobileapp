@@ -13,41 +13,67 @@ import { UtilityService } from '../utility.service';
 })
 export class HomePage {
 
-  constructor(private statusBar: StatusBar, private menu: MenuController,private badge:Badge, private utility:UtilityService,private route: ActivatedRoute, private router: Router, private http: HttpService) {
+  constructor(private statusBar: StatusBar, private menu: MenuController, private badge: Badge, private utility: UtilityService, private route: ActivatedRoute, private router: Router, private http: HttpService) {
     this.statusBar.backgroundColorByHexString('#ffffff');
     this.route.queryParams.subscribe((params) => {
       this.badge.clear();
       this.getAllDoctors();
       this.getChatSubscriptionStatus();
     });
-    
+
   }
 
   bookOPD() {
-    this.http.getLocations('allLocations');
-    let navigationExtras: NavigationExtras = {
-      state: {
-        book_type: 'OPD'
-      },
-    };
-    this.router.navigate(['/select-location'], navigationExtras);
+    if (localStorage.getItem('location_id') == undefined) {
+      this.http.getLocations('allLocations');
+      let navigationExtras: NavigationExtras = {
+        state: {
+          book_type: 'OPD'
+        },
+      };
+      this.router.navigate(['/select-location'], navigationExtras);
+    } else {
+      this.http.getLocations('allLocations');
+      let navigationExtras: NavigationExtras = {
+        state: {
+          location_id: localStorage.getItem('location_id'),
+          location_name: localStorage.getItem('location_name'),
+          helpline_number: localStorage.getItem('helpline_number'),
+          book_type: 'OPD'
+        },
+      };
+      this.router.navigate(['/select-specility'], navigationExtras);
+    }
   }
 
-  myReports(){
+  myReports() {
     this.router.navigateByUrl('/my-reports')
   }
 
   bookVideoCall() {
-    this.http.getLocations('allLocations');
-    let navigationExtras: NavigationExtras = {
-      state: {
-        book_type: 'videocall'
-      },
-    };
-   this.router.navigate(['/select-location'],navigationExtras);
+    if (localStorage.getItem('location_id') == undefined) {
+      this.http.getLocations('allLocations');
+      let navigationExtras: NavigationExtras = {
+        state: {
+          book_type: 'videocall'
+        },
+      };
+      this.router.navigate(['/select-location'], navigationExtras);
+    } else {
+      this.http.getLocations('allLocations');
+      let navigationExtras: NavigationExtras = {
+        state: {
+          location_id: localStorage.getItem('location_id'),
+          location_name: localStorage.getItem('location_name'),
+          helpline_number: localStorage.getItem('helpline_number'),
+          book_type: 'videocall'
+        },
+      };
+      this.router.navigate(['/select-specility'], navigationExtras);
+    }
   }
 
-  aboutUs(){
+  aboutUs() {
     this.router.navigateByUrl("/about");
   }
 
@@ -62,27 +88,27 @@ export class HomePage {
     this.menu.enable(true, 'first');
   }
 
-  getAllDoctors(){
+  getAllDoctors() {
     this.http.getAllDoctors("allDoctors").subscribe((res: any) => {
-       if (res.success) {
+      if (res.success) {
         this.utility.all_doctors = res.data;
       } else {
-       
+
       }
     }, err => {
-     
+
     })
   }
 
-  getChatSubscriptionStatus(){
+  getChatSubscriptionStatus() {
     let user = JSON.parse(localStorage.getItem('user_details'));
     this.http.getChatSubscriptionStatus("chatPaymentStatus/user/" + user.id).subscribe((res: any) => {
-       if (res.success) {
+      if (res.success) {
         this.utility.chat_payment_status = res.data['payment_status'];
       } else {
       }
     }, err => {
-     
+
     })
   }
 }

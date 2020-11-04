@@ -9,12 +9,17 @@ import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { EmailComposer } from '@ionic-native/email-composer/ngx';
+
+import { FacebookService, InitParams, UIParams, UIResponse } from 'ngx-facebook';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 import { ChatsService } from './chats.service';
 import { HttpService } from './http.service';
 import { UtilityService } from './utility.service';
 
 declare var cordova: any;
+
+
 
 @Component({
   selector: 'app-root',
@@ -109,14 +114,23 @@ export class AppComponent {
     private router: Router,
     private push: Push,
     private badge: Badge,
+    private emailComposer: EmailComposer,
     private androidPermissions: AndroidPermissions,
     private backgroundMode: BackgroundMode,
+    private fb: FacebookService,
     private socialSharing: SocialSharing,
     public localNotifications: LocalNotifications,
     private http: HttpService,
     private chats: ChatsService,
     public utility: UtilityService
   ) {
+    const initParams: InitParams = {
+      appId: '3372377396172876',
+      xfbml: true,
+      version: 'v2.8'
+    };
+
+    this.fb.init(initParams);
     this.initializeApp();
   }
 
@@ -173,6 +187,40 @@ export class AppComponent {
       localStorage.setItem('chat_lists', JSON.stringify(res));
     }, err => {
     });
+  }
+
+  share() {
+
+    const params: UIParams = {
+      href: 'https://github.com/zyra/ngx-facebook',
+      method: 'share'
+    };
+
+    this.fb.ui(params)
+      .then((res: UIResponse) => console.log(res))
+      .catch((e: any) => console.error(e));
+
+  }
+
+  shareViaEmail() {
+
+    let email = {
+      to: '',
+      //cc: 'erika@mustermann.de',
+      // bcc: ['john@doe.com', 'jane@doe.com'],
+      // attachments: [
+      //   'file://img/logo.png',
+      //   'res://icon.png',
+      //   'base64:icon.png//iVBORw0KGgoAAAANSUhEUg...',
+      //   'file://README.pdf'
+      // ],
+      subject: 'Amandeep Hospital App',
+      body: 'Hello Dear,Please install this new app of amandeep hospital. (URL)',
+      isHtml: true
+    }
+
+    // Send a text message using default options
+    this.emailComposer.open(email);
   }
 
   chooseOption(page) {
@@ -248,11 +296,7 @@ export class AppComponent {
           text: "Share via facebook",
           icon: "logo-facebook",
           handler: () => {
-            this.socialSharing.shareViaFacebook('Amandeep hospital has a very user friendly app for connecting to thier patients.Please install it.',null,null).then(() => {
-              // Success!
-            }).catch(() => {
-              // Error!
-            });
+            this.share();
           },
         },
         {
@@ -266,11 +310,7 @@ export class AppComponent {
           text: "Share via email ",
           icon: "mail-outline",
           handler: () => {
-            this.socialSharing.shareViaEmail('Body', 'Subject', ['recipient@example.org']).then(() => {
-              // Success!
-            }).catch(() => {
-              // Error!
-            });
+            this.shareViaEmail();
           },
         },
         {

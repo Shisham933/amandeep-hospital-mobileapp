@@ -72,7 +72,8 @@
 
             <ion-card *ngIf="show_patient_details">
                 <ion-card-header>
-                    <ion-card-subtitle>Patient Details</ion-card-subtitle>
+                    <ion-card-subtitle *ngIf="book_for != 'self'">Patient Details</ion-card-subtitle>
+                    <ion-card-subtitle *ngIf="book_for == 'self'">My Details</ion-card-subtitle>
                 </ion-card-header>
                 <ion-card-content>
                     <ion-label>Name: {{user.user_name}} {{user.name}}</ion-label><br>

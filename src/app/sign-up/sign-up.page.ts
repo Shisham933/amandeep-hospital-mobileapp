@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { AngularFireAuth } from 'angularfire2/auth';
 import { HttpService } from '../http.service';
 import { UtilityService } from '../utility.service';
 import codes from 'country-calling-code';
@@ -19,7 +20,7 @@ export class SignUpPage implements OnInit {
     public name;
     public email_id;
     public password;
-    constructor(private statusBar: StatusBar,private location: Location, private router: Router, private route: ActivatedRoute, private http: HttpService, private utility: UtilityService) {
+    constructor(private statusBar: StatusBar,private afAuth: AngularFireAuth,private location: Location, private router: Router, private route: ActivatedRoute, private http: HttpService, private utility: UtilityService) {
         this.statusBar.backgroundColorByHexString('#ffffff');
         this.codes = codes;
         // this.route.queryParams.subscribe((params) => {
@@ -75,7 +76,27 @@ export class SignUpPage implements OnInit {
                           }
                         localStorage.setItem('user_details', JSON.stringify(res.data['user']));
                         localStorage.setItem('token', JSON.stringify(res.data['token']))
-                        this.router.navigate(["home"]);
+                        let email = this.mobile_no + "@amandeephospitalpatient.com";
+                        let password = "Techies@321";
+                        this.afAuth.auth.signInWithEmailAndPassword(email, password).then((res: any) => {
+                            if (res.code == 'auth/user-not-found') {
+                                this.afAuth.auth.createUserWithEmailAndPassword(email, password)
+                                    .then((user: any) => {
+                                        localStorage.setItem('firebase_user_id', JSON.stringify(res['user']));
+                                        this.router.navigateByUrl("/home");
+                                     })
+                            } else {
+                                localStorage.setItem('firebase_user_id', JSON.stringify(res['user']));
+                                this.router.navigateByUrl("/home");
+                            }
+                        }, (error) => {
+                            this.afAuth.auth.createUserWithEmailAndPassword(email, password)
+                                .then((user: any) => {
+                                    console.log(user);
+                                    localStorage.setItem('firebase_user_id', JSON.stringify(user['user']));
+                                    this.router.navigateByUrl("/home");
+                                })
+                        })
 
                     } else {
                         this.utility.showMessageAlert("Error ",res.message);

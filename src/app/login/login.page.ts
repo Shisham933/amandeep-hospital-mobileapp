@@ -7,6 +7,7 @@ import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { HttpService } from '../http.service';
 import { UtilityService } from '../utility.service';
+
 @Component({
     selector: 'app-login',
     templateUrl: './login.page.html',
@@ -33,7 +34,7 @@ export class LoginPage implements OnInit {
         } else if (this.password == undefined) {
             this.utility.showMessageAlert("Password required!", "Please enter the password.")
         } else {
-            //this.utility.showLoading();
+           // this.utility.showLoading();
             // let email = this.mobile_no + "@amandeephospitalpatient.com";
             // let password = "Techies@321";
             // this.afAuth.auth.signInWithEmailAndPassword(email, password).then((res: any) => {
@@ -192,8 +193,29 @@ export class LoginPage implements OnInit {
                             this.utility.image = "assets/imgs/no-profile.png";
                         }
                         localStorage.setItem('user_details', JSON.stringify(res.data['user']));
-                        localStorage.setItem('token', JSON.stringify(res.data['token']))
-                        this.router.navigateByUrl("/home");
+                        localStorage.setItem('token', JSON.stringify(res.data['token']));
+                        let email = this.mobile_no + "@amandeephospitalpatient.com";
+                        let password = "Techies@321";
+                        this.afAuth.auth.signInWithEmailAndPassword(email, password).then((res: any) => {
+                            if (res.code == 'auth/user-not-found') {
+                                this.afAuth.auth.createUserWithEmailAndPassword(email, password)
+                                    .then((user: any) => {
+                                        localStorage.setItem('firebase_user_id', JSON.stringify(res['user']));
+                                        this.router.navigateByUrl("/home");
+                                     })
+                            } else {
+                                localStorage.setItem('firebase_user_id', JSON.stringify(res['user']));
+                                this.router.navigateByUrl("/home");
+                            }
+                        }, (error) => {
+                            this.afAuth.auth.createUserWithEmailAndPassword(email, password)
+                                .then((user: any) => {
+                                    console.log(user);
+                                    localStorage.setItem('firebase_user_id', JSON.stringify(user['user']));
+                                    this.router.navigateByUrl("/home");
+                                })
+                        })
+                        // this.router.navigateByUrl("/home");
                     } else {
                         this.utility.showMessageAlert("Error", res.message);
                     }
@@ -216,7 +238,7 @@ export class LoginPage implements OnInit {
 
         this.googlePlus.login({
             'scopes': '', // optional, space-separated list of scopes, If not included or empty, defaults to `profile` and `email`.
-            'webClientId': '334231413507-niuqt6qqoptmank5jsmkqck901logsk9.apps.googleusercontent.com', // optional clientId of your Web application from Credentials settings of your project - On Android, this MUST be included to get an idToken. On iOS, it is not required.
+            'webClientId': '334231413507-lrb889of530fno40hma2pumc38gfe8cv.apps.googleusercontent.com', // optional clientId of your Web application from Credentials settings of your project - On Android, this MUST be included to get an idToken. On iOS, it is not required.
             'offline': true
         })
             .then(res => {

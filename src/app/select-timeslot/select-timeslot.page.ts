@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { Location } from '@angular/common';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
+import * as moment from 'moment';
 import { HttpService } from '../http.service';
 import { UtilityService } from '../utility.service';
 import { ThrowStmt } from '@angular/compiler';
@@ -26,7 +27,7 @@ export class SelectTimeslotPage implements OnInit {
   doctor_id: any;
   last_selected_time: any;
   last_parentIndex: any;
-  last_slot_index : any;
+  last_slot_index: any;
   available_slots = 0;
   time_range: any = [{
     title: "Morning 6 AM to 12 Noon",
@@ -53,6 +54,8 @@ export class SelectTimeslotPage implements OnInit {
   book_type;
   speciality_id;
   speciality_name;
+  current_time: any;
+
   constructor(private statusBar: StatusBar, private route: ActivatedRoute, private location: Location, private router: Router, private http: HttpService, private utility: UtilityService) {
     this.statusBar.backgroundColorByHexString('#ffffff');
     this.route.queryParams.subscribe((params) => {
@@ -65,6 +68,8 @@ export class SelectTimeslotPage implements OnInit {
       this.speciality_name = this.router.getCurrentNavigation().extras.state.speciality_name;
       this.book_type = this.router.getCurrentNavigation().extras.state.book_type;
       this.getTimeSlots();
+      let d = new Date();
+      this.current_time = moment(d, 'ddd DD-MMM-YYYY, hh:mm A').format('hh:mm A');
     });
   }
 
@@ -85,36 +90,35 @@ export class SelectTimeslotPage implements OnInit {
     };
     this.router.navigate(['/book-appointment'], navigationExtras);
   }
-  
-  checkAvailibitityTimeslots(parentindex,childindex){
+
+  checkAvailibitityTimeslots(parentindex, childindex) {
     let user = JSON.parse(localStorage.getItem('user_details'));
     let params = {
       "type": this.book_type == 'OPD' ? this.book_type : 'video',
       "date": this.choose_date.getFullYear() + '-' + (this.choose_date.getMonth() + 1) + '-' + this.choose_date.getDate(),
-      "schedule_id":this.choose_scheduleID,
+      "schedule_id": this.choose_scheduleID,
       "user_id": user.id
     }
-     this.http.checkAvailibitityTimeslots('getSlotBookings', params).subscribe(
+    this.http.checkAvailibitityTimeslots('getSlotBookings', params).subscribe(
       (res: any) => {
-        console.log(res)
         if (res.success) {
-        
-         if(res.data.bookedAppointments == res.data.maxAppointments && !res.data.slot_booked_by_me){
-           this.utility.showMessageAlert("No Slot available!","Please choose another slot. All appointments are booked for this slot.");
-           this.time_range[parentindex].time_slots[childindex]['is_time_selected'] = true;
-           this.choose_scheduleID = undefined;
-           this.choose_time = undefined;
-          }else if(res.data.bookedAppointments == 0 && !res.data.slot_booked_by_me){
+
+          if (res.data.bookedAppointments == res.data.maxAppointments && !res.data.slot_booked_by_me) {
+            this.utility.showMessageAlert("No Slot available!", "Please choose another slot. All appointments are booked for this slot.");
+            this.time_range[parentindex].time_slots[childindex]['is_time_selected'] = true;
+            this.choose_scheduleID = undefined;
+            this.choose_time = undefined;
+          } else if (res.data.bookedAppointments == 0 && !res.data.slot_booked_by_me) {
             this.available_slots = res.data.maxAppointments;
-          }else if(res.data.bookedAppointments > 0 && !res.data.slot_booked_by_me){
+          } else if (res.data.bookedAppointments > 0 && !res.data.slot_booked_by_me) {
             this.available_slots = res.data.maxAppointments - res.data.bookedAppointments;
-          }else if(res.data.slot_booked_by_me){
-            this.utility.showMessageAlert("Slot already booked by you!","You  already have appointment for this slot.");
-           this.time_range[parentindex].time_slots[childindex]['is_time_selected'] = true;
-           this.choose_scheduleID = undefined;
-           this.choose_time = undefined;
+          } else if (res.data.slot_booked_by_me) {
+            this.utility.showMessageAlert("Slot already booked by you!", "You  already have appointment for this slot.");
+            this.time_range[parentindex].time_slots[childindex]['is_time_selected'] = true;
+            this.choose_scheduleID = undefined;
+            this.choose_time = undefined;
           }
-        }else{
+        } else {
           //this.utility.hideLoading();
           this.utility.showMessageAlert("No schedules!", res.message)
         }
@@ -141,7 +145,14 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'am' && (m.time_value == 6 || m.time_value < 12)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if (this.choose_date.getDate() == new Date().getDate()) {
+                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                } else {
+                  z.time_slots.push(m);
+                }
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Afternoon 12 PM to 4 PM') {
@@ -149,7 +160,14 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (m.time_value == 12 || m.time_value < 4)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if (this.choose_date.getDate() == new Date().getDate()) {
+                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                } else {
+                  z.time_slots.push(m);
+                }
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Evening 4 PM to 8 PM') {
@@ -157,7 +175,14 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (4 < m.time_value == m.time_value < 8)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if (this.choose_date.getDate() == new Date().getDate()) {
+                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                } else {
+                  z.time_slots.push(m);
+                }
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Night 8 PM to 10 PM') {
@@ -165,7 +190,14 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (8 < m.time_value == m.time_value < 10)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if (this.choose_date.getDate() == new Date().getDate()) {
+                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                } else {
+                  z.time_slots.push(m);
+                }
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         }
@@ -184,7 +216,14 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'am' && (m.time_value == 6 || m.time_value < 12)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if (this.choose_date.getDate() == new Date().getDate()) {
+                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                } else {
+                  z.time_slots.push(m);
+                }
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Afternoon 12 PM to 4 PM') {
@@ -192,7 +231,14 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (m.time_value == 12 || m.time_value < 4)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if (this.choose_date.getDate() == new Date().getDate()) {
+                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                } else {
+                  z.time_slots.push(m);
+                }
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Evening 4 PM to 8 PM') {
@@ -200,7 +246,14 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (4 < m.time_value == m.time_value < 8)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if (this.choose_date.getDate() == new Date().getDate()) {
+                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                } else {
+                  z.time_slots.push(m);
+                }
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Night 8 PM to 10 PM') {
@@ -208,7 +261,14 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (8 < m.time_value == m.time_value < 10)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if (this.choose_date.getDate() == new Date().getDate()) {
+                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                } else {
+                  z.time_slots.push(m);
+                }
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         }
@@ -227,7 +287,15 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'am' && (m.time_value == 6 || m.time_value < 12)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if (this.choose_date.getDate() == new Date().getDate()) {
+                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                } else {
+                  z.time_slots.push(m);
+                }
+              } else {
+                z.time_slots.push(m);
+              }
+
             }
           })
         } else if (z.title == 'Afternoon 12 PM to 4 PM') {
@@ -235,7 +303,14 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (m.time_value == 12 || m.time_value < 4)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if (this.choose_date.getDate() == new Date().getDate()) {
+                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                } else {
+                  z.time_slots.push(m);
+                }
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Evening 4 PM to 8 PM') {
@@ -243,7 +318,14 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (4 < m.time_value == m.time_value < 8)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if (this.choose_date.getDate() == new Date().getDate()) {
+                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                } else {
+                  z.time_slots.push(m);
+                }
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Night 8 PM to 10 PM') {
@@ -251,7 +333,14 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (8 < m.time_value == m.time_value < 10)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if (this.choose_date.getDate() == new Date().getDate()) {
+                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                } else {
+                  z.time_slots.push(m);
+                }
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         }
@@ -270,7 +359,14 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'am' && (m.time_value == 6 || m.time_value < 12)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if (this.choose_date.getDate() == new Date().getDate()) {
+                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                } else {
+                  z.time_slots.push(m);
+                }
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Afternoon 12 PM to 4 PM') {
@@ -278,7 +374,14 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (m.time_value == 12 || m.time_value < 4)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if (this.choose_date.getDate() == new Date().getDate()) {
+                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                } else {
+                  z.time_slots.push(m);
+                }
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Evening 4 PM to 8 PM') {
@@ -286,7 +389,14 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (4 < m.time_value == m.time_value < 8)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if (this.choose_date.getDate() == new Date().getDate()) {
+                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                } else {
+                  z.time_slots.push(m);
+                }
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Night 8 PM to 10 PM') {
@@ -294,7 +404,14 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (8 < m.time_value == m.time_value < 10)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if (this.choose_date.getDate() == new Date().getDate()) {
+                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                } else {
+                  z.time_slots.push(m);
+                }
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         }
@@ -313,7 +430,14 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'am' && (m.time_value == 6 || m.time_value < 12)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if (this.choose_date.getDate() == new Date().getDate()) {
+                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                } else {
+                  z.time_slots.push(m);
+                }
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Afternoon 12 PM to 4 PM') {
@@ -321,7 +445,14 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (m.time_value == 12 || m.time_value < 4)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if (this.choose_date.getDate() == new Date().getDate()) {
+                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                } else {
+                  z.time_slots.push(m);
+                }
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Evening 4 PM to 8 PM') {
@@ -329,7 +460,14 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (4 < m.time_value == m.time_value < 8)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if (this.choose_date.getDate() == new Date().getDate()) {
+                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                } else {
+                  z.time_slots.push(m);
+                }
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Night 8 PM to 10 PM') {
@@ -337,7 +475,14 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (8 < m.time_value == m.time_value < 10)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if (this.choose_date.getDate() == new Date().getDate()) {
+                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                } else {
+                  z.time_slots.push(m);
+                }
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         }
@@ -356,7 +501,14 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'am' && (m.time_value == 6 || m.time_value < 12)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if (this.choose_date.getDate() == new Date().getDate()) {
+                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                } else {
+                  z.time_slots.push(m);
+                }
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Afternoon 12 PM to 4 PM') {
@@ -364,7 +516,14 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (m.time_value == 12 || m.time_value < 4)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if (this.choose_date.getDate() == new Date().getDate()) {
+                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                } else {
+                  z.time_slots.push(m);
+                }
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Evening 4 PM to 8 PM') {
@@ -372,7 +531,14 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (4 < m.time_value == m.time_value < 8)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if (this.choose_date.getDate() == new Date().getDate()) {
+                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                } else {
+                  z.time_slots.push(m);
+                }
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Night 8 PM to 10 PM') {
@@ -380,7 +546,14 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (8 < m.time_value == m.time_value < 10)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if (this.choose_date.getDate() == new Date().getDate()) {
+                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                } else {
+                  z.time_slots.push(m);
+                }
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         }
@@ -399,7 +572,14 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'am' && (m.time_value == 6 || m.time_value < 12)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if (this.choose_date.getDate() == new Date().getDate()) {
+                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                } else {
+                  z.time_slots.push(m);
+                }
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Afternoon 12 PM to 4 PM') {
@@ -407,7 +587,14 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (m.time_value == 12 || m.time_value < 4)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if (this.choose_date.getDate() == new Date().getDate()) {
+                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                } else {
+                  z.time_slots.push(m);
+                }
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Evening 4 PM to 8 PM') {
@@ -415,7 +602,14 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (4 < m.time_value == m.time_value < 8)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if (this.choose_date.getDate() == new Date().getDate()) {
+                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                } else {
+                  z.time_slots.push(m);
+                }
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Night 8 PM to 10 PM') {
@@ -423,7 +617,14 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (8 < m.time_value == m.time_value < 10)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if (this.choose_date.getDate() == new Date().getDate()) {
+                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                } else {
+                  z.time_slots.push(m);
+                }
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         }
@@ -441,18 +642,18 @@ export class SelectTimeslotPage implements OnInit {
       this.time_range[parentindex].time_slots[childindex]['is_time_selected'] = true;
       this.last_selected_time = childindex;
       this.last_parentIndex = parentindex;
-      this.checkAvailibitityTimeslots(parentindex,childindex);
+      this.checkAvailibitityTimeslots(parentindex, childindex);
     } else {
       this.choose_scheduleID = time.id;
       this.choose_time = time.time_slots;
-      this.checkAvailibitityTimeslots(parentindex,childindex);
+      this.checkAvailibitityTimeslots(parentindex, childindex);
       if (this.last_parentIndex == parentindex && this.last_selected_time == childindex) {
 
       } else {
         this.time_range[parentindex].time_slots[childindex]['is_time_selected'] = true;
       }
       if (this.last_parentIndex != parentindex && this.last_selected_time != childindex) {
-         if (this.time_range[this.last_parentIndex].time_slots[this.last_selected_time]['is_time_selected']) {
+        if (this.time_range[this.last_parentIndex].time_slots[this.last_selected_time]['is_time_selected']) {
           this.time_range[this.last_parentIndex].time_slots[this.last_selected_time]['is_time_selected'] = false;
         } else {
           this.time_range[this.last_parentIndex].time_slots[this.last_selected_time]['is_time_selected'] = true;
@@ -472,6 +673,7 @@ export class SelectTimeslotPage implements OnInit {
 
   expandItem(val, index) {
     //debugger
+    this.available_slots = 0;
     if (this.last_slot_index == undefined) {
       this.time_range[index].showslots = true;
       this.last_slot_index = index;
@@ -510,7 +712,10 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'am' && (m.time_value == 6 || m.time_value < 12)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Afternoon 12 PM to 4 PM') {
@@ -518,7 +723,10 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (m.time_value == 12 || m.time_value < 4)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Evening 4 PM to 8 PM') {
@@ -526,7 +734,10 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (4 < m.time_value == m.time_value < 8)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Night 8 PM to 10 PM') {
@@ -534,7 +745,10 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (8 < m.time_value == m.time_value < 10)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         }
@@ -553,7 +767,10 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'am' && (m.time_value == 6 || m.time_value < 12)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Afternoon 12 PM to 4 PM') {
@@ -561,7 +778,10 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (m.time_value == 12 || m.time_value < 4)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Evening 4 PM to 8 PM') {
@@ -569,7 +789,10 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (4 < m.time_value == m.time_value < 8)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Night 8 PM to 10 PM') {
@@ -577,7 +800,10 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (8 < m.time_value == m.time_value < 10)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         }
@@ -592,11 +818,15 @@ export class SelectTimeslotPage implements OnInit {
       this.time_slots = t;
       this.time_range.map(z => {
         if (z.title == 'Morning 6 AM to 12 Noon') {
+          //debugger
           z.time_slots = [];
           this.time_slots.filter(m => {
             if (m.am_pm == 'am' && (m.time_value == 6 || m.time_value < 12)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Afternoon 12 PM to 4 PM') {
@@ -604,7 +834,10 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (m.time_value == 12 || m.time_value < 4)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Evening 4 PM to 8 PM') {
@@ -612,7 +845,10 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (4 < m.time_value == m.time_value < 8)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Night 8 PM to 10 PM') {
@@ -620,7 +856,10 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (8 < m.time_value == m.time_value < 10)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         }
@@ -639,7 +878,10 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'am' && (m.time_value == 6 || m.time_value < 12)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Afternoon 12 PM to 4 PM') {
@@ -647,7 +889,10 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (m.time_value == 12 || m.time_value < 4)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Evening 4 PM to 8 PM') {
@@ -655,7 +900,10 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (4 < m.time_value == m.time_value < 8)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Night 8 PM to 10 PM') {
@@ -663,7 +911,10 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (8 < m.time_value == m.time_value < 10)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         }
@@ -682,7 +933,10 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'am' && (m.time_value == 6 || m.time_value < 12)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Afternoon 12 PM to 4 PM') {
@@ -690,7 +944,10 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (m.time_value == 12 || m.time_value < 4)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Evening 4 PM to 8 PM') {
@@ -698,7 +955,10 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (4 < m.time_value == m.time_value < 8)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Night 8 PM to 10 PM') {
@@ -706,7 +966,10 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (8 < m.time_value == m.time_value < 10)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         }
@@ -725,7 +988,10 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'am' && (m.time_value == 6 || m.time_value < 12)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Afternoon 12 PM to 4 PM') {
@@ -733,7 +999,10 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (m.time_value == 12 || m.time_value < 4)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Evening 4 PM to 8 PM') {
@@ -741,7 +1010,10 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (4 < m.time_value == m.time_value < 8)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Night 8 PM to 10 PM') {
@@ -749,7 +1021,10 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (8 < m.time_value == m.time_value < 10)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         }
@@ -768,7 +1043,10 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'am' && (m.time_value == 6 || m.time_value < 12)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Afternoon 12 PM to 4 PM') {
@@ -784,7 +1062,10 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (4 < m.time_value == m.time_value < 8)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         } else if (z.title == 'Night 8 PM to 10 PM') {
@@ -792,7 +1073,10 @@ export class SelectTimeslotPage implements OnInit {
           this.time_slots.filter(m => {
             if (m.am_pm == 'pm' && (8 < m.time_value == m.time_value < 10)) {
               m.is_time_selected = false;
-              z.time_slots.push(m);
+              if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+              } else {
+                z.time_slots.push(m);
+              }
             }
           })
         }
@@ -813,7 +1097,7 @@ export class SelectTimeslotPage implements OnInit {
           } else {
             this.todayTimeslot(new Date());
           }
-        }else{
+        } else {
           this.utility.hideLoading();
           this.utility.showMessageAlert("No schedules!", res.message)
         }
@@ -837,7 +1121,7 @@ export class SelectTimeslotPage implements OnInit {
           time: this.choose_time,
           book_type: this.book_type,
           speciality_name: this.speciality_name,
-          speciality_id:this.speciality_id
+          speciality_id: this.speciality_id
         },
       };
 

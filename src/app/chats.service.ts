@@ -15,6 +15,7 @@ export class ChatsService {
   }
 
   getChatUsersList(uid){
+    console.log(uid)
    return  this.database.list('/chats', ref => ref.orderByChild('patient_id').equalTo(uid)).valueChanges()
   }
  

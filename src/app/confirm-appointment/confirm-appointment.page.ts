@@ -28,7 +28,7 @@ export class ConfirmAppointmentPage implements OnInit {
   book_type;
   show_patient_details: boolean = false;
   show_patient_form: boolean = false;
-  show_registered_patients : boolean = false;
+  show_registered_patients: boolean = false;
   name: any;
   mobile_no: any;
   age: any;
@@ -125,15 +125,15 @@ export class ConfirmAppointmentPage implements OnInit {
       this.booking_options[1].isChecked = true;
     }
   }
-  
-  choosePatient(data){
-     this.user = data;
-     this.name = data.name;
-     this.mobile_no = data.mobile_no;
-     this.age = data.age;
-     this.show_patient_details = true;
-     this.show_patient_form = false;
-     this.show_registered_patients = false;
+
+  choosePatient(data) {
+    this.user = data;
+    this.name = data.name;
+    this.mobile_no = data.mobile_no;
+    this.age = data.age;
+    this.show_patient_details = true;
+    this.show_patient_form = false;
+    this.show_registered_patients = false;
   }
 
   addPatient() {
@@ -238,9 +238,11 @@ export class ConfirmAppointmentPage implements OnInit {
     //debugger
     if (this.book_for == '' || this.book_for == undefined) {
       this.utility.showMessageAlert("Patient info required!", "Please select one option for whom you are booking this appointment.")
+    } else if (this.book_for == 'relative' && (this.name == undefined || this.name == '' || this.age == undefined || this.mobile_no == undefined || this.mobile_no == '')) {
+      this.utility.showMessageAlert("Error!", "Please enter patient details.")
     } else {
       if (this.book_type == 'OPD') {
-       let user =  JSON.parse(localStorage.getItem('user_details'));
+        let user = JSON.parse(localStorage.getItem('user_details'));
         let params = {
           "speciality_id": this.data.speciality_id,
           "doctor_id": this.doctor_id,
@@ -264,7 +266,7 @@ export class ConfirmAppointmentPage implements OnInit {
 
       }
       if (this.book_type == 'videocall') {
-        let user =  JSON.parse(localStorage.getItem('user_details'));
+        let user = JSON.parse(localStorage.getItem('user_details'));
         let params = {
           "speciality_id": this.data.speciality_id,
           "doctor_id": this.doctor_id,

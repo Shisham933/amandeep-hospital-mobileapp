@@ -22,7 +22,7 @@ import { BackgroundFetch, BackgroundFetchConfig } from '@ionic-native/background
 import { NgNumericKeyboardModule } from 'ng-numeric-keyboard';
 import { FilePath } from '@ionic-native/file-path/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-
+import { FacebookModule } from 'ngx-facebook';
 
 import { Push, PushObject, PushOptions } from '@ionic-native/push/ngx';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
@@ -38,6 +38,8 @@ import { NativeAudio } from '@ionic-native/native-audio/ngx';
 import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook/ngx';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import { EmailComposer } from '@ionic-native/email-composer/ngx';
+
 import { Downloader } from '@ionic-native/downloader/ngx';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { AngularAgoraRtcModule, AgoraConfig } from 'angular-agora-rtc';
@@ -70,6 +72,7 @@ const agoraConfig: AgoraConfig = {
     HttpClientModule,
     CalendarModule,
     NgOtpInputModule,
+    FacebookModule.forRoot(),
     AngularFireModule.initializeApp(config),
     AngularFireDatabaseModule,
     AngularAgoraRtcModule.forRoot(agoraConfig),
@@ -83,6 +86,7 @@ const agoraConfig: AgoraConfig = {
     YoutubeVideoPlayer,
     Camera,
     FilePath,
+    EmailComposer,
     AngularFireAuth,
     AndroidPermissions,
     BackgroundMode,

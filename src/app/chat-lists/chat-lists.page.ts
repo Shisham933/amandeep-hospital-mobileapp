@@ -21,6 +21,7 @@ export class ChatListsPage implements OnInit {
 
   ngOnInit() {
     let user = JSON.parse(localStorage.getItem('user_details'));
+    console.log(user,"user");
     this.chats.getChatUsersList(user.id).subscribe((res: any) => {
       let chat_list = _.orderBy(res, ['send_datetime'], ['desc']);;
       this.chat_list = _.uniqBy(chat_list, 'patient_id');

@@ -91,7 +91,7 @@
     <ion-col size="12">
       <ion-select placeholder="Select Doctor"  interface="alert" (ionChange)="chooseDoctor($event)">
         <ng-container *ngFor="let d of utility.all_doctors; let i = index">
-          <ion-select-option value="{{i}}">Dr. {{d.firstname}} {{d.lastname}}({{d.speciality_name}})
+          <ion-select-option value="{{i}}">Dr. {{i}} {{d.firstname}} {{d.lastname}}({{d.speciality_name}})
           </ion-select-option>
         </ng-container>
       </ion-select>

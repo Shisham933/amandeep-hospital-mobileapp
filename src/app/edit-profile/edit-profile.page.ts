@@ -89,7 +89,8 @@ export class EditProfilePage implements OnInit {
       (res: any) => {
         this.utility.hideLoading();
         if (res.success) {
-          localStorage.setItem('user_details', JSON.stringify(res.data))
+          localStorage.setItem('user_details', JSON.stringify(res.data));
+          this.utility.user = JSON.parse(localStorage.getItem('user_details'));
           this.utility.showMessageAlert("Account Updated!", "Your new info has been added.");
           this.router.navigate(['profile']);
         } else {

@@ -58,6 +58,7 @@ export class ChatWithDoctorPage implements OnInit {
   }
 
   chooseDoctor(d) {
+    //debugger
    if(d.detail.value == 0){
       this.doctor_id = this.utility.all_doctors[0].id;
       this.doctor_name = this.utility.all_doctors[0].firstname + ' ' + this.utility.all_doctors[0].lastname;
@@ -65,9 +66,9 @@ export class ChatWithDoctorPage implements OnInit {
       this.doctor_profile_image =  this.utility.all_doctors[0].profile_picture;
     }else{
       this.doctor_id = this.utility.all_doctors[0].id;
-      this.doctor_name = this.utility.all_doctors[d.detail.value - 1].firstname + ' ' + this.utility.all_doctors[d.detail.value - 1].lastname;
-      this.doctor_firebaseid = this.utility.all_doctors[d.detail.value - 1].doctor_firebaseid;
-      this.doctor_profile_image =  this.utility.all_doctors[d.detail.value - 1].profile_picture;
+      this.doctor_name = this.utility.all_doctors[d.detail.value].firstname + ' ' + this.utility.all_doctors[d.detail.value].lastname;
+      this.doctor_firebaseid = this.utility.all_doctors[d.detail.value].doctor_firebaseid;
+      this.doctor_profile_image =  this.utility.all_doctors[d.detail.value].profile_picture;
     }
   
   }

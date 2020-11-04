@@ -43,34 +43,39 @@
         </ng-container>
         <br>
         <ng-container *ngIf="t.showslots">
-            <ion-row *ngFor="let s of t.time_slots;let i = index">
-                <ion-col size="3" *ngIf="s.is_time_selected" class="choose-time" (click)="chooseTimeslot(z,i,s)">
-                    <ion-label>{{s.time_slots}}</ion-label>
-                   </ion-col>&nbsp;
-                <ion-col size="3" *ngIf="!s.is_time_selected" class="other-time" (click)="chooseTimeslot(z,i,s)">
-                    <ion-label>{{s.time_slots}}</ion-label>
-                </ion-col>&nbsp;
+            <ion-row>
+                <ng-container *ngFor="let s of t.time_slots;let i = index">
+                    <ion-col size="3" *ngIf="s.is_time_selected" class="choose-time" (click)="chooseTimeslot(z,i,s)">
+                        <ion-label>{{s.time_slots}}</ion-label>
+                    </ion-col>&nbsp;
+                    <ion-col size="3" *ngIf="!s.is_time_selected" class="other-time" (click)="chooseTimeslot(z,i,s)">
+                        <ion-label>{{s.time_slots}}</ion-label>
+                    </ion-col>&nbsp;
+                </ng-container>
+
             </ion-row>
             <h6 *ngIf="t.time_slots.length == 0" style="text-align: center;">No slots available</h6>
-            <p class="available-slots" *ngIf="available_slots != 0">Available Slots {{available_slots}}</p>
-            </ng-container>
- 
+            <p class="available-slots" *ngIf="available_slots != null && available_slots != 0">Available Slots
+                {{available_slots}}</p>
+            <p class="available-slots" *ngIf="available_slots == null && available_slots != ''">Available Slots 0</p>
+        </ng-container>
+
     </ion-list>
 </ion-content>
 
 <ion-footer class="ion-no-border time-slot">
     <ion-toolbar *ngIf="book_type == 'OPD'">
         <!-- <a href="tel:{{helpline_number}}"> -->
-            <!-- <ion-button ion-button slot="start" class="book-via-call"> -->
-                <!-- BOOK VIA CALL -->
-            <!-- </ion-button> -->
+        <!-- <ion-button ion-button slot="start" class="book-via-call"> -->
+        <!-- BOOK VIA CALL -->
+        <!-- </ion-button> -->
         <!-- </a> -->
         <ion-button ion-button slot="end" class="book-via-app" (click)="bookViaApp()" style="width: 100%;">
             BOOK NOW
         </ion-button>
     </ion-toolbar>
     <ion-toolbar *ngIf="book_type == 'videocall'">
-       <ion-button ion-button slot="end" class="book-via-app" (click)="bookViaApp()" style="width: 100%;">
+        <ion-button ion-button slot="end" class="book-via-app" (click)="bookViaApp()" style="width: 100%;">
             BOOK VIDEO CALL
         </ion-button>
     </ion-toolbar>

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Platform } from '@ionic/angular';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { Location } from '@angular/common';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
@@ -15,7 +16,7 @@ export class ChangePasswordPage implements OnInit {
     public new_password;
     public confirm_password;
 
-    constructor(private statusBar: StatusBar,private router: Router, private route: ActivatedRoute, private location: Location, private http: HttpService, private utility: UtilityService) {
+    constructor(private statusBar: StatusBar,private platform:Platform,private router: Router, private route: ActivatedRoute, private location: Location, private http: HttpService, private utility: UtilityService) {
         this.statusBar.backgroundColorByHexString('#ffffff'); 
         this.route.queryParams.subscribe((params) => {
             if(this.router.getCurrentNavigation().extras.state != undefined){
@@ -26,6 +27,11 @@ export class ChangePasswordPage implements OnInit {
             }
            
         });
+        this.platform.backButton.subscribeWithPriority(9999, () => {
+            // do nothing
+            this.goBack();
+          })
+      
     }
 
     ngOnInit() {}

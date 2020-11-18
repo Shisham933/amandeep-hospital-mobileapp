@@ -84,7 +84,7 @@ export class CardPaymentPage implements OnInit {
 
           }
 
-          else {
+          else if (this.data.type == 'Video') {
             let params = {
               "speciality_id": this.data.speciality_id,
               "doctor_id": this.data.doctor_id,
@@ -113,7 +113,25 @@ export class CardPaymentPage implements OnInit {
                 } else {
                   this.utility.showMessageAlert("Appointment not booked!", "Plese try again.")
                 }
+              }, err => {
+                this.utility.hideLoading();
+                this.utility.showMessageAlert("Network error!", "Please check your network connection.")
+              })
+          } else if (this.data.type == 'Chat') {
+            let params = {
+              "doctor_id": this.data.doctor_id,
+              "book_for": this.data.book_for,
+              "patient_id": this.data.patient_id,
+              "subscribed_by": this.data.subscribed_by,
+              "health_query": this.data.health_query,
+              "type": "Chat"
+            }
+            this.http.buyChatSubscription("chatSubscription", params).subscribe(
+              (res: any) => {
+                this.utility.hideLoading();
+                if (res.success) {
 
+                }
               }, err => {
                 this.utility.hideLoading();
                 this.utility.showMessageAlert("Network error!", "Please check your network connection.")

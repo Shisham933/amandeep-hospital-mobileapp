@@ -12,7 +12,10 @@ import { UtilityService } from '../utility.service';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
-
+  slideOpts = {
+    initialSlide: 0,
+    speed: 400
+  };
   constructor(private statusBar: StatusBar, private menu: MenuController, private badge: Badge, private utility: UtilityService, private route: ActivatedRoute, private router: Router, private http: HttpService) {
     this.statusBar.backgroundColorByHexString('#ffffff');
     this.route.queryParams.subscribe((params) => {
@@ -20,6 +23,7 @@ export class HomePage {
       this.getAllDoctors();
       this.getChatSubscriptionStatus();
     });
+
 
   }
 
@@ -75,6 +79,18 @@ export class HomePage {
 
   aboutUs() {
     this.router.navigateByUrl("/about");
+  }
+
+  blogs() {
+    this.router.navigateByUrl("/blogs");
+  }
+
+  chatWithDoctor() {
+    if (this.utility.chat_payment_status == 1) {
+      this.router.navigateByUrl('/chat-lists')
+    } else {
+      this.router.navigateByUrl('/chat-with-doctor');
+    }
   }
 
 

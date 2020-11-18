@@ -13,6 +13,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular-devkit/build-angular": "^0.1100.1",
     "@angular/common": "~10.0.0",
     "@angular/core": "~10.0.0",
     "@angular/fire": "^6.0.3",
@@ -26,7 +27,7 @@
     "@ionic-native/background-mode": "^5.28.0",
     "@ionic-native/badge": "^5.28.0",
     "@ionic-native/base64": "^5.28.0",
-    "@ionic-native/camera": "^5.28.0",
+    "@ionic-native/camera": "^5.29.0",
     "@ionic-native/core": "^5.0.0",
     "@ionic-native/crop": "^5.28.0",
     "@ionic-native/downloader": "^5.28.0",
@@ -73,7 +74,9 @@
     "ng-pattern-restrict": "^0.2.3",
     "ngx-embed-video": "^1.0.4",
     "ngx-facebook": "^3.0.0-0",
+    "ngx-socket-io": "^3.2.0",
     "nopt": "^5.0.0",
+    "npm-check-updates": "^10.2.1",
     "properties-parser": "^0.3.1",
     "rxjs": "~6.5.5",
     "strip-final-newline": "^2.0.0",
@@ -81,7 +84,6 @@
     "zone.js": "~0.10.3"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~0.1000.0",
     "@angular/cli": "~10.0.5",
     "@angular/compiler": "~10.0.0",
     "@angular/compiler-cli": "~10.0.0",
@@ -155,9 +157,7 @@
         "OKHTTP_VERSION": "3.12.0"
       },
       "cordova-plugin-youtube-video-player": {},
-      "cordova-plugin-camera": {
-        "ANDROID_SUPPORT_V4_VERSION": "27.+"
-      },
+      "cordova-plugin-camera": {},
       "cordova-plugin-file-transfer": {},
       "cordova-plugin-file": {},
       "cordova-plugin-crop": {},
@@ -180,17 +180,19 @@
       "cordova-plugin-android-permissions": {},
       "cordova-plugin-badge": {},
       "cordova-plugin-stripe": {},
-      "cordova-plugin-facebook4": {
-        "APP_ID": "3372377396172876",
-        "APP_NAME": "Amandeep patient"
-      },
       "cordova-plugin-email-composer": {
         "ANDROID_SUPPORT_V4_VERSION": "27.+"
       },
       "cordova-plugin-googleplus": {
-        "REVERSED_CLIENT_ID": "myreversedclientid",
-        "WEB_APPLICATION_CLIENT_ID": "com.googleusercontent.apps.lrb889of530fno40hma2pumc38gfe8cv-334231413507",
+        "REVERSED_CLIENT_ID": "amandeephospital.patientapp.com",
+        "WEB_APPLICATION_CLIENT_ID": "692677994363-qijd73jeoe07m4r903s39objhl6emogo.apps.googleusercontent.com",
         "PLAY_SERVICES_VERSION": "15.0.1"
+      },
+      "cordova-plugin-facebook4": {
+        "APP_ID": "861012151302534",
+        "APP_NAME": "AmandeepHospital",
+        "FACEBOOK_HYBRID_APP_EVENTS": "false",
+        "FACEBOOK_ANDROID_SDK_VERSION": "5.13.0"
       }
     },
     "platforms": [

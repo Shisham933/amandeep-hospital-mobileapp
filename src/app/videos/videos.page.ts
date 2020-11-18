@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Platform } from '@ionic/angular';
 import { EmbedVideoService } from 'ngx-embed-video';
 import { ModalController } from '@ionic/angular';
 import { Location } from '@angular/common';
@@ -20,12 +21,17 @@ export class VideosPage implements OnInit {
   youtubeUrl = "https://www.youtube.com/watch?v=iHhcHTlGtRs";
   videos: any = [];
 
-  constructor(private _sanitizer:DomSanitizer,private youtube: YoutubeVideoPlayer, private modalCtrl: ModalController, private embedService: EmbedVideoService, private location: Location, private http: HttpService, private utility: UtilityService) {
+  constructor(private _sanitizer:DomSanitizer,private platform:Platform,private youtube: YoutubeVideoPlayer, private modalCtrl: ModalController, private embedService: EmbedVideoService, private location: Location, private http: HttpService, private utility: UtilityService) {
     this.iframe_html = this.embedService.embed(this.youtubeUrl);
+    
   }
 
   ngOnInit() {
     this.getYoutubeVideos();
+    this.platform.backButton.subscribeWithPriority(9999, () => {
+      // do nothing
+      this.goBack();
+    })
   }
 
   goBack() {

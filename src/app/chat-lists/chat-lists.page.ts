@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Platform } from '@ionic/angular';
 import { Router, NavigationExtras } from '@angular/router';
 import { ChatsService } from '../chats.service';
 import * as _ from 'lodash';
@@ -12,22 +13,27 @@ export class ChatListsPage implements OnInit {
   public showSearchbar: boolean = false;
   public chat_list: any = [];
   public searchArray : any = [];
-  constructor(private router: Router, public chats: ChatsService,) {
+  constructor(private router: Router, private platform:Platform,public chats: ChatsService,) {
     if (JSON.parse(localStorage.getItem('chat_lists'))) {
       let chat_list = _.orderBy(JSON.parse(localStorage.getItem('chat_lists')), ['send_datetime'], ['desc']);
       this.chat_list = _.uniqBy(chat_list, 'patient_id');
     }
+    this.platform.backButton.subscribeWithPriority(9999, () => {
+      // do nothing
+      this.goBack();
+    })
   }
 
   ngOnInit() {
     let user = JSON.parse(localStorage.getItem('user_details'));
     console.log(user,"user");
+    debugger
     this.chats.getChatUsersList(user.id).subscribe((res: any) => {
+      console.log(res)
       let chat_list = _.orderBy(res, ['send_datetime'], ['desc']);;
       this.chat_list = _.uniqBy(chat_list, 'patient_id');
       localStorage.setItem('chat_lists', JSON.stringify(res));
       this.searchArray = this.chat_list;
-     
     }, err => {
     });
   }

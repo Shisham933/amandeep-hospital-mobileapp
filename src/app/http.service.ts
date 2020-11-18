@@ -14,7 +14,7 @@ export class HttpService {
   private url: string = this.testingUrl;
 
 
-  constructor(private http: HttpClient,  private utility: UtilityService, private router: Router) {
+  constructor(private http: HttpClient, private utility: UtilityService, private router: Router) {
     // this.getLocations('allLocations');
   }
 
@@ -50,10 +50,10 @@ export class HttpService {
         'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('token'))
       })
     };
-  
+
     return this.http.get(this.url + endpoint, httpOptions);
   }
-  
+
 
   getSpeciality(endpoint: string) {
     let httpOptions = {
@@ -109,8 +109,8 @@ export class HttpService {
     };
     return this.http.post(this.url + endpoint, body, httpOptions);
   }
-  
-  
+
+
   getAlreadyRegisteredPatients(endpoint: string) {
     let httpOptions = {
       headers: new HttpHeaders({
@@ -119,7 +119,7 @@ export class HttpService {
         'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('token'))
       })
     };
-  
+
     return this.http.get(this.url + endpoint, httpOptions);
   }
 
@@ -245,7 +245,7 @@ export class HttpService {
     };
     return this.http.post(this.url + endpoint, body, httpOptions);
   }
-  
+
   contactUs(endpoint: string, body: any) {
     let httpOptions = {
       headers: new HttpHeaders({
@@ -256,17 +256,21 @@ export class HttpService {
     };
     return this.http.post(this.url + endpoint, body, httpOptions);
   }
-  
+
   socialLogin(endpoint: string, body: any) {
-    // let httpOptions = {
-    //   headers: new HttpHeaders({
-    //     'Content-Type': 'application/json',
-    //     'Accept': '*/*',
-    //     'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('token'))
-    //   })
-    // };
     return this.http.post(this.url + endpoint, body);
   }
 
+
+  getAllChatMessages(endpoint: string) {
+    let httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Accept': '*/*',
+        'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('token'))
+      })
+    };
+    return this.http.get(this.url + endpoint, httpOptions);
+  }
 
 }

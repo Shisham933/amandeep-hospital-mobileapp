@@ -4,6 +4,7 @@ import { Location } from '@angular/common';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { HttpService } from '../http.service';
 import { UtilityService } from '../utility.service';
+import { retry } from 'rxjs/operators';
 
 @Component({
   selector: 'app-select-specility',
@@ -103,5 +104,42 @@ export class SelectSpecilityPage implements OnInit {
 
   stopSearch() {
     this.specialities = this.searchArray;
+  }
+
+  getIcon(name) {
+    if (name == 'Orthopaedics & Joint Replacement') {
+      return "assets/imgs/Orthopaedics.png"
+    } else if (name == 'Plastic & Cosmetic Surgery') {
+      return "assets/imgs/Plastic Cosmetic.png"
+    }
+    else if (name == 'Pulmonology') {
+      return "assets/imgs/Pulmonology.png"
+    }
+    else if (name == 'Neurology') {
+      return "assets/imgs/Neurology.png"
+    }
+    else if (name == 'Plastic, Cosmetic & Microvascular Surgery') {
+      return "assets/imgs/Cosmetic Surgery.png"
+    }
+    else if (name == 'Medicine') {
+      return "assets/imgs/Medicine.png"
+    } else if (name == 'Gastroenterology') {
+      return "assets/imgs/Gastroenterology.png"
+    } else if (name == 'Neuro and Spine') {
+      return "assets/imgs/Neuro & Spine.png"
+    } else if (name == 'Pathology') {
+      return "assets/imgs/Pathology.png"
+
+    } else if (name == 'General & Laparoscopic Surgeon') {
+      return "assets/imgs/General & Laparo.png"
+    } else if (name == 'ENT') {
+      return "assets/imgs/ENT.png"
+    }
+    else if (name == 'Medical oncology') {
+      return "assets/imgs/Medical Oncology.png"
+    }
+    else {
+      return "assets/imgs/testing.png"
+    }
   }
 }

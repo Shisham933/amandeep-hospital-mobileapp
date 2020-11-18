@@ -16,12 +16,11 @@ export class ChatsService {
 
   getChatUsersList(uid){
     console.log(uid)
-   return  this.database.list('/chats', ref => ref.orderByChild('patient_id').equalTo(uid)).valueChanges()
+    return  this.database.list('/chats', ref => ref.orderByChild('patient_id').equalTo(uid)).valueChanges()
   }
  
   getChatsPerUser(doctor_id,patient_id){
     return  this.database.list('/chats', ref => ref.orderByChild('patient_id').equalTo(patient_id).orderByChild('doctor_id').equalTo(doctor_id)).valueChanges()
- 
   }
 
 }

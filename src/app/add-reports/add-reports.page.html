@@ -33,7 +33,7 @@
       <ion-icon name="cloud-upload-outline"></ion-icon>
      </ion-col>
 
-    <ion-col size="3" class="description-img img-col" *ngIf="report_2 != undefined">
+    <ion-col size="3" class="description-img img-col" *ngIf="report_2 != undefined" style="margin-left: 25px;">
       <img src="{{report_2}}"/>
     </ion-col>
 
@@ -41,7 +41,7 @@
       <ion-icon name="cloud-upload-outline" *ngIf="report_3 == undefined"></ion-icon>
     </ion-col>
 
-    <ion-col size="3" class="description-img img-col" *ngIf="report_3 != undefined">
+    <ion-col size="3" class="description-img img-col" *ngIf="report_3 != undefined" style="margin-left: 22px;">
       <img src="{{report_3}}"/>
     </ion-col>
 
@@ -58,12 +58,12 @@
       <ion-icon name="cloud-upload-outline" *ngIf="report_5 == undefined"></ion-icon>
     </ion-col>
 
-    <ion-col size="3" class="description-img img-col" *ngIf="report_5 != undefined">
+    <ion-col size="3" class="description-img img-col" *ngIf="report_5 != undefined" style="margin-left: 25px;">
       <img src="{{report_5}}"/>
     </ion-col>
 
   </ion-row>
-  <ion-row>
+  <ion-row style="margin-top: 15px;">
     <ion-col size="12" style="text-align:center">
       <ion-button ion-button (click)="addReport()" class="submit-btn">Submit</ion-button>
     </ion-col>

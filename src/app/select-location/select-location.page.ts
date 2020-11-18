@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Platform } from '@ionic/angular';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { Location } from '@angular/common';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
@@ -17,11 +18,15 @@ export class SelectLocationPage implements OnInit {
   public location_name;
   public helpline_number;
   public book_type;
-  constructor(private route: ActivatedRoute, private statusBar: StatusBar, private location: Location, private router: Router, private http: HttpService, public utility: UtilityService) {
+  constructor(private route: ActivatedRoute, private platform:Platform,private statusBar: StatusBar, private location: Location, private router: Router, private http: HttpService, public utility: UtilityService) {
     this.statusBar.backgroundColorByHexString('#ffffff');
     this.route.queryParams.subscribe((params) => {
       this.book_type = this.router.getCurrentNavigation().extras.state.book_type;
     });
+    this.platform.backButton.subscribeWithPriority(9999, () => {
+      // do nothing
+      this.goBack();
+    })
   }
  
   ngOnInit() {

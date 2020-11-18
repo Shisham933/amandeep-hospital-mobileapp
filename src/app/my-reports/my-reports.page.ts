@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
+import { Platform } from '@ionic/angular';
 import { Location } from '@angular/common';
 import { Downloader, DownloadRequest,NotificationVisibility } from '@ionic-native/downloader/ngx';
 import { HttpService } from '../http.service';
@@ -12,10 +13,15 @@ import { UtilityService } from '../utility.service';
 })
 export class MyReportsPage implements OnInit {
   public reports : any = [];
-  constructor(private route:ActivatedRoute,private router: Router,private downloader: Downloader,private location:Location,private http: HttpService, private utility: UtilityService) { 
+  constructor(private route:ActivatedRoute,private platform:Platform,private router: Router,private downloader: Downloader,private location:Location,private http: HttpService, private utility: UtilityService) { 
     this.route.queryParams.subscribe((params) => {
       this.getMyReports();
     })
+    this.platform.backButton.subscribeWithPriority(9999, () => {
+      // do nothing
+      this.goBack();
+    })
+
   }
 
   ngOnInit() {

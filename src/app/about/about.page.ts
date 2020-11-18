@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Platform } from '@ionic/angular';
 import { Location } from '@angular/common';
 
 @Component({
@@ -8,7 +9,12 @@ import { Location } from '@angular/common';
 })
 export class AboutPage implements OnInit {
 
-  constructor(private location: Location,) { }
+  constructor(private location: Location,private platform:Platform) {
+    this.platform.backButton.subscribeWithPriority(9999, () => {
+      // do nothing
+      this.goBack();
+    })
+   }
 
   ngOnInit() {
   }

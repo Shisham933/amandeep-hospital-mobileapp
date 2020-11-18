@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { Platform } from '@ionic/angular';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
-import { LoadingController, AlertController, ToastController } from "@ionic/angular";
+import { LoadingController, AlertController, ToastController, ModalController } from "@ionic/angular";
 import { HttpService } from '../http.service';
 import { UtilityService } from '../utility.service';
 import { ChatsService } from '../chats.service';
+import { CardPaymentPage } from '../card-payment/card-payment.page';
 
 @Component({
   selector: 'app-chat-with-doctor',
@@ -28,6 +30,8 @@ export class ChatWithDoctorPage implements OnInit {
 
 
   constructor(private router: Router,
+    private platform:Platform,
+    private modalController:ModalController,
     private alertController: AlertController,
     private http: HttpService,
     public chats: ChatsService,
@@ -37,6 +41,10 @@ export class ChatWithDoctorPage implements OnInit {
     this.patient_id = user.id;
     this.patient_name = user.user_name;
     this.patient_profile_image = user.profile_photo != undefined ?  user.profile_photo   : '';
+    this.platform.backButton.subscribeWithPriority(9999, () => {
+      // do nothing
+      this.goBack();
+    })
   }
 
   ngOnInit() {
@@ -102,7 +110,6 @@ export class ChatWithDoctorPage implements OnInit {
             this.patient_name = res.data['patient'].name;
 
           } else {
-
             let state = {
               patient: res.data.patient,
 
@@ -157,37 +164,26 @@ export class ChatWithDoctorPage implements OnInit {
         "book_for": this.book_for,
         "patient_id": this.patient_id,
         "subscribed_by": this.subscribed_by,
-        "health_query": this.health_query
+        "health_query": this.health_query,
+        "type": "Chat"
       }
-      console.log(params)
-      this.http.buyChatSubscription("chatSubscription", params).subscribe(
-        (res: any) => {
-          this.utility.hideLoading();
-          if (res.success) {
-            let patient_firebaseid = JSON.parse(localStorage.getItem('firebase_user_id'))
-            let message = {
-              "doctor_name": this.doctor_name,
-              "patient_name": this.patient_name,
-              "message": this.health_query,
-              "send_datetime": new Date().toISOString(),
-              "patient_firebaseid": patient_firebaseid.uid,
-              "doctor_firebaseid": this.doctor_firebaseid,
-              "doctor_id":this.doctor_id,
-              "patient_id": this.patient_id,
-              "patient_profile_image": this.patient_profile_image,
-              "doctor_profile_image": this.doctor_profile_image,
-              "from": "patient",
-              "to":"doctor",
-              "type":"text"
-            }
-            this.sendChatMessage(message);
-          }
-        }, err => {
-          this.utility.hideLoading();
-          this.utility.showMessageAlert("Network error!", "Please check your network connection.")
-        })
-    }
+       localStorage.setItem('confirm-appointment', JSON.stringify(params));
+        // debugger
+        console.log("params.....", params);
+        this.presentModal();
+     }
   }
+
+  async presentModal() {
+    const modal = await this.modalController.create({
+      component: CardPaymentPage,
+      animated: true,
+      backdropDismiss: true,
+      showBackdrop: true,
+    });
+    return await modal.present();
+  }
+
 
   sendChatMessage(message) {
     this.chats.sendChatMessage(message);

@@ -30,7 +30,7 @@ export class ConfirmAppointmentPage implements OnInit {
   show_patient_form: boolean = false;
   show_registered_patients: boolean = false;
   name: any;
-  mobile_no: any;
+  mobile_no: string;
   age: any;
   speciality_name: string;
   choose_self: boolean = false;
@@ -235,11 +235,17 @@ export class ConfirmAppointmentPage implements OnInit {
   }
 
   confirmAppointment() {
-    //debugger
+   // debugger
     if (this.book_for == '' || this.book_for == undefined) {
       this.utility.showMessageAlert("Patient info required!", "Please select one option for whom you are booking this appointment.")
     } else if (this.book_for == 'relative' && (this.name == undefined || this.name == '' || this.age == undefined || this.mobile_no == undefined || this.mobile_no == '')) {
       this.utility.showMessageAlert("Error!", "Please enter patient details.")
+    }else if(this.mobile_no.toString().length > 10){
+      this.utility.showMessageAlert("Invalid mobile number!", "Mobile number should be of 10 digits.")
+   
+    } else if(this.age.toString().length > 2){
+      this.utility.showMessageAlert("Invalid age!", "Please enter valid age.")
+   
     } else {
       if (this.book_type == 'OPD') {
         let user = JSON.parse(localStorage.getItem('user_details'));

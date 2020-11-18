@@ -166,7 +166,7 @@ export class AppComponent {
         this.user = JSON.parse(localStorage.getItem('user_details'));
         this.utility.user = JSON.parse(localStorage.getItem('user_details'));
         console.log(this.utility.user)
-        if (this.utility.user.profile_photo != null) {
+        if (this.utility.user.profile_photo != null || this.utility.user.profile_photo != undefined) {
           this.utility.image = this.utility.user.profile_photo;
         } else {
           this.utility.image = "assets/imgs/no-profile.png";

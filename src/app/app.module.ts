@@ -49,6 +49,10 @@ import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { AngularFireAuth } from 'angularfire2/auth';
 
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+
+const chat_config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
+
 const config = {
   apiKey: "AIzaSyAXMdfk33fyZ02OCvbFhm_JOiySaXvCShY",
   authDomain: "amandeephospitalchat.firebaseapp.com",
@@ -76,6 +80,7 @@ const agoraConfig: AgoraConfig = {
     AngularFireModule.initializeApp(config),
     AngularFireDatabaseModule,
     AngularAgoraRtcModule.forRoot(agoraConfig),
+    SocketIoModule.forRoot(chat_config),
     IonicModule.forRoot({ mode: 'ios' }),
     AppRoutingModule],
   providers: [

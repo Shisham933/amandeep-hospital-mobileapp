@@ -68,21 +68,21 @@ export class EditProfilePage implements OnInit {
 
   editProfile() {
     
-    if(this.gaurdian_name.length > 25){
+    if(this.gaurdian_name.length > 25 && this.gaurdian_name != undefined){
      this.utility.showMessageAlert("Invalid guardian name!","Guardian name should not be more than 25 characters.")
-    }else if (this.emergency_number.length != 10){
+    }else if (this.emergency_number.length != 10  && this.emergency_number != ''){
       this.utility.showMessageAlert("Invalid emergency mobile number!", "The mobile number you have entered is not valid.")
     }else {
       this.utility.showLoading();
     let params = {
-      "user_id": this.user_id,
-      "name": this.name,
-      "mobile_no": '91' + this.mobile_no,
+      "id": this.user_id,
+      "user_name": this.name,
       "email": this.email_id,
       "gender": this.gender,
       "dob": this.dob,
       "marital_status": this.marital_status,
-      "emergency_number": this.emergency_number,
+      "emergency_num": this.emergency_number,
+      "phone_number":this.mobile_no,
       "guardian_name": this.gaurdian_name
     }
     this.http.editProfile("editProfile", params).subscribe(
@@ -191,7 +191,6 @@ export class EditProfilePage implements OnInit {
         ContentEncoding: 'base64',
         ContentType: "image/jpeg"
       };
-
 
       s3.upload(params, (err, data) => {
 

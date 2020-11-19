@@ -34,20 +34,20 @@
 
 <ion-content>
   <ion-list lines="none">
-    <ion-item class="lower-bottom" *ngFor="let c of chat_list" (click)="goToChatWindow(c)">
+    <ion-item class="lower-bottom" *ngFor="let c of chat_list" (click)="goToChatWindow(c.sender_id,c.reciever_id,c.doctor_details)">
 
       <ion-avatar slot="start">
-        <img src="{{c.doctor_profile_image}}">
+        <img src="{{c.doctor_details.profile_picture}}">
       </ion-avatar>
       <ion-label>
-        <h2 class="doctor-name">{{c.doctor_name}}<span>{{c.send_datetime | date : 'short'}}</span>
+        <h2 class="doctor-name">Dr. {{c.doctor_details.firstname}}  {{c.doctor_details.lastname}}<span>{{c.latest_msg[0].created_at | date : 'short'}}</span>
           <!-- <ion-icon class="map-icon" name="map-outline" (click)="showMap(a.location_name,a.address)"></ion-icon> -->
         </h2>
-        <p *ngIf="c.type == 'text'">{{c.message}}
+        <p *ngIf="c.latest_msg[0].message_type == 1">{{c.latest_msg[0].message}}
         </p>
-        <p *ngIf="c.type != 'text' && c.from == 'doctor'">You sent image
+        <p *ngIf="c.latest_msg[0].message_type != 1 && c.latest_msg[0].send_by == 'patient'">You sent image
         </p>
-        <p *ngIf="c.type != 'text' && c.from == 'patient'">Sent you image
+        <p *ngIf="c.latest_msg[0].message_type != 1 && c.latest_msg[0].send_by == 'doctor'">Sent you image
         </p>
        </ion-label>
     </ion-item>

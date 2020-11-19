@@ -1,6 +1,6 @@
-import { Component, OnInit,Input,ViewChild} from '@angular/core';
-import { IonContent,ActionSheetController,Platform } from '@ionic/angular';
-import { Router, ActivatedRoute,NavigationExtras } from '@angular/router';
+import { Component, OnInit, Input, ViewChild,NgZone } from '@angular/core';
+import { IonContent, ActionSheetController, Platform } from '@ionic/angular';
+import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { Crop } from '@ionic-native/crop/ngx';
 import { Base64 } from '@ionic-native/base64/ngx';
@@ -20,87 +20,125 @@ import * as _ from 'lodash';
 })
 
 export class ChatWindowPage implements OnInit {
- @ViewChild(IonContent, { static: false }) content: IonContent;
- @ViewChild('input') messageInput ;
- public chat: any;
- public messages: any = [];
- public sender_id : any;
- public message : string = '';
+  @ViewChild(IonContent, { static: false }) content: IonContent;
+  @ViewChild('input') messageInput;
+  public chat: any;
+  public messages: any = [];
+  public sender_id: any;
+  public reciever_id: any;
+  public doctor_details: any;
+  public message: string = '';
 
-  constructor(private router:Router,private platform : Platform,private keyboard: Keyboard,public actionSheetController: ActionSheetController,private filePath: FilePath, private base64: Base64, private crop: Crop,  private camera: Camera,private utility:UtilityService,private route:ActivatedRoute,private chats:ChatsService,private http:HttpService) {
+
+  constructor(private router: Router, private zone:NgZone,private platform: Platform, private keyboard: Keyboard, public actionSheetController: ActionSheetController, private filePath: FilePath, private base64: Base64, private crop: Crop, private camera: Camera, private utility: UtilityService, private route: ActivatedRoute, private chats: ChatsService, private http: HttpService) {
     this.route.queryParams.subscribe((params) => {
-      let user = JSON.parse(localStorage.getItem('user_details'));
-      this.sender_id = user.id;
-      this.chat = this.router.getCurrentNavigation().extras.state.chat;
-      this.messages = this.router.getCurrentNavigation().extras.state.messages;
-     // this.content.scrollToBottom(1500);
+      this.sender_id = this.router.getCurrentNavigation().extras.state.sender;
+      this.reciever_id = this.router.getCurrentNavigation().extras.state.reciever;
+      this.doctor_details = this.router.getCurrentNavigation().extras.state.doctor_details;
     });
     this.platform.resume.subscribe(() => {
-      //alert('1');
       this.ngOnInit();
     });
+
+    this.utility.getevent().subscribe((message) => {
+      console.log("message:recieved", message);
+      let user = JSON.parse(localStorage.getItem('user_details'));
+      if (message['message:recieved']['additionalData'].type == 1) {
+        let msg = {
+          //"id":  this.messages.length,
+          "message_type": 1,
+          "message": message['message:recieved'].message,
+          "image_url": null,
+          "sender_id": 'P-' + user.id,
+          "reciever_id": 'D-' + this.doctor_details.id,
+          "send_by": "doctor",
+          "status": 1,
+          "del_by": null,
+          "created_at": "2020-11-18 09:54:07",
+          "updated_at": "2020-11-18 09:54:07"
+        }
+        this.zone.run(() => {  this.messages.push(msg);});
+      
+        console.log(this.messages)
+        this.content.scrollToBottom(1500);
+      } else {
+        let msg = {
+          //"id":  this.messages.length,
+          "message_type": 2,
+          "message": null,
+          "image_url": message['message:recieved'].message,
+          "sender_id": 'P-' + user.id,
+          "reciever_id": 'D-' + this.doctor_details.id,
+          "send_by": "doctor",
+          "status": 1,
+          "del_by": null,
+          "created_at": "2020-11-18 09:54:07",
+          "updated_at": "2020-11-18 09:54:07"
+        }
+        this.zone.run(() => {  this.messages.push(msg);});
+      
+        this.content.scrollToBottom(1500);
+      }
+
+    });
+
   }
 
   ngOnInit() {
     let user = JSON.parse(localStorage.getItem('user_details'));
-    this.chats.getChatUsersList(user.id).subscribe((res: any) => {
-     // localStorage.setItem('chat_lists',JSON.stringify(res));
-      this.messages = res.filter(x=> (x.doctor_id ==  this.chat.doctor_id) && (x.patient_id ==  this.chat.patient_id));
-      this.content.scrollToBottom(1500);
-    }, err => {
-    });
-  }
-
-  goBack(){
-    this.router.navigateByUrl("/chat-lists");
-  }
-
-  sendMessage(){
-    let message = {
-      "doctor_name": this.chat.doctor_name,
-      "patient_name": this.chat.patient_name,
-      "message": this.message,
-      "send_datetime": new Date().toISOString(),
-      "patient_firebaseid": this.chat.patient_firebaseid,
-      "doctor_firebaseid": this.chat.doctor_firebaseid,
-      "doctor_id":this.chat.doctor_id,
-      "patient_id": this.chat.patient_id,
-      "patient_profile_image": this.chat.patient_profile_image,
-      "doctor_profile_image": this.chat.doctor_profile_image,
-      "from": "patient",
-      "to":"doctor",
-      "type":"text"
-    }
-    this.messages.push(message);
-    this.sendChatMessage(message);
-    this.message = '';
-    setTimeout(()=>{
-      this.messageInput.setFocus();
-     // this.keyboard.show();
-    },100)
-    this.content.scrollToBottom(1500);
-  }
-
-  sendChatMessage(m) {
-    this.chats.sendChatMessage(m);
-    
     let params = {
-      "id": this.chat.doctor_id,
-      "notified-person": "doctor",
-      "title": "Dr." + '' + this.chat.doctor_name,
-      "message": m.message,
-      "data":m
+      "sender_id": this.sender_id,
+      "reciever_id": this.reciever_id,
     }
-    
-    this.http.sendPushNotification("pushNotification", params).subscribe((res: any) => {
-      if (res.success) {
-        
-      }
+
+    this.chats.getChatMessages('getChatMessages', params).subscribe((res: any) => {
+      console.log(res);
+      this.messages = res.data;
+      localStorage.setItem('messages', this.messages);
     }, err => {
 
     })
-
   }
+
+  goBack() {
+    this.router.navigateByUrl("/chat-lists");
+  }
+
+  sendMessage() {
+    let user = JSON.parse(localStorage.getItem('user_details'));
+    let message = {
+      //"id":  this.messages.length,
+      "message_type": 1,
+      "message": this.message,
+      "image_url": null,
+      "sender_id": 'P-' + user.id,
+      "reciever_id": 'D-' + this.doctor_details.id,
+      "send_by": "patient",
+      "status": 1,
+      "del_by": null,
+      "created_at": "2020-11-18 09:54:07",
+      "updated_at": "2020-11-18 09:54:07"
+    }
+    this.messages.push(message);
+    let params = {
+      "message_type": 1,
+      "message": this.message,
+      "sender_id": 'P-' + user.id,
+      "reciever_id": 'D-' + this.doctor_details.id,
+      "send_by": "patient"
+    }
+    this.chats.getChatMessages('storeChatMessage', params).subscribe((res: any) => {
+    }, err => {
+
+    })
+    this.message = '';
+    setTimeout(() => {
+      this.messageInput.setFocus();
+      // this.keyboard.show();
+    }, 100)
+    this.content.scrollToBottom(1500);
+  }
+
 
   async getPicture() {
     const actionSheet = await this.actionSheetController.create({
@@ -136,7 +174,7 @@ export class ChatWindowPage implements OnInit {
     };
 
     this.camera.getPicture(options).then((imagePath) => {
-     // this.image = 'data:image/jpeg;base64,' + imagePath;
+      // this.image = 'data:image/jpeg;base64,' + imagePath;
       let imageName = "user-profile";
       this.uploadImage(imagePath, imageName).then((res: any) => {
         if (res.Location) {
@@ -195,25 +233,39 @@ export class ChatWindowPage implements OnInit {
   }
 
 
-  sendImage(img){
+  sendImage(img) {
+    let user = JSON.parse(localStorage.getItem('user_details'));
     let message = {
-      "doctor_name": this.chat.doctor_name,
-      "patient_name": this.chat.patient_name,
-      "message": img,
-      "send_datetime": new Date().toISOString(),
-      "patient_firebaseid": this.chat.patient_firebaseid,
-      "doctor_firebaseid": this.chat.doctor_firebaseid,
-      "doctor_id":this.chat.doctor_id,
-      "patient_id": this.chat.patient_id,
-      "patient_profile_image": this.chat.patient_profile_image,
-      "doctor_profile_image": this.chat.doctor_profile_image,
-      "from": "patient",
-      "to":"doctor",
-      "type":"image"
+      //"id":  this.messages.length,
+      "message_type": 2,
+      "message": null,
+      "image_url": img,
+      "sender_id": 'P-' + user.id,
+      "reciever_id": 'D-' + this.doctor_details.id,
+      "send_by": "patient",
+      "status": 1,
+      "del_by": null,
+      "created_at": "2020-11-18 09:54:07",
+      "updated_at": "2020-11-18 09:54:07"
     }
     this.messages.push(message);
-    this.sendChatMessage(message);
+    let params = {
+      "message_type": 2,
+      "message": null,
+      "image_url": img,
+      "sender_id": 'P-' + user.id,
+      "reciever_id": 'D-' + this.doctor_details.id,
+      "send_by": "patient"
+    }
+    this.chats.getChatMessages('storeChatMessage', params).subscribe((res: any) => {
+    }, err => {
+
+    })
     this.message = '';
+    setTimeout(() => {
+      this.messageInput.setFocus();
+      // this.keyboard.show();
+    }, 100)
     this.content.scrollToBottom(1500);
   }
 

@@ -119,18 +119,24 @@ export class CardPaymentPage implements OnInit {
               })
           } else if (this.data.type == 'Chat') {
             let params = {
-              "doctor_id": this.data.doctor_id,
+              "doctor_id":  this.data.doctor_id,
               "book_for": this.data.book_for,
-              "patient_id": this.data.patient_id,
-              "subscribed_by": this.data.subscribed_by,
+              "subscribed_by":this.data.subscribed_by,
               "health_query": this.data.health_query,
-              "type": "Chat"
+              "amount": 200,
+              "stripe_token": token.id,
+              "name": this.data.name,
+              "age": this.data.age,
+              "mobile_no": this.data.mobile_no
             }
+
             this.http.buyChatSubscription("chatSubscription", params).subscribe(
               (res: any) => {
                 this.utility.hideLoading();
                 if (res.success) {
-
+                  this.utility.showMessageAlert("Chat subscribed!", "You can now chat with doctor directly.");
+                  this.dismiss();
+                  this.router.navigateByUrl("/chat-lists");
                 }
               }, err => {
                 this.utility.hideLoading();

@@ -5,7 +5,7 @@
         <ion-icon name="chevron-back-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title class="title" *ngIf="!showSearchbar">Dr. {{chat.doctor_name}}</ion-title>
+    <ion-title class="title" *ngIf="!showSearchbar">Dr. {{doctor_details.firstname}} {{doctor_details.lastname}}</ion-title>
     <!-- <ion-buttons slot="end">
       <ion-button (click)="searchPatient()">
         <ion-icon name="search-outline"></ion-icon>
@@ -19,25 +19,25 @@
    
     <div class="message" *ngFor="let m of messages">
 
-      <div class="innerMessage messageRight" *ngIf="m.from == 'patient' && m.type == 'text' ">
-        <div class="msg" *ngIf="m.type == 'text'">{{m.message}}</div>
-        <div class="msg" *ngIf="m.type != 'text'"><img src="{{m.message}}"/></div>
+      <div class="innerMessage messageRight" *ngIf="m.send_by == 'patient' && m.message_type == 1 ">
+        <div class="msg" *ngIf="m.message_type == 1">{{m.message}}</div>
+        <div class="msg" *ngIf="m.message_type != 1"><img src="{{m.image_url}}"/></div>
       </div>
 
 
-      <div class="innerMessage messageRight" *ngIf="m.from == 'patient' && m.type != 'text'" style="width: 40%;">
-        <div class="msg" *ngIf="m.type == 'text'">{{m.message}}</div>
-        <div class="msg" *ngIf="m.type != 'text'"><img src="{{m.message}}"/></div>
+      <div class="innerMessage messageRight" *ngIf="m.send_by == 'patient' && m.message_type != 1" style="width: 40%;">
+        <div class="msg" *ngIf="m.message_type == 1">{{m.message}}</div>
+        <div class="msg" *ngIf="m.message_type != 1"><img src="{{m.image_url}}"/></div>
       </div>
 
-      <div class="innerMessage messageLeft" *ngIf="m.from == 'doctor' && m.type == 'text' ">
-        <div class="msg" *ngIf="m.type == 'text'">{{m.message}}</div>
-        <div class="msg" *ngIf="m.type != 'text'"><img src="{{m.message}}"/></div>
+      <div class="innerMessage messageLeft" *ngIf="m.send_by == 'doctor' && m.message_type == 1">
+        <div class="msg" *ngIf="m.message_type == 1">{{m.message}}</div>
+        <div class="msg" *ngIf="m.message_type != 1"><img src="{{m.image_url}}"/></div>
       </div>
       
-      <div class="innerMessage messageLeft" *ngIf="m.from == 'doctor' && m.type != 'text' " style="width: 40%;">
-        <div class="msg" *ngIf="m.type == 'text'">{{m.message}}</div>
-        <div class="msg" *ngIf="m.type != 'text'"><img src="{{m.message}}"/></div>
+      <div class="innerMessage messageLeft" *ngIf="m.send_by == 'doctor' && m.message_type != 1" style="width: 40%;">
+        <div class="msg" *ngIf="m.message_type == 1">{{m.message}}</div>
+        <div class="msg" *ngIf="m.message_type != 1"><img src="{{m.image_url}}"/></div>
       </div>
 
 

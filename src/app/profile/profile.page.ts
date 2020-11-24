@@ -22,7 +22,7 @@ export class ProfilePage implements OnInit {
   public marital_status: any;
   public emergency_number: any;
   public image: any;
-  constructor(private statusBar: StatusBar, private platform:Platform,private location: Location, private route: ActivatedRoute, private router: Router, private http: HttpService, private utility: UtilityService) {
+  constructor(private statusBar: StatusBar, private platform: Platform, private location: Location, private route: ActivatedRoute, private router: Router, private http: HttpService, private utility: UtilityService) {
     this.statusBar.backgroundColorByHexString('#FF0000');
     this.route.queryParams.subscribe((params) => {
       let user = JSON.parse(localStorage.getItem('user_details'));
@@ -33,14 +33,17 @@ export class ProfilePage implements OnInit {
       this.mobile_no = user.phone_number;
       this.dob = user.dob;
       this.email_id = user.email;
-      this.gaurdian_name = user.guardian_name == null ? 'NA' : user.guardian_name;
-      this.emergency_number = user.emergency_num == null ? 'NA' : user.emergency_num;
-      this.marital_status = user.marital_status == null ? 'NA' : user.marital_status;
-      if (user.profile_photo != null) {
-        this.utility.user_profile = user.profile_photo;
-      } else {
-        this.utility.user_profile  = "assets/imgs/no-profile.png";
+      this.gaurdian_name = user.guardian_name == null || user.guardian_name == '' ? 'NA' : user.guardian_name;
+      this.emergency_number = user.emergency_num == null || user.emergency_num == '' ? 'NA' : user.emergency_num;
+      this.marital_status = user.marital_status == null || user.marital_status == '' ? 'NA' : user.marital_status;
+      if (this.utility.user_profile == undefined) {
+        if (user.profile_photo != null) {
+          this.utility.user_profile = user.profile_photo;
+        } else {
+          this.utility.user_profile = "assets/imgs/no-profile.png";
+        }
       }
+
     })
     this.platform.backButton.subscribeWithPriority(9999, () => {
       // do nothing
@@ -50,7 +53,7 @@ export class ProfilePage implements OnInit {
   }
 
   ngOnInit() {
-  
+
   }
 
   goBack() {

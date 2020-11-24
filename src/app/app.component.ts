@@ -162,7 +162,7 @@ export class AppComponent {
         }
       );
       if (JSON.parse(localStorage.getItem('token')) != undefined) {
-        this.getChats();
+        //this.getChats();
         this.user = JSON.parse(localStorage.getItem('user_details'));
         this.utility.user = JSON.parse(localStorage.getItem('user_details'));
         console.log(this.utility.user)
@@ -174,20 +174,19 @@ export class AppComponent {
         this.router.navigate(["home"])
       } else {
         this.router.navigate(["login"])
-        //this.http.getLocations("allLocations");
-      }
+       }
 
     });
   }
 
-  getChats() {
-    let user = JSON.parse(localStorage.getItem('user_details'));
-    this.chats.getChatUsersList(user.id).subscribe((res: any) => {
-      // alert(res)
-      localStorage.setItem('chat_lists', JSON.stringify(res));
-    }, err => {
-    });
-  }
+  // getChats() {
+  //   let user = JSON.parse(localStorage.getItem('user_details'));
+  //   this.chats.getChatUsersList(user.id).subscribe((res: any) => {
+  //     // alert(res)
+  //     localStorage.setItem('chat_lists', JSON.stringify(res));
+  //   }, err => {
+  //   });
+  // }
 
   share() {
 
@@ -346,8 +345,7 @@ export class AppComponent {
 
     pushObject.on('notification').subscribe((notification: any) => {
       this.badge.set(1);
-      // cordova.plugins.CordovaCall.setVideo(true);
-      // cordova.plugins.CordovaCall.receiveCall('David Marcus');
+      console.log(notification)
       if (notification.additionalData['notification_type'] == 'start_call') {
         this.localNotifications.schedule({
           id: 1,
@@ -386,6 +384,9 @@ export class AppComponent {
           text: notification.message
         });
         this.utility.showMessageAlert(notification.title, notification.message);
+        this.utility.publishEvent({
+          'message:recieved': notification
+        });
       }
 
     });

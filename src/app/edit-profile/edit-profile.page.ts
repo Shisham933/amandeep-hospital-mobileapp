@@ -219,7 +219,7 @@ export class EditProfilePage implements OnInit {
           localStorage.setItem('user_details', JSON.stringify(res.data));
           // this.image = url;
          // this.image = 'data:image/jpeg;base64,' + imagePath;
-          this.utility.user_profile = this.image;
+         // this.utility.user_profile = this.image;
           this.utility.image = this.image;
           localStorage.setItem('user-profile-image',this.image);
           this.utility.showMessageAlert("Profile Picture Updated!", "Your profile image has been updated.");

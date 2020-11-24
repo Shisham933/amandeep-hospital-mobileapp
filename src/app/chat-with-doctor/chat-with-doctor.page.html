@@ -15,20 +15,30 @@
     </ion-col>
   </ion-row>
   <ion-row class="title-row">
-    <ion-col size="3" class="title-col" (click)="chooseSelf()">
+    <ion-col size="3" class="title-col" (click)="chooseSelf()" *ngIf="book_for == 'self'">
       <img src="{{utility.image}}" /><br>
       <ion-label>Myself</ion-label>
     </ion-col>
-    <ion-col size="3" class="add-person" (click)="chooseRelative()">
-      <ion-icon name="add-outline" *ngIf="patient_name == undefined"></ion-icon>
-      <ion-icon name="checkmark" *ngIf="patient_name != undefined" style="color: #363A61"></ion-icon>
+    <ion-col size="3" class="title-col" (click)="chooseSelf()" *ngIf="book_for == 'relative'">
+      <img src="{{utility.image}}" style="border: 1px solid #ADADAD;"/><br>
+      <ion-label>Myself</ion-label>
+    </ion-col>
+    <ion-col size="3" class="add-person" (click)="chooseRelative()"  *ngIf="patient_name != undefined && book_for == 'self'">
+      <ion-icon name="add-outline"></ion-icon>
+      <ion-label>Someone else</ion-label>
+     </ion-col>
+    <ion-col size="3" class="add-person" (click)="chooseRelative()" *ngIf="patient_name != undefined && book_for == 'relative'">
+      <ion-icon name="checkmark"  style="color: #363A61"  style="border: 2px solid green;" ></ion-icon>
       <br>
-      <ion-label *ngIf="patient_name == undefined">Someone else</ion-label>
-      <ion-label *ngIf="patient_name != undefined">{{patient_name}}</ion-label>
+      <ion-label *ngIf="patient_name != ''">{{patient_name}}</ion-label>
+      <ion-label *ngIf="patient_name == ''">Someone Else</ion-label>
     </ion-col>
   </ion-row>
   <ng-container *ngIf="show_patient_form">
     <ion-card>
+      <ion-card-header>
+        Fill Patient Details:
+      </ion-card-header>
       <ion-row class="header-title">
         <ion-col size="12" class="phone-number">
           <ion-label>Name</ion-label>
@@ -78,7 +88,7 @@
           </ng-numeric-input>
         </ion-col>
       </ion-row>
-      <ion-row style="padding:40px">
+      <ion-row style="padding: 0 40px 9px;">
         <ion-col>
           <ion-button style="--background:linear-gradient(to right, #C23F3A , #E80C0A);--padding-bottom: 25px;
           --padding-top: 25px;--background-activated:#E80C0A" shape="round" expand="full" (click)="addPatient()"
@@ -91,7 +101,7 @@
     <ion-col size="12">
       <ion-select placeholder="Select Doctor"  interface="alert" (ionChange)="chooseDoctor($event)">
         <ng-container *ngFor="let d of utility.all_doctors; let i = index">
-          <ion-select-option value="{{i}}">Dr. {{i}} {{d.firstname}} {{d.lastname}}({{d.speciality_name}})
+          <ion-select-option value="{{i}}">Dr.{{d.firstname}} {{d.lastname}}({{d.speciality_name}})
           </ion-select-option>
         </ng-container>
       </ion-select>

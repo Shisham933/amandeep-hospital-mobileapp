@@ -27,10 +27,10 @@
       <ion-label>{{s.speciality_name}}</ion-label>
     </ion-item>
    </ion-list> -->
-   <ion-row>
-     <ion-col class="speciality-box" size="5"  *ngFor="let s of specialities" (click)="selectSpeciality(s.speciality_name,s.speciality_id)">
+   <ion-row style="height: 88%;">
+     <ion-col class="speciality-box" size="5.5"  *ngFor="let s of specialities" (click)="selectSpeciality(s.speciality_name,s.speciality_id)">
       <img class="icon" [src]="getIcon(s.speciality_name)"/>
-      <ion-label class="speciality-title">{{s.speciality_name}}</ion-label>
+      <span class="speciality-title">{{s.speciality_name}}</span>
      </ion-col>
    </ion-row>
 </ion-content>

@@ -72,6 +72,27 @@ ion-scroll[scrollX] {
   }
  
   }
+
+  .my-space {
+    white-space: nowrap;
+    // height: 120px;
+    overflow: scroll;
+    margin-top: -14px;
+    img{
+      width: 20%;
+      margin-bottom: 32px;
+    }
+    
+    .scroll-item {
+    display: inline-block;
+    }
+    .selectable-icon{
+    margin: 10px 20px 10px 20px;
+    color: red;
+    font-size: 100px;
+    }
+   
+    }
   ion-scroll[scroll-avatar]{
   height: 60px;
   }
@@ -154,3 +175,17 @@ ion-scroll[scrollX] {
   width: 20px;
   margin-right: 2px;
  }
+ .container{
+  // padding:20px;
+  // border:dotted 1px;
+  white-space:nowrap;
+  overflow-x:auto;
+}
+
+.box{
+  // width:100px;
+  // height:180px;
+  // background-color: red;
+  margin:10px;
+  display:inline-block
+}

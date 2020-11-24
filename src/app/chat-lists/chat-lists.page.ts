@@ -10,14 +10,16 @@ import * as _ from 'lodash';
   styleUrls: ['./chat-lists.page.scss'],
 })
 export class ChatListsPage implements OnInit {
+
   public showSearchbar: boolean = false;
   public chat_list: any = [];
-  public searchArray : any = [];
-  constructor(private router: Router, private platform:Platform,public chats: ChatsService,) {
-    if (JSON.parse(localStorage.getItem('chat_lists'))) {
-      let chat_list = _.orderBy(JSON.parse(localStorage.getItem('chat_lists')), ['send_datetime'], ['desc']);
-      this.chat_list = _.uniqBy(chat_list, 'patient_id');
-    }
+  public searchArray: any = [];
+
+  constructor(private router: Router, private platform: Platform, public chats: ChatsService,) {
+    // console.log(JSON.parse(localStorage.getItem('chat_lists')))
+    // if (JSON.parse(localStorage.getItem('chat_lists'))) {
+    //   this.chat_list = JSON.parse(localStorage.getItem('chat_lists'));
+    // }
     this.platform.backButton.subscribeWithPriority(9999, () => {
       // do nothing
       this.goBack();
@@ -26,16 +28,14 @@ export class ChatListsPage implements OnInit {
 
   ngOnInit() {
     let user = JSON.parse(localStorage.getItem('user_details'));
-    console.log(user,"user");
-    debugger
-    this.chats.getChatUsersList(user.id).subscribe((res: any) => {
-      console.log(res)
-      let chat_list = _.orderBy(res, ['send_datetime'], ['desc']);;
-      this.chat_list = _.uniqBy(chat_list, 'patient_id');
-      localStorage.setItem('chat_lists', JSON.stringify(res));
-      this.searchArray = this.chat_list;
+    console.log(user, "user");
+    this.chats.getChatLists('getUserChats/' + 'P-' + user.id).subscribe((res: any) => {
+      console.log(res);
+      this.chat_list = res.data;
+      localStorage.setItem('chat_lists', this.chat_list);
     }, err => {
-    });
+
+    })
   }
 
   goBack() {
@@ -60,20 +60,17 @@ export class ChatListsPage implements OnInit {
 
   stopSearch() {
     this.chat_list = this.searchArray;
-    this.showSearchbar =  false;
+    this.showSearchbar = false;
   }
 
-  goToChatWindow(chat){
-    if(JSON.parse(localStorage.getItem('chat_lists'))){
-      let chats = JSON.parse(localStorage.getItem('chat_lists'));
-      var messages = chats.filter(x=> x.patient_id ==  chat.patient_id)
-    }
-    let navigationExtras: NavigationExtras = {
+  goToChatWindow(sender, reciever,doctor_details) {
+   let navigationExtras: NavigationExtras = {
       state: {
-        chat: chat,
-        messages:messages
+        sender: sender,
+        reciever: reciever,
+        doctor_details:doctor_details
       },
     };
-     this.router.navigateByUrl('/chat-window',navigationExtras)
+    this.router.navigateByUrl('/chat-window', navigationExtras)
   }
 }

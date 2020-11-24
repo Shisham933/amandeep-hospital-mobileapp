@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
-import { LoadingController, ModalController, AlertController, ToastController } from "@ionic/angular";
+import {  ModalController, AlertController, Platform } from "@ionic/angular";
 import { Location } from '@angular/common';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { HttpService } from '../http.service';
@@ -45,7 +45,7 @@ export class ConfirmAppointmentPage implements OnInit {
   registered_patients: any = [];
 
 
-  constructor(private statusBar: StatusBar, public modalController: ModalController, private alertController: AlertController, private launchNavigator: LaunchNavigator, private route: ActivatedRoute, private location: Location, private router: Router, private http: HttpService, private utility: UtilityService) {
+  constructor(private statusBar: StatusBar, public platform:Platform,public modalController: ModalController, private alertController: AlertController, private launchNavigator: LaunchNavigator, private route: ActivatedRoute, private location: Location, private router: Router, private http: HttpService, private utility: UtilityService) {
     this.statusBar.backgroundColorByHexString('#ffffff');
     this.route.queryParams.subscribe((params) => {
       this.speciality_id = this.router.getCurrentNavigation().extras.state.speciality_id;
@@ -65,7 +65,10 @@ export class ConfirmAppointmentPage implements OnInit {
         this.user = JSON.parse(localStorage.getItem('user_details'));
         this.getAlreadyRegisteredPatients();
       }
-
+      this.platform.backButton.subscribeWithPriority(9999, () => {
+        // do nothing
+        this.goBack();
+      })
     });
   }
 
@@ -76,42 +79,14 @@ export class ConfirmAppointmentPage implements OnInit {
     this.location.back();
   }
 
-  chooseSelf() {
-    this.book_for = 'self';
-    this.name = this.user.user_name;
-    this.mobile_no = this.user.phone_number;
-    this.age = null;
-    this.user = JSON.parse(localStorage.getItem('user_details'));
-    this.show_patient_details = true;
-    this.show_patient_form = false;
-    if (!this.choose_self) {
-      this.choose_self = true;
-      this.choose_relative = false;
-    } else {
-      this.choose_self = false;
-      this.choose_relative = false;
-    }
-  }
-
-  chooseRelative() {
-    this.show_patient_form = true;
-    this.show_patient_details = false;
-    this.book_for = 'relative';
-
-    if (!this.choose_relative) {
-      this.choose_relative = true;
-      this.choose_self = false;
-    } else {
-      // this.choose_relative = false;
-      this.choose_self = false;
-    }
-  }
-
   chooseBookingOption(title, index) {
     console.log(title)
     if (title == 'SELF') {
       this.book_for = 'self';
       this.user = JSON.parse(localStorage.getItem('user_details'));
+      this.name = this.user.user_name;
+      this.mobile_no = this.user.phone_number;
+      this.age = null;
       this.show_patient_details = true;
       this.show_patient_form = false;
       this.booking_options[1].isChecked = false;
@@ -121,6 +96,9 @@ export class ConfirmAppointmentPage implements OnInit {
       this.show_patient_details = false;
       this.show_registered_patients = true;
       this.book_for = 'relative';
+      this.name = undefined;
+      this.mobile_no = undefined;
+      this.age = undefined;
       this.booking_options[0].isChecked = false;
       this.booking_options[1].isChecked = true;
     }
@@ -143,9 +121,9 @@ export class ConfirmAppointmentPage implements OnInit {
       this.utility.showMessageAlert("Error!", "All fields are required.")
     } else if (!this.name.match(regx)) {
       this.utility.showMessageAlert("Invalid Patient name", "Only alphabets are allowed to enter in patient name field.")
-    } else if (this.mobile_no.toString().length != 10) {
+    } else if (this.mobile_no.toString().length != 10 && this.book_for != 'self') {
       this.utility.showMessageAlert("Invalid mobile number!", "The mobile number you have entered is not valid.")
-    } else if (this.age.toString().length > 2) {
+    } else if (this.age.toString().length > 2  && this.book_for != 'self') {
       this.utility.showMessageAlert("Invalid age !", "The age  you have entered is not valid.")
     } else {
       this.utility.showLoading();
@@ -240,10 +218,10 @@ export class ConfirmAppointmentPage implements OnInit {
       this.utility.showMessageAlert("Patient info required!", "Please select one option for whom you are booking this appointment.")
     } else if (this.book_for == 'relative' && (this.name == undefined || this.name == '' || this.age == undefined || this.mobile_no == undefined || this.mobile_no == '')) {
       this.utility.showMessageAlert("Error!", "Please enter patient details.")
-    }else if(this.mobile_no.toString().length > 10){
+    }else if(this.mobile_no.toString().length > 10  && this.book_for != 'self'){
       this.utility.showMessageAlert("Invalid mobile number!", "Mobile number should be of 10 digits.")
    
-    } else if(this.age.toString().length > 2){
+    } else if(this.age != null && this.age.toString().length > 2  && this.book_for != 'self'){
       this.utility.showMessageAlert("Invalid age!", "Please enter valid age.")
    
     } else {

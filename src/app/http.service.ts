@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-// import { Http, RequestOptions, URLSearchParams } from "@angular/http";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { UtilityService } from './utility.service';

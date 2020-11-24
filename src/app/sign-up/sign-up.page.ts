@@ -44,15 +44,15 @@ export class SignUpPage implements OnInit {
     signup() {
         var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
         if (this.name == undefined) {
-            this.utility.showToast("Please enter name")
+            this.utility.showMessageAlert("Error!","Please enter name")
         } else if (this.email_id == undefined) {
-            this.utility.showToast("Please enter email")
+            this.utility.showMessageAlert("Error!","Please enter email")
         } else if (!this.email_id.match(mailformat)) {
-            this.utility.showToast("Please enter valid email address")
+            this.utility.showMessageAlert("Error!","Please enter valid email address")
         } else if (this.password == undefined) {
-            this.utility.showToast("Please enter password")
+            this.utility.showMessageAlert("Error!","Please enter password")
         } else if (this.password.length < 8) {
-            this.utility.showToast("Password should be atlest 8 characters")
+            this.utility.showMessageAlert("Error!","Password should be atlest 8 characters")
         } else {
             this.utility.showLoading();
             let params = {
@@ -99,7 +99,7 @@ export class SignUpPage implements OnInit {
                         })
 
                     } else {
-                        this.utility.showMessageAlert("Error ",res.message);
+                        this.utility.showMessageAlert("Error ",res.message['mobile'][0]);
                     }
 
                 }, err => {

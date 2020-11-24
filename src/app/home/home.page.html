@@ -6,7 +6,7 @@
       </ion-col>
       <ion-col size="4" class="header">
         <!-- <ion-icon name="home-outline" style="color: #E80C0A;"></ion-icon> -->
-        <img style="width: 25%;" src="assets/imgs/home.png"/>
+        <img style="width: 25%;" src="assets/imgs/home.png" />
       </ion-col>
       <ion-col size="4" class="header" (click)="account()">
         <ion-icon name="person-outline"></ion-icon>
@@ -58,7 +58,7 @@
         <p class="quick-menu-title title_b">Appointments</p>
       </ion-col> -->
       <ion-col size="4">
-        <img src="assets/imgs/blogs.png" style="margin-left: 15px;" (click)="blogs()"/>
+        <img src="assets/imgs/blogs.png" style="margin-left: 15px;" (click)="blogs()" />
         <p class="quick-menu-title title_b" style="margin-left: -50px;">Blogs</p>
       </ion-col>
       <ion-col size="4" (click)="aboutUs()">
@@ -73,34 +73,30 @@
       <h3 style="font-weight: bold;">My Space</h3>
     </ion-col>
   </ion-row>
-  <ion-row style="padding: 10px;">
-    <ion-scroll scrollX="true">
-      <ion-col size="4"  (click)="myReports()">
-        <img src="assets/imgs/reports.png" />
-        <p class="quick-menu-title title_b" style="margin-left: -50px;">Report</p>
-      </ion-col>
-      <ion-col size="4" (click)="myAppointments()">
-        <img src="assets/imgs/appoinments.png" style="margin-left: 12px;" />
-        <p class="quick-menu-title title_b">Appointments</p>
-      </ion-col>
-    </ion-scroll>
+  <ion-row style="padding: 10px;margin-top: -25px;">
+    <ion-col>
+      <div class="container">
+        <div class="box">
+          <img src="assets/imgs/reports.png" (click)="myReports()" style="width: 20%;margin-left: -10px;" />
+          <p class="quick-menu-title title_b" style="margin-left: -50px;">Report</p>&nbsp;
+          <img src="assets/imgs/appoinments.png" style="margin-left: 12px;width: 20%;" (click)="myAppointments()" />
+          <p class="quick-menu-title title_b">Appointments</p>
+        </div>
+      </div>
+    </ion-col>
   </ion-row>
 
-  <ion-row style="padding: 10px;margin-top:20px">
-    <ion-scroll scrollX="true">
-      <ion-col size="4">
-        <img style="width: 65%;border-radius: 10px;
-        border: 3px solid #F9F4F4;" src="assets/imgs/emergency.png" />
-      </ion-col>
-      <ion-col size="4">
-        <img style="width: 65%;border-radius: 10px;
-        border: 3px solid #F9F4F4;" src="assets/imgs/knee replacement.png"/>
-       </ion-col>
-       <ion-col size="4">
-        <img style="width: 65%;border-radius: 10px;
-        border: 3px solid #F9F4F4;" src="assets/imgs/Plastic.png"/>
-       </ion-col>
-    </ion-scroll>
+  <ion-row style="margin-top: 25px;">
+    <ion-col>
+      <div class="container">
+        <div class="box">
+          <img style="width: 65%;border-radius: 10px;border: 3px solid #F9F4F4;"
+            src="assets/imgs/emergency.png" />&nbsp;
+          <img style="width: 65%;border-radius: 10px;border: 3px solid #F9F4F4;"
+            src="assets/imgs/knee replacement.png" />&nbsp;
+          <img style="width: 65%;border-radius: 10px;border: 3px solid #F9F4F4;" src="assets/imgs/Plastic.png" /></div>
+      </div>
+    </ion-col>
   </ion-row>
 
   <ion-row style="padding: 10px">
@@ -108,20 +104,22 @@
       <ion-label class="follow">Follow us on </ion-label>
     </ion-col>
     <ion-col size="5" style="margin-left: -8px;">
-        <a href="https://www.facebook.com/amandeephospitals/"><img class="social-img" src="assets/imgs/facebook-icon.png"/></a>
-        <a href="https://www.instagram.com/amandeephospitals/"><img class="social-img" src="assets/imgs/instagram.png"/></a>
-        <a href="https://www.youtube.com/amandeephospital"><img class="social-img" src="assets/imgs/youtube.png"/></a>
-        <a href="https://twitter.com/amandeephspl"><img class="social-img" src="assets/imgs/twitter.png"/></a>
-        <a href="https://linkedin.com/company/amandeep-hospital"><img class="social-img" src="assets/imgs/linkedin.png"/></a>
+      <a href="https://www.facebook.com/amandeephospitals/"><img class="social-img"
+          src="assets/imgs/facebook-icon.png" /></a>
+      <a href="https://www.instagram.com/amandeephospitals/"><img class="social-img"
+          src="assets/imgs/instagram.png" /></a>
+      <a href="https://www.youtube.com/amandeephospital"><img class="social-img" src="assets/imgs/youtube.png" /></a>
+      <a href="https://twitter.com/amandeephspl"><img class="social-img" src="assets/imgs/twitter.png" /></a>
+      <a href="https://linkedin.com/company/amandeep-hospital"><img class="social-img"
+          src="assets/imgs/linkedin.png" /></a>
     </ion-col>
   </ion-row>
- 
-    <!-- fab placed to the bottom end -->
-    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-      <ion-fab-button style="--background:transparent;--background-activated:transparent">
-        <a href="tel:+919876002746"><img src="assets/imgs/Call ambulance.png"/></a>
-      </ion-fab-button>
-    </ion-fab>
+
+  <!-- fab placed to the bottom end -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button style="--background:transparent;--background-activated:transparent">
+      <a href="tel:+919876002746" style="padding:6px"><img src="assets/imgs/Call ambulance.png" /></a>
+    </ion-fab-button>
+  </ion-fab>
 
 </ion-content>
-

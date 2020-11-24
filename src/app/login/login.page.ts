@@ -32,7 +32,7 @@ export class LoginPage implements OnInit {
         if (this.mobile_no == undefined) {
             this.utility.showMessageAlert("Mobile number required!", "Please enter your mobile number.")
         }
-        else if (this.mobile_no.length != 10) {
+        else if (this.mobile_no.toString().length != 10) {
             this.utility.showMessageAlert("Invalid mobile number!", "The mobile number you have entered is not valid.")
         } else if (this.password == undefined) {
             this.utility.showMessageAlert("Password required!", "Please enter the password.")
@@ -40,7 +40,7 @@ export class LoginPage implements OnInit {
 
             this.utility.showLoading();
             let params = {
-                mobile_no: this.mobile_no,
+                mobile_no: this.mobile_no.toString(),
                 password: this.password,
                 device_token: this.utility.device_token == undefined ? 'devicetoken' : this.utility.device_token,
                 device_type: this.utility.device_type == undefined ? 'devicetype' : this.utility.device_type

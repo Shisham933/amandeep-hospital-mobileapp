@@ -59,6 +59,7 @@ export class ChatWithDoctorPage implements OnInit {
     this.book_for = 'self';
     let user = JSON.parse(localStorage.getItem('user_details'));
     this.patient_id = user.id;
+    this.show_patient_form = false;
   }
 
   chooseRelative() {
@@ -67,22 +68,7 @@ export class ChatWithDoctorPage implements OnInit {
     this.patient_name = '';
   }
 
-  chooseDoctor(d) {
-    //debugger
-    if (d.detail.value == 0) {
-      this.doctor_id = this.utility.all_doctors[0].id;
-      this.doctor_name = this.utility.all_doctors[0].firstname + ' ' + this.utility.all_doctors[0].lastname;
-      this.doctor_firebaseid = this.utility.all_doctors[0].doctor_firebaseid;
-      this.doctor_profile_image = this.utility.all_doctors[0].profile_picture;
-    } else {
-      this.doctor_id = this.utility.all_doctors[0].id;
-      this.doctor_name = this.utility.all_doctors[d.detail.value].firstname + ' ' + this.utility.all_doctors[d.detail.value].lastname;
-      this.doctor_firebaseid = this.utility.all_doctors[d.detail.value].doctor_firebaseid;
-      this.doctor_profile_image = this.utility.all_doctors[d.detail.value].profile_picture;
-    }
-
-  }
-
+  
   addPatient() {
     let regx = /^[A-Za-z]+$/;
     if (this.name == undefined || this.name == '' || this.age == undefined || this.mobile_no == undefined || this.mobile_no == '') {
@@ -98,34 +84,6 @@ export class ChatWithDoctorPage implements OnInit {
       this.book_for = 'relative';
       this.patient_name = this.name;
 
-      // this.utility.showLoading();
-      // let params = {
-      //   "name": this.name,
-      //   "mobile_no": this.mobile_no,
-      //   "age": this.age
-      // }
-      // this.http.addPatient("addPatient", params).subscribe(
-      //   (res: any) => {
-      //     this.utility.hideLoading();
-      //     if (res.success || res.message == 'Patient added successfully') {
-      //       this.utility.showMessageAlert("Patient added!", "Your patient has been added.");
-
-      //       this.show_patient_form = false;
-      //       this.book_for = 'relative';
-      //       this.patient_id = res.data['patient'].id;
-      //       this.patient_name = res.data['patient'].name;
-
-      //     } else {
-      //       let state = {
-      //         patient: res.data.patient,
-
-      //       }
-      //       this.showAlert('Patient already added', 'Do you want to continue with this patient?', state)
-      //     }
-      //   }, err => {
-      //     this.utility.hideLoading();
-      //     this.utility.showMessageAlert("Network error!", "Please check your network connection.")
-      //   })
     }
   }
 
@@ -161,8 +119,6 @@ export class ChatWithDoctorPage implements OnInit {
       this.utility.showMessageAlert("Doctor is required!", "Please choose one of our doctors whom you want to chat with.")
     } else if (this.health_query == undefined || this.health_query == '') {
       this.utility.showMessageAlert("Health query is missing!", "Please write about your query you want to ask.")
-    } else if (this.doctor_firebaseid == null) {
-      this.utility.showMessageAlert("Doctor not available!", this.doctor_name + ' ' + "is not available for chat.")
     } else {
       // this.utility.showLoading();
       let user = JSON.parse(localStorage.getItem('user_details'));
@@ -195,25 +151,4 @@ export class ChatWithDoctorPage implements OnInit {
     return await modal.present();
   }
 
-
-  // sendChatMessage(message) {
-  //   this.chats.sendChatMessage(message);
-
-  //   let params = {
-  //     "id": this.doctor_id,
-  //     "notified-person": "doctor",
-  //     "title": "New message arrived",
-  //     "message": this.patient_name + " " + "has asked you a health query.",
-  //     "data": message
-  //   }
-
-  //   this.http.sendPushNotification("pushNotification", params).subscribe((res: any) => {
-  //     if (res.success) {
-  //       this.utility.showMessageAlert("Payment recieved!", "You have bought chat subscription to chat with our doctors");
-  //       this.router.navigateByUrl("/chat-lists");
-  //     }
-  //   }, err => {
-
-  //   })
-  // }
 }

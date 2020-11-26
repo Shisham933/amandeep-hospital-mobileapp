@@ -58,30 +58,11 @@ export class LoginPage implements OnInit {
                         } else {
                             this.utility.image = "assets/imgs/no-profile.png";
                         }
+                        console.log(res.data['payment_status'])
                         localStorage.setItem('user_details', JSON.stringify(res.data['user']));
                         localStorage.setItem('token', JSON.stringify(res.data['token']));
-                        let email = this.mobile_no + "@amandeephospitalpatient.com";
-                        let password = "Techies@321";
-                        this.afAuth.auth.signInWithEmailAndPassword(email, password).then((res: any) => {
-                            if (res.code == 'auth/user-not-found') {
-                                this.afAuth.auth.createUserWithEmailAndPassword(email, password)
-                                    .then((user: any) => {
-                                        localStorage.setItem('firebase_user_id', JSON.stringify(res['user']));
-                                        this.router.navigateByUrl("/home");
-                                    })
-                            } else {
-                                localStorage.setItem('firebase_user_id', JSON.stringify(res['user']));
-                                this.router.navigateByUrl("/home");
-                            }
-                        }, (error) => {
-                            this.afAuth.auth.createUserWithEmailAndPassword(email, password)
-                                .then((user: any) => {
-                                    console.log(user);
-                                    localStorage.setItem('firebase_user_id', JSON.stringify(user['user']));
-                                    this.router.navigateByUrl("/home");
-                                })
-                        })
-                        // this.router.navigateByUrl("/home");
+                        localStorage.setItem('payment_status', res['payment_status']);
+                        this.router.navigateByUrl("/home");
                     } else {
                         this.utility.showMessageAlert("Error", res.message);
                     }
@@ -125,7 +106,8 @@ export class LoginPage implements OnInit {
                                     this.utility.image = "assets/imgs/no-profile.png";
                                 }
                                 localStorage.setItem('user_details', JSON.stringify(res.data['user']));
-                                localStorage.setItem('token', JSON.stringify(res.data['token']))
+                                localStorage.setItem('token', JSON.stringify(res.data['token']));
+                                localStorage.setItem('payment_status', res['payment_status']);
                                 this.router.navigateByUrl("/home");
                             } else {
                                 this.utility.showMessageAlert("Error", res.message);
@@ -169,7 +151,8 @@ export class LoginPage implements OnInit {
                             this.utility.image = "assets/imgs/no-profile.png";
                         }
                         localStorage.setItem('user_details', JSON.stringify(res.data['user']));
-                        localStorage.setItem('token', JSON.stringify(res.data['token']))
+                        localStorage.setItem('token', JSON.stringify(res.data['token']));
+                        localStorage.setItem('payment_status', res['payment_status']);
                         this.router.navigateByUrl("/home");
                     } else {
                         this.utility.showMessageAlert("Error", res.message);

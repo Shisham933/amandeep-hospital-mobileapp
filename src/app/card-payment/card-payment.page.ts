@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
-import { ModalController, AlertController } from "@ionic/angular";
+import { ModalController, AlertController,Platform } from "@ionic/angular";
 import { Stripe } from '@ionic-native/stripe/ngx';
 import { HttpService } from '../http.service';
 import { UtilityService } from '../utility.service';
@@ -17,9 +17,14 @@ export class CardPaymentPage implements OnInit {
   public cvv;
   public expiry_date;
 
-  constructor(private modalCtrl: ModalController, private route: ActivatedRoute, private stripe: Stripe, private router: Router,
+  constructor(private modalCtrl: ModalController,private platform:Platform, private route: ActivatedRoute, private stripe: Stripe, private router: Router,
     private http: HttpService, private utility: UtilityService) {
     this.data = JSON.parse(localStorage.getItem('confirm-appointment'));
+    this.platform.backButton.subscribeWithPriority(9999, () => {
+      // do nothing
+      this.dismiss();
+      
+    })
   }
 
   ngOnInit() {
@@ -33,10 +38,11 @@ export class CardPaymentPage implements OnInit {
   payNow() {
     if (this.name == undefined || this.number == undefined || this.cvv == undefined || this.expiry_date == undefined) {
       this.utility.showMessageAlert('Missing Fields!', "Some of the fields are missing")
-    }
-    //  else if (this.number.length < 16 || this.number.length > 16) {
-    //   this.utility.showMessageAlert('Invalid card!', "Your card is not valid for payments.")
-    // } 
+    }else if (this.cvv.toString().length != 3) {
+      this.utility.showMessageAlert('Invalid Cvv details!', "Please enter correct CVV.")
+    } else if (this.number.toString().length != 14) {
+      this.utility.showMessageAlert('Invalid card number!', "Card number you have entered is not valid.")
+    } 
     else {
       this.utility.showLoading();
       let card = {

@@ -274,7 +274,8 @@ export class AppComponent {
       }
     }
     if (page == 'Chat with Doctor') {
-      if (this.utility.chat_payment_status == 1) {
+     console.log(localStorage.getItem('payment_status'))
+      if (localStorage.getItem('payment_status')) {
         this.router.navigateByUrl('/chat-lists')
       } else {
         this.router.navigateByUrl('/chat-with-doctor');
@@ -383,7 +384,7 @@ export class AppComponent {
           title: notification.title,
           text: notification.message
         });
-        this.utility.showMessageAlert(notification.title, notification.message);
+      //  this.utility.showMessageAlert(notification.title, notification.message);
         this.utility.publishEvent({
           'message:recieved': notification
         });

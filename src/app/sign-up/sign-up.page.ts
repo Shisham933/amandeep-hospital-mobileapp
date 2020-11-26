@@ -49,6 +49,10 @@ export class SignUpPage implements OnInit {
             this.utility.showMessageAlert("Error!","Please enter email")
         } else if (!this.email_id.match(mailformat)) {
             this.utility.showMessageAlert("Error!","Please enter valid email address")
+        }else if (this.mobile_no == undefined) {
+            this.utility.showMessageAlert("Error!","Please enter mobile number")
+        }else if (this.mobile_no.toString().length > 10) {
+            this.utility.showMessageAlert("Error!","Please enter valid  mobile number")
         } else if (this.password == undefined) {
             this.utility.showMessageAlert("Error!","Please enter password")
         } else if (this.password.length < 8) {
@@ -56,7 +60,7 @@ export class SignUpPage implements OnInit {
         } else {
             this.utility.showLoading();
             let params = {
-                mobile:this.mobile_no,
+                mobile:this.mobile_no.toString(),
                 name: this.name,
                 email: this.email_id,
                 password: this.password,

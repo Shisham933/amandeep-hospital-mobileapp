@@ -16,12 +16,7 @@ export class ChatListsPage implements OnInit {
   public searchArray: any = [];
 
   constructor(private router: Router,private route:ActivatedRoute, private platform: Platform, public chats: ChatsService,) {
-    this.route.queryParams.subscribe((params) => {
-      // debugger
-      // if(JSON.parse(localStorage.getItem('chat_lists'))){
-      //   this.chat_list = JSON.parse(localStorage.getItem('chat_lists'));
-      // }
-      this.ngOnInit();
+    this.route.queryParams.subscribe((params) => { this.ngOnInit();
     })
     this.platform.backButton.subscribeWithPriority(9999, () => {
       // do nothing

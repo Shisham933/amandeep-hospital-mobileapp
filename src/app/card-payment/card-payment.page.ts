@@ -1,7 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
-import { ModalController, AlertController,Platform } from "@ionic/angular";
+import { ModalController, AlertController, Platform } from "@ionic/angular";
+
 import { Location } from '@angular/common';
+
 import { Stripe } from '@ionic-native/stripe/ngx';
 import { HttpService } from '../http.service';
 import { UtilityService } from '../utility.service';
@@ -18,16 +20,19 @@ export class CardPaymentPage implements OnInit {
   public cvv;
   public expiry_date;
 
-  constructor(private modalCtrl: ModalController,private platform:Platform, private location:Location,private route: ActivatedRoute, private stripe: Stripe, private router: Router,
+
+  constructor(private modalCtrl: ModalController, private platform: Platform, private location: Location, private route: ActivatedRoute, private stripe: Stripe, private router: Router,
+
     private http: HttpService, private utility: UtilityService) {
     this.data = JSON.parse(localStorage.getItem('confirm-appointment'));
     this.platform.backButton.subscribeWithPriority(9999, () => {
       // do nothing
       this.dismiss();
-      this.utility.showMessageAlert("Payment Cancelled","Your payment has been cancelled");
+
+      this.utility.showMessageAlert("Payment Cancelled", "Your payment has been cancelled");
       this.router.navigateByUrl("/home");
     })
-  
+
   }
 
   ngOnInit() {
@@ -42,11 +47,12 @@ export class CardPaymentPage implements OnInit {
     if (this.name == undefined || this.number == undefined || this.cvv == undefined || this.expiry_date == undefined) {
       this.utility.showMessageAlert('Missing Fields!', "Some of the fields are missing")
     }
-     else if (this.cvv.toString().length != 3) {
+    else if (this.cvv.toString().length != 3) {
       this.utility.showMessageAlert('Invalid Cvv details!', "Please enter correct CVV.")
     } else if (this.number.toString().length != 16) {
       this.utility.showMessageAlert('Invalid card number!', "Card number you have entered is not valid.It must be of 16 digits.")
-    } 
+
+    }
     else {
       this.utility.showLoading();
       let card = {
@@ -129,9 +135,9 @@ export class CardPaymentPage implements OnInit {
               })
           } else if (this.data.type == 'Chat') {
             let params = {
-              "doctor_id":  this.data.doctor_id,
+              "doctor_id": this.data.doctor_id,
               "book_for": this.data.book_for,
-              "subscribed_by":this.data.subscribed_by,
+              "subscribed_by": this.data.subscribed_by,
               "health_query": this.data.health_query,
               "amount": 200,
               "stripe_token": token.id,

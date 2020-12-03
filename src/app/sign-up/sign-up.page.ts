@@ -20,7 +20,7 @@ export class SignUpPage implements OnInit {
     public name;
     public email_id;
     public password;
-    constructor(private statusBar: StatusBar,private afAuth: AngularFireAuth,private location: Location, private router: Router, private route: ActivatedRoute, private http: HttpService, private utility: UtilityService) {
+    constructor(private statusBar: StatusBar, private afAuth: AngularFireAuth, private location: Location, private router: Router, private route: ActivatedRoute, private http: HttpService, private utility: UtilityService) {
         this.statusBar.backgroundColorByHexString('#ffffff');
         this.codes = codes;
         // this.route.queryParams.subscribe((params) => {
@@ -44,42 +44,42 @@ export class SignUpPage implements OnInit {
     signup() {
         var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
         if (this.name == undefined) {
-            this.utility.showMessageAlert("Error!","Please enter name")
+            this.utility.showMessageAlert("Error!", "Please enter name")
         }
         //  else if (this.email_id == undefined) {
         //     this.utility.showMessageAlert("Error!","Please enter email")
         // } 
         else if (this.email_id != undefined && !this.email_id.match(mailformat)) {
-            this.utility.showMessageAlert("Error!","Please enter valid email address")
-        }else if (this.mobile_no == undefined) {
-            this.utility.showMessageAlert("Error!","Please enter mobile number")
-        }else if (this.mobile_no.toString().length > 10) {
-            this.utility.showMessageAlert("Error!","Please enter valid mobile number")
+            this.utility.showMessageAlert("Error!", "Please enter valid email address")
+        } else if (this.mobile_no == undefined) {
+            this.utility.showMessageAlert("Error!", "Please enter mobile number")
+        } else if (this.mobile_no.toString().length > 10) {
+            this.utility.showMessageAlert("Error!", "Please enter valid mobile number")
         } else if (this.password == undefined) {
-            this.utility.showMessageAlert("Error!","Please enter password")
+            this.utility.showMessageAlert("Error!", "Please enter password")
         } else if (this.password.length < 8) {
-            this.utility.showMessageAlert("Error!","Password should be atlest 8 characters")
+            this.utility.showMessageAlert("Error!", "Password should be atlest 8 characters")
         } else {
             this.utility.showLoading();
             let params = {
-                mobile:this.mobile_no.toString(),
+                mobile: this.mobile_no.toString(),
                 name: this.name,
                 email: this.email_id,
                 password: this.password,
-                device_token : this.utility.device_token == undefined ? 'devicetoken' : this.utility.device_token,
-                device_type : this.utility.device_type == undefined ? 'devicetype' : this.utility.device_type
+                device_token: this.utility.device_token == undefined ? 'devicetoken' : this.utility.device_token,
+                device_type: this.utility.device_type == undefined ? 'devicetype' : this.utility.device_type
             }
             this.http.post("register", params).subscribe(
                 (res: any) => {
                     this.utility.hideLoading();
                     if (res.success || res.message == 'Details updated Successfully') {
-                        this.utility.showMessageAlert("Welcome " + res.data['user'].user_name + '!',"We are hoping to provide you the best.");
+                        this.utility.showMessageAlert("Welcome " + res.data['user'].user_name + '!', "We are hoping to provide you the best.");
                         this.utility.user = res.data['user'];
-                        if(this.utility.user.profile_photo != null){
+                        if (this.utility.user.profile_photo != null) {
                             this.utility.image = this.utility.user.profile_photo;
-                          }else{
+                        } else {
                             this.utility.image = "assets/imgs/no-profile.png";
-                          }
+                        }
                         localStorage.setItem('user_details', JSON.stringify(res.data['user']));
                         localStorage.setItem('token', JSON.stringify(res.data['token']))
                         let email = this.mobile_no + "@amandeephospitalpatient.com";
@@ -90,7 +90,7 @@ export class SignUpPage implements OnInit {
                                     .then((user: any) => {
                                         localStorage.setItem('firebase_user_id', JSON.stringify(res['user']));
                                         this.router.navigateByUrl("/home");
-                                     })
+                                    })
                             } else {
                                 localStorage.setItem('firebase_user_id', JSON.stringify(res['user']));
                                 this.router.navigateByUrl("/home");
@@ -105,7 +105,7 @@ export class SignUpPage implements OnInit {
                         })
 
                     } else {
-                        this.utility.showMessageAlert("Error ",res.message['mobile'][0]);
+                        this.utility.showMessageAlert("Error ", res.message['mobile'][0]);
                     }
 
                 }, err => {

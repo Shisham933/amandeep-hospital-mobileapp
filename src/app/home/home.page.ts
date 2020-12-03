@@ -21,7 +21,7 @@ export class HomePage {
     this.route.queryParams.subscribe((params) => {
       this.badge.clear();
       this.getAllDoctors();
-     });
+    });
   }
 
   bookOPD() {
@@ -85,7 +85,7 @@ export class HomePage {
   chatWithDoctor() {
     console.log(localStorage.getItem('payment_status'));
     let a = localStorage.getItem('payment_status');
-      if (a != 'false') {
+    if (a != 'false') {
       this.router.navigateByUrl('/chat-lists')
     } else {
       this.router.navigateByUrl('/chat-with-doctor');

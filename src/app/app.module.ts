@@ -39,6 +39,7 @@ import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook/ngx';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { EmailComposer } from '@ionic-native/email-composer/ngx';
+import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 
 import { Downloader } from '@ionic-native/downloader/ngx';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
@@ -51,7 +52,7 @@ import { AngularFireAuth } from 'angularfire2/auth';
 
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 
-const chat_config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
+// const chat_config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
 const config = {
   apiKey: "AIzaSyAXMdfk33fyZ02OCvbFhm_JOiySaXvCShY",
@@ -80,7 +81,6 @@ const agoraConfig: AgoraConfig = {
     AngularFireModule.initializeApp(config),
     AngularFireDatabaseModule,
     AngularAgoraRtcModule.forRoot(agoraConfig),
-    SocketIoModule.forRoot(chat_config),
     IonicModule.forRoot({ mode: 'ios' }),
     AppRoutingModule],
   providers: [
@@ -104,6 +104,7 @@ const agoraConfig: AgoraConfig = {
     Downloader,
     ForegroundService,
     Base64,
+    PhotoViewer,
     Facebook,
     SocialSharing,
     GooglePlus,

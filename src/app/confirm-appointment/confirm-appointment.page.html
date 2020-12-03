@@ -125,7 +125,7 @@
                         <ion-col size="6" style="margin-left: -12px;">
                             <!-- <ion-input placeholder="Contact Number"  (keypress)="numberOnlyValidation($event)" type="text" inputmode="numeric" maxlength="10"  [(ngModel)]="mobile_no"></ion-input>
                          -->
-                            <ng-numeric-input [layout]="'tel'" [entertext]="''" [placeholder]="'Contact Number'"
+                            <ng-numeric-input [layout]="'tel'" [entertext]="'OK'" [placeholder]="'Contact Number'"
                                 [disabled]="false" [(ngModel)]="mobile_no" [maxlength]="10">
                             </ng-numeric-input>
                         </ion-col>
@@ -164,7 +164,7 @@
 <ion-footer class="ion-no-border time-slot">
     <ion-toolbar>
         <ion-button ion-button color="danger" class="pay-now" (click)="confirmAppointment()" style="width: 93%;">
-            PAY NOW
+            CONTINUE
         </ion-button>
     </ion-toolbar>
 

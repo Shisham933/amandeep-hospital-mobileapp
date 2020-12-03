@@ -28,7 +28,7 @@ export class MyReportsPage implements OnInit {
   }
   
   goBack() {
-    this.location.back();
+    this.router.navigateByUrl('/home')
   }
 
   addreport(){

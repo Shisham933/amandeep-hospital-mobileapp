@@ -40,7 +40,7 @@
         <img src="{{c.doctor_details.profile_picture}}">
       </ion-avatar>
       <ion-label>
-        <h2 class="doctor-name">Dr. {{c.doctor_details.firstname}}  {{c.doctor_details.lastname}}<span>{{c.latest_msg[0].created_at | date : 'short'}}</span>
+        <h2 class="doctor-name">Dr. {{c.doctor_details.firstname}}  {{c.doctor_details.lastname}}<span class="date-time">{{c.latest_msg[0].created_at | date : 'short'}}</span>
           <!-- <ion-icon class="map-icon" name="map-outline" (click)="showMap(a.location_name,a.address)"></ion-icon> -->
         </h2>
         <p *ngIf="c.latest_msg[0].message_type == 1">{{c.latest_msg[0].message}}

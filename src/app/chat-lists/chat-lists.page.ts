@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Platform } from '@ionic/angular';
-import { Router, NavigationExtras } from '@angular/router';
+import { Router, NavigationExtras, ActivatedRoute } from '@angular/router';
 import { ChatsService } from '../chats.service';
 import * as _ from 'lodash';
 
@@ -15,11 +15,14 @@ export class ChatListsPage implements OnInit {
   public chat_list: any = [];
   public searchArray: any = [];
 
-  constructor(private router: Router, private platform: Platform, public chats: ChatsService,) {
-    // console.log(JSON.parse(localStorage.getItem('chat_lists')))
-    // if (JSON.parse(localStorage.getItem('chat_lists'))) {
-    //   this.chat_list = JSON.parse(localStorage.getItem('chat_lists'));
-    // }
+  constructor(private router: Router,private route:ActivatedRoute, private platform: Platform, public chats: ChatsService,) {
+    this.route.queryParams.subscribe((params) => {
+      // debugger
+      // if(JSON.parse(localStorage.getItem('chat_lists'))){
+      //   this.chat_list = JSON.parse(localStorage.getItem('chat_lists'));
+      // }
+      this.ngOnInit();
+    })
     this.platform.backButton.subscribeWithPriority(9999, () => {
       // do nothing
       this.goBack();

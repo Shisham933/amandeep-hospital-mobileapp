@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
-import { ModalController, AlertController } from "@ionic/angular";
+import { ModalController, AlertController,Platform } from "@ionic/angular";
+import { Location } from '@angular/common';
 import { Stripe } from '@ionic-native/stripe/ngx';
 import { HttpService } from '../http.service';
 import { UtilityService } from '../utility.service';
@@ -17,9 +18,16 @@ export class CardPaymentPage implements OnInit {
   public cvv;
   public expiry_date;
 
-  constructor(private modalCtrl: ModalController, private route: ActivatedRoute, private stripe: Stripe, private router: Router,
+  constructor(private modalCtrl: ModalController,private platform:Platform, private location:Location,private route: ActivatedRoute, private stripe: Stripe, private router: Router,
     private http: HttpService, private utility: UtilityService) {
     this.data = JSON.parse(localStorage.getItem('confirm-appointment'));
+    this.platform.backButton.subscribeWithPriority(9999, () => {
+      // do nothing
+      this.dismiss();
+      this.utility.showMessageAlert("Payment Cancelled","Your payment has been cancelled");
+      this.router.navigateByUrl("/home");
+    })
+  
   }
 
   ngOnInit() {
@@ -34,9 +42,11 @@ export class CardPaymentPage implements OnInit {
     if (this.name == undefined || this.number == undefined || this.cvv == undefined || this.expiry_date == undefined) {
       this.utility.showMessageAlert('Missing Fields!', "Some of the fields are missing")
     }
-    //  else if (this.number.length < 16 || this.number.length > 16) {
-    //   this.utility.showMessageAlert('Invalid card!', "Your card is not valid for payments.")
-    // } 
+     else if (this.cvv.toString().length != 3) {
+      this.utility.showMessageAlert('Invalid Cvv details!', "Please enter correct CVV.")
+    } else if (this.number.toString().length != 16) {
+      this.utility.showMessageAlert('Invalid card number!', "Card number you have entered is not valid.It must be of 16 digits.")
+    } 
     else {
       this.utility.showLoading();
       let card = {
@@ -75,7 +85,7 @@ export class CardPaymentPage implements OnInit {
                   this.utility.showMessageAlert("Appointment not booked!", res.message);
                   this.dismiss();
                 } else {
-                  this.utility.showMessageAlert("Appointment not booked!", "Plese try again.")
+                  this.utility.showMessageAlert("Appointment not booked!", "Please try again.")
                 }
               }, err => {
                 this.utility.hideLoading();
@@ -134,6 +144,7 @@ export class CardPaymentPage implements OnInit {
               (res: any) => {
                 this.utility.hideLoading();
                 if (res.success) {
+                  localStorage.setItem('payment_status', 'true');
                   this.utility.showMessageAlert("Chat subscribed!", "You can now chat with doctor directly.");
                   this.dismiss();
                   this.router.navigateByUrl("/chat-lists");

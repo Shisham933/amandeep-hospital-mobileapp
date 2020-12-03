@@ -13,6 +13,7 @@ export class UtilityService {
   chat_payment_status : any; 
   user: any;
   user_profile: any;
+  banners : any = [];
   image: any;
   device_token: string;
   device_type: string;

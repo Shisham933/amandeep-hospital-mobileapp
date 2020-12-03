@@ -21,10 +21,7 @@ export class HomePage {
     this.route.queryParams.subscribe((params) => {
       this.badge.clear();
       this.getAllDoctors();
-      this.getChatSubscriptionStatus();
-    });
-
-
+     });
   }
 
   bookOPD() {
@@ -86,7 +83,9 @@ export class HomePage {
   }
 
   chatWithDoctor() {
-    if (this.utility.chat_payment_status == 1) {
+    console.log(localStorage.getItem('payment_status'));
+    let a = localStorage.getItem('payment_status');
+      if (a != 'false') {
       this.router.navigateByUrl('/chat-lists')
     } else {
       this.router.navigateByUrl('/chat-with-doctor');
@@ -116,15 +115,4 @@ export class HomePage {
     })
   }
 
-  getChatSubscriptionStatus() {
-    let user = JSON.parse(localStorage.getItem('user_details'));
-    this.http.getChatSubscriptionStatus("chatPaymentStatus/user/" + user.id).subscribe((res: any) => {
-      if (res.success) {
-        this.utility.chat_payment_status = res.data['payment_status'];
-      } else {
-      }
-    }, err => {
-
-    })
-  }
 }

@@ -5,9 +5,17 @@
 .title{
     font-family: sans-serif;
     font-weight: 100;
+    font-size: 15px !important;
 }
 
-.innerMessage{
+.innerMessage_a{
+    display: inline-block;
+    // background-color: #007aff;
+    margin: 5px;
+    color: white;
+    border-radius: 3px;
+  }
+  .innerMessage{
     display: inline-block;
     padding: 5px 10px;
     // background-color: #007aff;
@@ -31,14 +39,27 @@
   }
   .messageLeft {
     float: left;
-    background: #F0F0F0;
+    background: #DCDCDC;
     color: #272727;
+    padding: 5px 10px;
+    border-radius: 7px;
+    margin-left: 30px;
   }
   
   .messageRight {
+  //   float: right;
+  //   background: #363A61;
+  //   border-radius: 20px;
+  //   padding: 10px 19px;
+  //  font-size: 10px;
     float: right;
     background: #363A61;
+    border-radius: 10px;
+    /* padding: 10px 19px; */
+    font-size: 10px;
+
   }
+
   .camera-icon{
       color: #363A61;
   }
@@ -52,3 +73,29 @@
         font-size: 12px;
     }
   }
+
+  .gif-loader{
+    position: relative;
+    top: -100px;
+    width: 15px;
+    left: 50px;
+}
+.date-time{
+  font-size: 5px;
+  margin-left: 10px;
+  float: right;
+}
+.message{
+  margin: 0;
+  // margin-bottom: 5px;
+  word-break: break-word;
+  font-family: sans-serif;
+}
+
+.doctor-img{
+  border-radius: 100px;
+  width: 25px;
+  height: 25px;
+  top: 20px;
+  position: absolute;
+}

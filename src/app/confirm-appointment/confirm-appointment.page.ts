@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
-import {  ModalController, AlertController, Platform } from "@ionic/angular";
+import { ModalController, AlertController, Platform } from "@ionic/angular";
 import { Location } from '@angular/common';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { HttpService } from '../http.service';
@@ -45,9 +45,12 @@ export class ConfirmAppointmentPage implements OnInit {
   registered_patients: any = [];
 
 
-  constructor(private statusBar: StatusBar, public platform:Platform,public modalController: ModalController, private alertController: AlertController, private launchNavigator: LaunchNavigator, private route: ActivatedRoute, private location: Location, private router: Router, private http: HttpService, private utility: UtilityService) {
+  constructor(private statusBar: StatusBar, public platform: Platform, public modalController: ModalController, private alertController: AlertController, private launchNavigator: LaunchNavigator, private route: ActivatedRoute, private location: Location, private router: Router, private http: HttpService, private utility: UtilityService) {
     this.statusBar.backgroundColorByHexString('#ffffff');
     this.route.queryParams.subscribe((params) => {
+      this.modalController.dismiss({
+        'dismissed': true
+      });
       this.speciality_id = this.router.getCurrentNavigation().extras.state.speciality_id;
       this.location_name = this.router.getCurrentNavigation().extras.state.location_name;
       this.data = this.router.getCurrentNavigation().extras.state.data;
@@ -68,6 +71,8 @@ export class ConfirmAppointmentPage implements OnInit {
       this.platform.backButton.subscribeWithPriority(9999, () => {
         // do nothing
         this.goBack();
+        //  alert(1)
+        //this.router.navigateByUrl("/select-timeslot");
       })
     });
   }
@@ -123,7 +128,7 @@ export class ConfirmAppointmentPage implements OnInit {
       this.utility.showMessageAlert("Invalid Patient name", "Only alphabets are allowed to enter in patient name field.")
     } else if (this.mobile_no.toString().length != 10 && this.book_for != 'self') {
       this.utility.showMessageAlert("Invalid mobile number!", "The mobile number you have entered is not valid.")
-    } else if (this.age.toString().length > 2  && this.book_for != 'self') {
+    } else if (this.age.toString().length > 2 && this.book_for != 'self') {
       this.utility.showMessageAlert("Invalid age !", "The age  you have entered is not valid.")
     } else {
       this.utility.showLoading();
@@ -213,35 +218,55 @@ export class ConfirmAppointmentPage implements OnInit {
   }
 
   confirmAppointment() {
-   // debugger
+    // debugger
     if (this.book_for == '' || this.book_for == undefined) {
       this.utility.showMessageAlert("Patient info required!", "Please select one option for whom you are booking this appointment.")
     } else if (this.book_for == 'relative' && (this.name == undefined || this.name == '' || this.age == undefined || this.mobile_no == undefined || this.mobile_no == '')) {
       this.utility.showMessageAlert("Error!", "Please enter patient details.")
-    }else if(this.mobile_no.toString().length > 10  && this.book_for != 'self'){
+    } else if (this.mobile_no.toString().length > 10 && this.book_for != 'self') {
       this.utility.showMessageAlert("Invalid mobile number!", "Mobile number should be of 10 digits.")
-   
-    } else if(this.age != null && this.age.toString().length > 2  && this.book_for != 'self'){
+
+    } else if (this.age != null && this.age.toString().length > 2 && this.book_for != 'self') {
       this.utility.showMessageAlert("Invalid age!", "Please enter valid age.")
-   
+
     } else {
       if (this.book_type == 'OPD') {
         let user = JSON.parse(localStorage.getItem('user_details'));
-        let params = {
-          "speciality_id": this.data.speciality_id,
-          "doctor_id": this.doctor_id,
-          "date": this.date.getFullYear() + '-' + (this.date.getMonth() + 1) + '-' + this.date.getDate(),
-          "location_id": this.location_id,
-          "fee": this.data.opdfee,
-          "schedule_id": this.schedule_id,
-          "book_for": this.book_for,
-          "created_by": user.id,
-          "amount": this.data.opdfee,
-          "name": this.name,
-          "mobile_no": this.mobile_no,
-          "age": this.age,
-          "type": "OPD"
+        let params = {}
+        if (this.mobile_no != '') {
+          params = {
+            "speciality_id": this.data.speciality_id,
+            "doctor_id": this.doctor_id,
+            "date": this.date.getFullYear() + '-' + (this.date.getMonth() + 1) + '-' + this.date.getDate(),
+            "location_id": this.location_id,
+            "fee": this.data.opdfee,
+            "schedule_id": this.schedule_id,
+            "book_for": this.book_for,
+            "created_by": user.id,
+            "amount": this.data.opdfee,
+            "name": this.name,
+            "mobile_no": this.mobile_no,
+            "age": this.age,
+            "type": "OPD"
+          }
+        } else {
+          params = {
+            "speciality_id": this.data.speciality_id,
+            "doctor_id": this.doctor_id,
+            "date": this.date.getFullYear() + '-' + (this.date.getMonth() + 1) + '-' + this.date.getDate(),
+            "location_id": this.location_id,
+            "fee": this.data.opdfee,
+            "schedule_id": this.schedule_id,
+            "book_for": this.book_for,
+            "created_by": user.id,
+            "amount": this.data.opdfee,
+            "name": this.name,
+            // "mobile_no": this.mobile_no,
+            "age": this.age,
+            "type": "OPD"
+          }
         }
+
         localStorage.setItem('confirm-appointment', JSON.stringify(params));
         // debugger
         console.log("params.....", params);
@@ -251,21 +276,42 @@ export class ConfirmAppointmentPage implements OnInit {
       }
       if (this.book_type == 'videocall') {
         let user = JSON.parse(localStorage.getItem('user_details'));
-        let params = {
-          "speciality_id": this.data.speciality_id,
-          "doctor_id": this.doctor_id,
-          "date": this.date.getFullYear() + '-' + (this.date.getMonth() + 1) + '-' + this.date.getDate(),
-          "location_id": this.location_id,
-          "fee": this.data.opdfee,
-          "schedule_id": this.schedule_id,
-          "book_for": this.book_for,
-          "created_by": user.id,
-          "amount": this.data.opdfee,
-          "name": this.name,
-          "mobile_no": this.mobile_no,
-          "age": this.age,
-          "type": "Video"
+        let params = {};
+        if (this.mobile_no != '') {
+          params = {
+            "speciality_id": this.data.speciality_id,
+            "doctor_id": this.doctor_id,
+            "date": this.date.getFullYear() + '-' + (this.date.getMonth() + 1) + '-' + this.date.getDate(),
+            "location_id": this.location_id,
+            "fee": this.data.opdfee,
+            "schedule_id": this.schedule_id,
+            "book_for": this.book_for,
+            "created_by": user.id,
+            "amount": this.data.opdfee,
+            "name": this.name,
+            "mobile_no": this.mobile_no,
+            "age": this.age,
+            "type": "Video"
+          }
         }
+        else {
+          params = {
+            "speciality_id": this.data.speciality_id,
+            "doctor_id": this.doctor_id,
+            "date": this.date.getFullYear() + '-' + (this.date.getMonth() + 1) + '-' + this.date.getDate(),
+            "location_id": this.location_id,
+            "fee": this.data.opdfee,
+            "schedule_id": this.schedule_id,
+            "book_for": this.book_for,
+            "created_by": user.id,
+            "amount": this.data.opdfee,
+            "name": this.name,
+            // "mobile_no": this.mobile_no,
+            "age": this.age,
+            "type": "Video"
+          }
+        }
+
         localStorage.setItem('confirm-appointment', JSON.stringify(params));
         // debugger
         console.log("params.....", params);

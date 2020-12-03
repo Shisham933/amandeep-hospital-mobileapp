@@ -127,6 +127,23 @@ export class SelectTimeslotPage implements OnInit {
       })
   }
 
+  getWeekNumber(thisDate) {
+    var dt = new Date(thisDate);
+    var thisDay = dt.getDate();
+
+    var newDate = dt;
+    newDate.setDate(1); // first day of month
+    var digit = newDate.getDay();
+
+    var Q = (thisDay + digit) / 7;
+
+    var R = (thisDay + digit) % 7;
+
+    if (R !== 0) return Math.ceil(Q);
+    else return Q;
+  }
+
+
   onChange(val) {
     let date = val._d;
     this.available_slots = 0;
@@ -134,6 +151,7 @@ export class SelectTimeslotPage implements OnInit {
     var day = date.getDay();
     if (day == 1) {
       var t = this.timeSlots.filter(x => x.days == 'Monday');
+
       t.map(y => {
         y.time_value = (y.time_slots.split(' ')[0]).split(':')[0];
         y.am_pm = (y.time_slots.split(' ')[1]);
@@ -143,60 +161,106 @@ export class SelectTimeslotPage implements OnInit {
         if (z.title == 'Morning 6 AM to 12 Noon') {
           z.time_slots = [];
           this.time_slots.filter(m => {
-            if (m.am_pm == 'am' && (m.time_value == 6 || m.time_value < 12)) {
-              m.is_time_selected = false;
-              if (this.choose_date.getDate() == new Date().getDate()) {
-                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+            let week = m.week;
+            let choose_week = 0;
+            if(this.getWeekNumber(date) == 5){
+              choose_week =  1
+            }else if(this.getWeekNumber(date) == 6){
+              choose_week =  2
+            }else{
+              choose_week = this.getWeekNumber(date) 
+            }
+            if (week == choose_week) {
+              //  debugger
+              if (m.am_pm == 'am' && (m.time_value == 6 || m.time_value < 12)) {
+                m.is_time_selected = false;
+                if (this.choose_date.getDate() == new Date().getDate()) {
+                  if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                  } else {
+                    z.time_slots.push(m);
+                  }
                 } else {
                   z.time_slots.push(m);
                 }
-              } else {
-                z.time_slots.push(m);
               }
             }
+
           })
         } else if (z.title == 'Afternoon 12 PM to 4 PM') {
           z.time_slots = [];
           this.time_slots.filter(m => {
-            if (m.am_pm == 'pm' && (m.time_value == 12 || m.time_value < 4)) {
-              m.is_time_selected = false;
-              if (this.choose_date.getDate() == new Date().getDate()) {
-                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+            let week = m.week;
+            let choose_week = 0;
+            if(this.getWeekNumber(date) == 5){
+              choose_week =  1
+            }else if(this.getWeekNumber(date) == 6){
+              choose_week =  2
+            }else{
+              choose_week = this.getWeekNumber(date) 
+            }
+            if (week == choose_week) {
+              if (m.am_pm == 'pm' && (m.time_value == 12 || m.time_value < 4)) {
+                m.is_time_selected = false;
+                if (this.choose_date.getDate() == new Date().getDate()) {
+                  if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                  } else {
+                    z.time_slots.push(m);
+                  }
                 } else {
                   z.time_slots.push(m);
                 }
-              } else {
-                z.time_slots.push(m);
               }
             }
           })
         } else if (z.title == 'Evening 4 PM to 8 PM') {
           z.time_slots = [];
           this.time_slots.filter(m => {
-            if (m.am_pm == 'pm' && (4 < m.time_value == m.time_value < 8)) {
-              m.is_time_selected = false;
-              if (this.choose_date.getDate() == new Date().getDate()) {
-                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+            let week = m.week;
+            let choose_week = 0;
+            if(this.getWeekNumber(date) == 5){
+              choose_week =  1
+            }else if(this.getWeekNumber(date) == 6){
+              choose_week =  2
+            }else{
+              choose_week = this.getWeekNumber(date) 
+            }
+            if (week == choose_week) {
+              if (m.am_pm == 'pm' && (4 < m.time_value == m.time_value < 8)) {
+                m.is_time_selected = false;
+                if (this.choose_date.getDate() == new Date().getDate()) {
+                  if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                  } else {
+                    z.time_slots.push(m);
+                  }
                 } else {
                   z.time_slots.push(m);
                 }
-              } else {
-                z.time_slots.push(m);
               }
             }
           })
         } else if (z.title == 'Night 8 PM to 10 PM') {
           z.time_slots = [];
           this.time_slots.filter(m => {
-            if (m.am_pm == 'pm' && (8 < m.time_value == m.time_value < 10)) {
-              m.is_time_selected = false;
-              if (this.choose_date.getDate() == new Date().getDate()) {
-                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+            let week = m.week;
+            let choose_week = 0;
+            if(this.getWeekNumber(date) == 5){
+              choose_week =  1
+            }else if(this.getWeekNumber(date) == 6){
+              choose_week =  2
+            }else{
+              choose_week = this.getWeekNumber(date) 
+            }
+            if (week == choose_week) {
+              if (m.am_pm == 'pm' && (8 < m.time_value == m.time_value < 10)) {
+                m.is_time_selected = false;
+                if (this.choose_date.getDate() == new Date().getDate()) {
+                  if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                  } else {
+                    z.time_slots.push(m);
+                  }
                 } else {
                   z.time_slots.push(m);
                 }
-              } else {
-                z.time_slots.push(m);
               }
             }
           })
@@ -214,60 +278,104 @@ export class SelectTimeslotPage implements OnInit {
         if (z.title == 'Morning 6 AM to 12 Noon') {
           z.time_slots = [];
           this.time_slots.filter(m => {
-            if (m.am_pm == 'am' && (m.time_value == 6 || m.time_value < 12)) {
-              m.is_time_selected = false;
-              if (this.choose_date.getDate() == new Date().getDate()) {
-                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+            let week = m.week;
+            let choose_week = 0;
+            if(this.getWeekNumber(date) == 5){
+              choose_week =  1
+            }else if(this.getWeekNumber(date) == 6){
+              choose_week =  2
+            }else{
+              choose_week = this.getWeekNumber(date) 
+            }
+            if (week == choose_week) {
+              if (m.am_pm == 'am' && (m.time_value == 6 || m.time_value < 12)) {
+                m.is_time_selected = false;
+                if (this.choose_date.getDate() == new Date().getDate()) {
+                  if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                  } else {
+                    z.time_slots.push(m);
+                  }
                 } else {
                   z.time_slots.push(m);
                 }
-              } else {
-                z.time_slots.push(m);
               }
             }
           })
         } else if (z.title == 'Afternoon 12 PM to 4 PM') {
           z.time_slots = [];
           this.time_slots.filter(m => {
-            if (m.am_pm == 'pm' && (m.time_value == 12 || m.time_value < 4)) {
-              m.is_time_selected = false;
-              if (this.choose_date.getDate() == new Date().getDate()) {
-                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+            let week = m.week;
+            let choose_week = 0;
+            if(this.getWeekNumber(date) == 5){
+              choose_week =  1
+            }else if(this.getWeekNumber(date) == 6){
+              choose_week =  2
+            }else{
+              choose_week = this.getWeekNumber(date) 
+            }
+            if (week == choose_week) {
+              if (m.am_pm == 'pm' && (m.time_value == 12 || m.time_value < 4)) {
+                m.is_time_selected = false;
+                if (this.choose_date.getDate() == new Date().getDate()) {
+                  if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                  } else {
+                    z.time_slots.push(m);
+                  }
                 } else {
                   z.time_slots.push(m);
                 }
-              } else {
-                z.time_slots.push(m);
               }
             }
           })
         } else if (z.title == 'Evening 4 PM to 8 PM') {
           z.time_slots = [];
           this.time_slots.filter(m => {
-            if (m.am_pm == 'pm' && (4 < m.time_value == m.time_value < 8)) {
-              m.is_time_selected = false;
-              if (this.choose_date.getDate() == new Date().getDate()) {
-                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+            let week = m.week;
+            let choose_week = 0;
+            if(this.getWeekNumber(date) == 5){
+              choose_week =  1
+            }else if(this.getWeekNumber(date) == 6){
+              choose_week =  2
+            }else{
+              choose_week = this.getWeekNumber(date) 
+            }
+            if (week == choose_week) {
+              if (m.am_pm == 'pm' && (4 < m.time_value == m.time_value < 8)) {
+                m.is_time_selected = false;
+                if (this.choose_date.getDate() == new Date().getDate()) {
+                  if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                  } else {
+                    z.time_slots.push(m);
+                  }
                 } else {
                   z.time_slots.push(m);
                 }
-              } else {
-                z.time_slots.push(m);
               }
             }
           })
         } else if (z.title == 'Night 8 PM to 10 PM') {
           z.time_slots = [];
           this.time_slots.filter(m => {
-            if (m.am_pm == 'pm' && (8 < m.time_value == m.time_value < 10)) {
-              m.is_time_selected = false;
-              if (this.choose_date.getDate() == new Date().getDate()) {
-                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+            let week = m.week;
+            let choose_week = 0;
+            if(this.getWeekNumber(date) == 5){
+              choose_week =  1
+            }else if(this.getWeekNumber(date) == 6){
+              choose_week =  2
+            }else{
+              choose_week = this.getWeekNumber(date) 
+            }
+            if (week == choose_week) {
+              if (m.am_pm == 'pm' && (8 < m.time_value == m.time_value < 10)) {
+                m.is_time_selected = false;
+                if (this.choose_date.getDate() == new Date().getDate()) {
+                  if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                  } else {
+                    z.time_slots.push(m);
+                  }
                 } else {
                   z.time_slots.push(m);
                 }
-              } else {
-                z.time_slots.push(m);
               }
             }
           })
@@ -285,61 +393,105 @@ export class SelectTimeslotPage implements OnInit {
         if (z.title == 'Morning 6 AM to 12 Noon') {
           z.time_slots = [];
           this.time_slots.filter(m => {
-            if (m.am_pm == 'am' && (m.time_value == 6 || m.time_value < 12)) {
-              m.is_time_selected = false;
-              if (this.choose_date.getDate() == new Date().getDate()) {
-                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+            let week = m.week;
+            let choose_week = 0;
+            if(this.getWeekNumber(date) == 5){
+              choose_week =  1
+            }else if(this.getWeekNumber(date) == 6){
+              choose_week =  2
+            }else{
+              choose_week = this.getWeekNumber(date) 
+            }
+            if (week == choose_week) {
+              if (m.am_pm == 'am' && (m.time_value == 6 || m.time_value < 12)) {
+                m.is_time_selected = false;
+                if (this.choose_date.getDate() == new Date().getDate()) {
+                  if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                  } else {
+                    z.time_slots.push(m);
+                  }
                 } else {
                   z.time_slots.push(m);
                 }
-              } else {
-                z.time_slots.push(m);
-              }
 
+              }
             }
           })
         } else if (z.title == 'Afternoon 12 PM to 4 PM') {
           z.time_slots = [];
           this.time_slots.filter(m => {
-            if (m.am_pm == 'pm' && (m.time_value == 12 || m.time_value < 4)) {
-              m.is_time_selected = false;
-              if (this.choose_date.getDate() == new Date().getDate()) {
-                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+            let week = m.week;
+            let choose_week = 0;
+            if(this.getWeekNumber(date) == 5){
+              choose_week =  1
+            }else if(this.getWeekNumber(date) == 6){
+              choose_week =  2
+            }else{
+              choose_week = this.getWeekNumber(date) 
+            }
+            if (week == choose_week) {
+              if (m.am_pm == 'pm' && (m.time_value == 12 || m.time_value < 4)) {
+                m.is_time_selected = false;
+                if (this.choose_date.getDate() == new Date().getDate()) {
+                  if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                  } else {
+                    z.time_slots.push(m);
+                  }
                 } else {
                   z.time_slots.push(m);
                 }
-              } else {
-                z.time_slots.push(m);
               }
             }
           })
         } else if (z.title == 'Evening 4 PM to 8 PM') {
           z.time_slots = [];
           this.time_slots.filter(m => {
-            if (m.am_pm == 'pm' && (4 < m.time_value == m.time_value < 8)) {
-              m.is_time_selected = false;
-              if (this.choose_date.getDate() == new Date().getDate()) {
-                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+            let week = m.week;
+            let choose_week = 0;
+            if(this.getWeekNumber(date) == 5){
+              choose_week =  1
+            }else if(this.getWeekNumber(date) == 6){
+              choose_week =  2
+            }else{
+              choose_week = this.getWeekNumber(date) 
+            }
+            if (week == choose_week) {
+              if (m.am_pm == 'pm' && (4 < m.time_value == m.time_value < 8)) {
+                m.is_time_selected = false;
+                if (this.choose_date.getDate() == new Date().getDate()) {
+                  if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                  } else {
+                    z.time_slots.push(m);
+                  }
                 } else {
                   z.time_slots.push(m);
                 }
-              } else {
-                z.time_slots.push(m);
               }
             }
           })
         } else if (z.title == 'Night 8 PM to 10 PM') {
           z.time_slots = [];
           this.time_slots.filter(m => {
-            if (m.am_pm == 'pm' && (8 < m.time_value == m.time_value < 10)) {
-              m.is_time_selected = false;
-              if (this.choose_date.getDate() == new Date().getDate()) {
-                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+            let week = m.week;
+            let choose_week = 0;
+            if(this.getWeekNumber(date) == 5){
+              choose_week =  1
+            }else if(this.getWeekNumber(date) == 6){
+              choose_week =  2
+            }else{
+              choose_week = this.getWeekNumber(date) 
+            }
+            if (week == choose_week) {
+              if (m.am_pm == 'pm' && (8 < m.time_value == m.time_value < 10)) {
+                m.is_time_selected = false;
+                if (this.choose_date.getDate() == new Date().getDate()) {
+                  if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                  } else {
+                    z.time_slots.push(m);
+                  }
                 } else {
                   z.time_slots.push(m);
                 }
-              } else {
-                z.time_slots.push(m);
               }
             }
           })
@@ -357,60 +509,104 @@ export class SelectTimeslotPage implements OnInit {
         if (z.title == 'Morning 6 AM to 12 Noon') {
           z.time_slots = [];
           this.time_slots.filter(m => {
-            if (m.am_pm == 'am' && (m.time_value == 6 || m.time_value < 12)) {
-              m.is_time_selected = false;
-              if (this.choose_date.getDate() == new Date().getDate()) {
-                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+            let week = m.week;
+            let choose_week = 0;
+            if(this.getWeekNumber(date) == 5){
+              choose_week =  1
+            }else if(this.getWeekNumber(date) == 6){
+              choose_week =  2
+            }else{
+              choose_week = this.getWeekNumber(date) 
+            }
+            if (week == choose_week) {
+              if (m.am_pm == 'am' && (m.time_value == 6 || m.time_value < 12)) {
+                m.is_time_selected = false;
+                if (this.choose_date.getDate() == new Date().getDate()) {
+                  if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                  } else {
+                    z.time_slots.push(m);
+                  }
                 } else {
                   z.time_slots.push(m);
                 }
-              } else {
-                z.time_slots.push(m);
               }
             }
           })
         } else if (z.title == 'Afternoon 12 PM to 4 PM') {
           z.time_slots = [];
           this.time_slots.filter(m => {
-            if (m.am_pm == 'pm' && (m.time_value == 12 || m.time_value < 4)) {
-              m.is_time_selected = false;
-              if (this.choose_date.getDate() == new Date().getDate()) {
-                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+            let week = m.week;
+            let choose_week = 0;
+            if(this.getWeekNumber(date) == 5){
+              choose_week =  1
+            }else if(this.getWeekNumber(date) == 6){
+              choose_week =  2
+            }else{
+              choose_week = this.getWeekNumber(date) 
+            }
+            if (week == choose_week) {
+              if (m.am_pm == 'pm' && (m.time_value == 12 || m.time_value < 4)) {
+                m.is_time_selected = false;
+                if (this.choose_date.getDate() == new Date().getDate()) {
+                  if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                  } else {
+                    z.time_slots.push(m);
+                  }
                 } else {
                   z.time_slots.push(m);
                 }
-              } else {
-                z.time_slots.push(m);
               }
             }
           })
         } else if (z.title == 'Evening 4 PM to 8 PM') {
           z.time_slots = [];
           this.time_slots.filter(m => {
-            if (m.am_pm == 'pm' && (4 < m.time_value == m.time_value < 8)) {
-              m.is_time_selected = false;
-              if (this.choose_date.getDate() == new Date().getDate()) {
-                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+            let week = m.week;
+            let choose_week = 0;
+            if(this.getWeekNumber(date) == 5){
+              choose_week =  1
+            }else if(this.getWeekNumber(date) == 6){
+              choose_week =  2
+            }else{
+              choose_week = this.getWeekNumber(date) 
+            }
+            if (week == choose_week) {
+              if (m.am_pm == 'pm' && (4 < m.time_value == m.time_value < 8)) {
+                m.is_time_selected = false;
+                if (this.choose_date.getDate() == new Date().getDate()) {
+                  if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                  } else {
+                    z.time_slots.push(m);
+                  }
                 } else {
                   z.time_slots.push(m);
                 }
-              } else {
-                z.time_slots.push(m);
               }
             }
           })
         } else if (z.title == 'Night 8 PM to 10 PM') {
           z.time_slots = [];
           this.time_slots.filter(m => {
-            if (m.am_pm == 'pm' && (8 < m.time_value == m.time_value < 10)) {
-              m.is_time_selected = false;
-              if (this.choose_date.getDate() == new Date().getDate()) {
-                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+            let week = m.week;
+            let choose_week = 0;
+            if(this.getWeekNumber(date) == 5){
+              choose_week =  1
+            }else if(this.getWeekNumber(date) == 6){
+              choose_week =  2
+            }else{
+              choose_week = this.getWeekNumber(date) 
+            }
+            if (week == choose_week) {
+              if (m.am_pm == 'pm' && (8 < m.time_value == m.time_value < 10)) {
+                m.is_time_selected = false;
+                if (this.choose_date.getDate() == new Date().getDate()) {
+                  if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                  } else {
+                    z.time_slots.push(m);
+                  }
                 } else {
                   z.time_slots.push(m);
                 }
-              } else {
-                z.time_slots.push(m);
               }
             }
           })
@@ -428,60 +624,104 @@ export class SelectTimeslotPage implements OnInit {
         if (z.title == 'Morning 6 AM to 12 Noon') {
           z.time_slots = [];
           this.time_slots.filter(m => {
-            if (m.am_pm == 'am' && (m.time_value == 6 || m.time_value < 12)) {
-              m.is_time_selected = false;
-              if (this.choose_date.getDate() == new Date().getDate()) {
-                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+            let week = m.week;
+            let choose_week = 0;
+            if(this.getWeekNumber(date) == 5){
+              choose_week =  1
+            }else if(this.getWeekNumber(date) == 6){
+              choose_week =  2
+            }else{
+              choose_week = this.getWeekNumber(date) 
+            }
+            if (week == choose_week) {
+              if (m.am_pm == 'am' && (m.time_value == 6 || m.time_value < 12)) {
+                m.is_time_selected = false;
+                if (this.choose_date.getDate() == new Date().getDate()) {
+                  if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                  } else {
+                    z.time_slots.push(m);
+                  }
                 } else {
                   z.time_slots.push(m);
                 }
-              } else {
-                z.time_slots.push(m);
               }
             }
           })
         } else if (z.title == 'Afternoon 12 PM to 4 PM') {
           z.time_slots = [];
           this.time_slots.filter(m => {
-            if (m.am_pm == 'pm' && (m.time_value == 12 || m.time_value < 4)) {
-              m.is_time_selected = false;
-              if (this.choose_date.getDate() == new Date().getDate()) {
-                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+            let week = m.week;
+            let choose_week = 0;
+            if(this.getWeekNumber(date) == 5){
+              choose_week =  1
+            }else if(this.getWeekNumber(date) == 6){
+              choose_week =  2
+            }else{
+              choose_week = this.getWeekNumber(date) 
+            }
+            if (week == choose_week) {
+              if (m.am_pm == 'pm' && (m.time_value == 12 || m.time_value < 4)) {
+                m.is_time_selected = false;
+                if (this.choose_date.getDate() == new Date().getDate()) {
+                  if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                  } else {
+                    z.time_slots.push(m);
+                  }
                 } else {
                   z.time_slots.push(m);
                 }
-              } else {
-                z.time_slots.push(m);
               }
             }
           })
         } else if (z.title == 'Evening 4 PM to 8 PM') {
           z.time_slots = [];
           this.time_slots.filter(m => {
-            if (m.am_pm == 'pm' && (4 < m.time_value == m.time_value < 8)) {
-              m.is_time_selected = false;
-              if (this.choose_date.getDate() == new Date().getDate()) {
-                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+            let week = m.week;
+            let choose_week = 0;
+            if(this.getWeekNumber(date) == 5){
+              choose_week =  1
+            }else if(this.getWeekNumber(date) == 6){
+              choose_week =  2
+            }else{
+              choose_week = this.getWeekNumber(date) 
+            }
+            if (week == choose_week) {
+              if (m.am_pm == 'pm' && (4 < m.time_value == m.time_value < 8)) {
+                m.is_time_selected = false;
+                if (this.choose_date.getDate() == new Date().getDate()) {
+                  if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                  } else {
+                    z.time_slots.push(m);
+                  }
                 } else {
                   z.time_slots.push(m);
                 }
-              } else {
-                z.time_slots.push(m);
               }
             }
           })
         } else if (z.title == 'Night 8 PM to 10 PM') {
           z.time_slots = [];
           this.time_slots.filter(m => {
-            if (m.am_pm == 'pm' && (8 < m.time_value == m.time_value < 10)) {
-              m.is_time_selected = false;
-              if (this.choose_date.getDate() == new Date().getDate()) {
-                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+            let week = m.week;
+            let choose_week = 0;
+            if(this.getWeekNumber(date) == 5){
+              choose_week =  1
+            }else if(this.getWeekNumber(date) == 6){
+              choose_week =  2
+            }else{
+              choose_week = this.getWeekNumber(date) 
+            }
+            if (week == choose_week) {
+              if (m.am_pm == 'pm' && (8 < m.time_value == m.time_value < 10)) {
+                m.is_time_selected = false;
+                if (this.choose_date.getDate() == new Date().getDate()) {
+                  if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                  } else {
+                    z.time_slots.push(m);
+                  }
                 } else {
                   z.time_slots.push(m);
                 }
-              } else {
-                z.time_slots.push(m);
               }
             }
           })
@@ -499,60 +739,104 @@ export class SelectTimeslotPage implements OnInit {
         if (z.title == 'Morning 6 AM to 12 Noon') {
           z.time_slots = [];
           this.time_slots.filter(m => {
-            if (m.am_pm == 'am' && (m.time_value == 6 || m.time_value < 12)) {
-              m.is_time_selected = false;
-              if (this.choose_date.getDate() == new Date().getDate()) {
-                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+            let week = m.week;
+            let choose_week = 0;
+            if(this.getWeekNumber(date) == 5){
+              choose_week =  1
+            }else if(this.getWeekNumber(date) == 6){
+              choose_week =  2
+            }else{
+              choose_week = this.getWeekNumber(date) 
+            }
+            if (week == choose_week) {
+              if (m.am_pm == 'am' && (m.time_value == 6 || m.time_value < 12)) {
+                m.is_time_selected = false;
+                if (this.choose_date.getDate() == new Date().getDate()) {
+                  if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                  } else {
+                    z.time_slots.push(m);
+                  }
                 } else {
                   z.time_slots.push(m);
                 }
-              } else {
-                z.time_slots.push(m);
               }
             }
           })
         } else if (z.title == 'Afternoon 12 PM to 4 PM') {
           z.time_slots = [];
           this.time_slots.filter(m => {
-            if (m.am_pm == 'pm' && (m.time_value == 12 || m.time_value < 4)) {
-              m.is_time_selected = false;
-              if (this.choose_date.getDate() == new Date().getDate()) {
-                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+            let week = m.week;
+            let choose_week = 0;
+            if(this.getWeekNumber(date) == 5){
+              choose_week =  1
+            }else if(this.getWeekNumber(date) == 6){
+              choose_week =  2
+            }else{
+              choose_week = this.getWeekNumber(date) 
+            }
+            if (week == choose_week) {
+              if (m.am_pm == 'pm' && (m.time_value == 12 || m.time_value < 4)) {
+                m.is_time_selected = false;
+                if (this.choose_date.getDate() == new Date().getDate()) {
+                  if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                  } else {
+                    z.time_slots.push(m);
+                  }
                 } else {
                   z.time_slots.push(m);
                 }
-              } else {
-                z.time_slots.push(m);
               }
             }
           })
         } else if (z.title == 'Evening 4 PM to 8 PM') {
           z.time_slots = [];
           this.time_slots.filter(m => {
-            if (m.am_pm == 'pm' && (4 < m.time_value == m.time_value < 8)) {
-              m.is_time_selected = false;
-              if (this.choose_date.getDate() == new Date().getDate()) {
-                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+            let week = m.week;
+            let choose_week = 0;
+            if(this.getWeekNumber(date) == 5){
+              choose_week =  1
+            }else if(this.getWeekNumber(date) == 6){
+              choose_week =  2
+            }else{
+              choose_week = this.getWeekNumber(date) 
+            }
+            if (week == choose_week) {
+              if (m.am_pm == 'pm' && (4 < m.time_value == m.time_value < 8)) {
+                m.is_time_selected = false;
+                if (this.choose_date.getDate() == new Date().getDate()) {
+                  if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                  } else {
+                    z.time_slots.push(m);
+                  }
                 } else {
                   z.time_slots.push(m);
                 }
-              } else {
-                z.time_slots.push(m);
               }
             }
           })
         } else if (z.title == 'Night 8 PM to 10 PM') {
           z.time_slots = [];
           this.time_slots.filter(m => {
-            if (m.am_pm == 'pm' && (8 < m.time_value == m.time_value < 10)) {
-              m.is_time_selected = false;
-              if (this.choose_date.getDate() == new Date().getDate()) {
-                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+            let week = m.week;
+            let choose_week = 0;
+            if(this.getWeekNumber(date) == 5){
+              choose_week =  1
+            }else if(this.getWeekNumber(date) == 6){
+              choose_week =  2
+            }else{
+              choose_week = this.getWeekNumber(date) 
+            }
+            if (week == choose_week) {
+              if (m.am_pm == 'pm' && (8 < m.time_value == m.time_value < 10)) {
+                m.is_time_selected = false;
+                if (this.choose_date.getDate() == new Date().getDate()) {
+                  if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                  } else {
+                    z.time_slots.push(m);
+                  }
                 } else {
                   z.time_slots.push(m);
                 }
-              } else {
-                z.time_slots.push(m);
               }
             }
           })
@@ -570,60 +854,104 @@ export class SelectTimeslotPage implements OnInit {
         if (z.title == 'Morning 6 AM to 12 Noon') {
           z.time_slots = [];
           this.time_slots.filter(m => {
-            if (m.am_pm == 'am' && (m.time_value == 6 || m.time_value < 12)) {
-              m.is_time_selected = false;
-              if (this.choose_date.getDate() == new Date().getDate()) {
-                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+            let week = m.week;
+            let choose_week = 0;
+            if(this.getWeekNumber(date) == 5){
+              choose_week =  1
+            }else if(this.getWeekNumber(date) == 6){
+              choose_week =  2
+            }else{
+              choose_week = this.getWeekNumber(date) 
+            }
+            if (week == choose_week) {
+              if (m.am_pm == 'am' && (m.time_value == 6 || m.time_value < 12)) {
+                m.is_time_selected = false;
+                if (this.choose_date.getDate() == new Date().getDate()) {
+                  if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                  } else {
+                    z.time_slots.push(m);
+                  }
                 } else {
                   z.time_slots.push(m);
                 }
-              } else {
-                z.time_slots.push(m);
               }
             }
           })
         } else if (z.title == 'Afternoon 12 PM to 4 PM') {
           z.time_slots = [];
           this.time_slots.filter(m => {
-            if (m.am_pm == 'pm' && (m.time_value == 12 || m.time_value < 4)) {
-              m.is_time_selected = false;
-              if (this.choose_date.getDate() == new Date().getDate()) {
-                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+            let week = m.week;
+            let choose_week = 0;
+            if(this.getWeekNumber(date) == 5){
+              choose_week =  1
+            }else if(this.getWeekNumber(date) == 6){
+              choose_week =  2
+            }else{
+              choose_week = this.getWeekNumber(date) 
+            }
+            if (week == choose_week) {
+              if (m.am_pm == 'pm' && (m.time_value == 12 || m.time_value < 4)) {
+                m.is_time_selected = false;
+                if (this.choose_date.getDate() == new Date().getDate()) {
+                  if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                  } else {
+                    z.time_slots.push(m);
+                  }
                 } else {
                   z.time_slots.push(m);
                 }
-              } else {
-                z.time_slots.push(m);
               }
             }
           })
         } else if (z.title == 'Evening 4 PM to 8 PM') {
           z.time_slots = [];
           this.time_slots.filter(m => {
-            if (m.am_pm == 'pm' && (4 < m.time_value == m.time_value < 8)) {
-              m.is_time_selected = false;
-              if (this.choose_date.getDate() == new Date().getDate()) {
-                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+            let week = m.week;
+            let choose_week = 0;
+            if(this.getWeekNumber(date) == 5){
+              choose_week =  1
+            }else if(this.getWeekNumber(date) == 6){
+              choose_week =  2
+            }else{
+              choose_week = this.getWeekNumber(date) 
+            }
+            if (week == choose_week) {
+              if (m.am_pm == 'pm' && (4 < m.time_value == m.time_value < 8)) {
+                m.is_time_selected = false;
+                if (this.choose_date.getDate() == new Date().getDate()) {
+                  if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                  } else {
+                    z.time_slots.push(m);
+                  }
                 } else {
                   z.time_slots.push(m);
                 }
-              } else {
-                z.time_slots.push(m);
               }
             }
           })
         } else if (z.title == 'Night 8 PM to 10 PM') {
           z.time_slots = [];
           this.time_slots.filter(m => {
-            if (m.am_pm == 'pm' && (8 < m.time_value == m.time_value < 10)) {
-              m.is_time_selected = false;
-              if (this.choose_date.getDate() == new Date().getDate()) {
-                if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+            let week = m.week;
+            let choose_week = 0;
+            if(this.getWeekNumber(date) == 5){
+              choose_week =  1
+            }else if(this.getWeekNumber(date) == 6){
+              choose_week =  2
+            }else{
+              choose_week = this.getWeekNumber(date) 
+            }
+            if (week == choose_week) {
+              if (m.am_pm == 'pm' && (8 < m.time_value == m.time_value < 10)) {
+                m.is_time_selected = false;
+                if (this.choose_date.getDate() == new Date().getDate()) {
+                  if ((m.time_value == parseInt(this.current_time.split(':')[0])) || (m.time_value < parseInt(this.current_time.split(':')[0]))) {
+                  } else {
+                    z.time_slots.push(m);
+                  }
                 } else {
                   z.time_slots.push(m);
                 }
-              } else {
-                z.time_slots.push(m);
               }
             }
           })
@@ -1091,7 +1419,14 @@ export class SelectTimeslotPage implements OnInit {
       (res: any) => {
         if (res.success) {
           this.utility.hideLoading();
-          this.timeSlots = res.data;
+          let all_schedules = [];
+          res.data['week1'].filter(x => all_schedules.push(x))
+          res.data['week2'].filter(x => all_schedules.push(x))
+          res.data['week3'].filter(x => all_schedules.push(x))
+          res.data['week4'].filter(x => all_schedules.push(x))
+
+          //this.timeSlots = res.data;
+          this.timeSlots = all_schedules;
           if (this.timeSlots.length == 0) {
             this.no_slots_today = true;
           } else {

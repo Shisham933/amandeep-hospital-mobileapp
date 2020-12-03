@@ -1,10 +1,11 @@
-import { Component, OnInit, Input, ViewChild,NgZone } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, NgZone } from '@angular/core';
 import { IonContent, ActionSheetController, Platform } from '@ionic/angular';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { Crop } from '@ionic-native/crop/ngx';
 import { Base64 } from '@ionic-native/base64/ngx';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
+import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import * as AWS from 'aws-sdk';
 import { FilePath } from '@ionic-native/file-path/ngx';
 import { ChatsService } from '../chats.service';
@@ -29,12 +30,12 @@ export class ChatWindowPage implements OnInit {
   public doctor_details: any;
   public message: string = '';
 
-
-  constructor(private router: Router, private zone:NgZone,private platform: Platform, private keyboard: Keyboard, public actionSheetController: ActionSheetController, private filePath: FilePath, private base64: Base64, private crop: Crop, private camera: Camera, private utility: UtilityService, private route: ActivatedRoute, private chats: ChatsService, private http: HttpService) {
+  constructor(private router: Router,private photoViewer: PhotoViewer, private zone: NgZone, private platform: Platform, private keyboard: Keyboard, public actionSheetController: ActionSheetController, private filePath: FilePath, private base64: Base64, private crop: Crop, private camera: Camera, private utility: UtilityService, private route: ActivatedRoute, private chats: ChatsService, private http: HttpService) {
     this.route.queryParams.subscribe((params) => {
       this.sender_id = this.router.getCurrentNavigation().extras.state.sender;
       this.reciever_id = this.router.getCurrentNavigation().extras.state.reciever;
       this.doctor_details = this.router.getCurrentNavigation().extras.state.doctor_details;
+      console.log("doctor_details",this.doctor_details)
     });
     this.platform.resume.subscribe(() => {
       this.ngOnInit();
@@ -57,8 +58,8 @@ export class ChatWindowPage implements OnInit {
           "created_at": "2020-11-18 09:54:07",
           "updated_at": "2020-11-18 09:54:07"
         }
-        this.zone.run(() => {  this.messages.push(msg);});
-      
+        this.zone.run(() => { this.messages.push(msg); });
+
         console.log(this.messages)
         this.content.scrollToBottom(1500);
       } else {
@@ -75,13 +76,10 @@ export class ChatWindowPage implements OnInit {
           "created_at": "2020-11-18 09:54:07",
           "updated_at": "2020-11-18 09:54:07"
         }
-        this.zone.run(() => {  this.messages.push(msg);});
-      
+        this.zone.run(() => { this.messages.push(msg); });
         this.content.scrollToBottom(1500);
       }
-
     });
-
   }
 
   ngOnInit() {
@@ -94,6 +92,9 @@ export class ChatWindowPage implements OnInit {
     this.chats.getChatMessages('getChatMessages', params).subscribe((res: any) => {
       console.log(res);
       this.messages = res.data;
+      setTimeout(() => {
+        this.content.scrollToBottom(1500);
+    }, 100)
       localStorage.setItem('messages', this.messages);
     }, err => {
 
@@ -107,7 +108,7 @@ export class ChatWindowPage implements OnInit {
   sendMessage() {
     let user = JSON.parse(localStorage.getItem('user_details'));
     let message = {
-      //"id":  this.messages.length,
+      "id": this.messages.length,
       "message_type": 1,
       "message": this.message,
       "image_url": null,
@@ -175,12 +176,29 @@ export class ChatWindowPage implements OnInit {
 
     this.camera.getPicture(options).then((imagePath) => {
       // this.image = 'data:image/jpeg;base64,' + imagePath;
+      let user = JSON.parse(localStorage.getItem('user_details'));
+      let message = {
+        "id": this.messages.length,
+        "message_type": 2,
+        "message": null,
+        "image_url": 'data:image/jpeg;base64,' + imagePath,
+        "sender_id": 'P-' + user.id,
+        "reciever_id": 'D-' + this.doctor_details.id,
+        "send_by": "patient",
+        "status": 1,
+        "del_by": null,
+        "created_at": "2020-11-18 09:54:07",
+        "updated_at": "2020-11-18 09:54:07"
+      }
+       //this.messages.push(message);
+     this.zone.run(() => { this.messages.push(message);
+      this.content.scrollToBottom(1500);});
+      // this.content.scrollToBottom(15000);
       let imageName = "user-profile";
       this.uploadImage(imagePath, imageName).then((res: any) => {
         if (res.Location) {
           this.sendImage(res.Location);
         }
-
       });
     }, (err) => {
     });
@@ -198,8 +216,7 @@ export class ChatWindowPage implements OnInit {
       }).catch((err) => {
         reject(err);
       });
-
-    })
+    });
   }
 
   s3Putimage(file, key, encoding) {
@@ -220,7 +237,6 @@ export class ChatWindowPage implements OnInit {
         ContentType: "image/jpeg"
       };
 
-
       s3.upload(params, (err, data) => {
 
         if (err) {
@@ -234,6 +250,8 @@ export class ChatWindowPage implements OnInit {
 
 
   sendImage(img) {
+   // debugger
+   console.log(img)
     let user = JSON.parse(localStorage.getItem('user_details'));
     let message = {
       //"id":  this.messages.length,
@@ -249,6 +267,7 @@ export class ChatWindowPage implements OnInit {
       "updated_at": "2020-11-18 09:54:07"
     }
     this.messages.push(message);
+   // this.messages[this.messages.length].status = 1;
     let params = {
       "message_type": 2,
       "message": null,
@@ -261,13 +280,16 @@ export class ChatWindowPage implements OnInit {
     }, err => {
 
     })
-    this.message = '';
-    setTimeout(() => {
-      this.messageInput.setFocus();
-      // this.keyboard.show();
-    }, 100)
+    // this.message = '';
+    // setTimeout(() => {
+    //   this.messageInput.setFocus();
+    //   // this.keyboard.show();
+    // }, 100)
     this.content.scrollToBottom(1500);
   }
+  
+  showImage(url){
+    this.photoViewer.show(url, url.split('/')[1], {share: true});
+  }
 
-
-}
+} 

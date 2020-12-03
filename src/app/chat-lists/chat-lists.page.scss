@@ -5,6 +5,7 @@
 .title{
     font-family: sans-serif;
     font-weight: 100;
+    font-size: 15px !important;
 }
 .profile-img{
     background: red;
@@ -32,7 +33,7 @@
 }
 .doctor-name{
     color: #272727;
-    font-size: 15px;
+    font-size: 12px;
     font-family: sans-serif;
     text-transform: capitalize;
     span{
@@ -47,5 +48,10 @@ p{
     padding-top: 3px;
     font-family: sans-serif;
     white-space: normal;
-    font-size: 12px;
+    font-size: 10px;
+}
+
+.date-time{
+    font-size: 5px !important;
+    margin-top: 5px;
 }

@@ -47,6 +47,7 @@
     "@ionic-native/media": "^5.28.0",
     "@ionic-native/native-audio": "^5.29.0",
     "@ionic-native/network": "^5.28.0",
+    "@ionic-native/photo-viewer": "^5.30.0",
     "@ionic-native/push": "^5.28.0",
     "@ionic-native/social-sharing": "^5.29.0",
     "@ionic-native/splash-screen": "^5.0.0",
@@ -96,6 +97,7 @@
     "clovelced-plugin-audiomanagement": "^1.0.2",
     "codelyzer": "^6.0.0",
     "com-badrit-base64": "^0.2.0",
+    "com-sarriaroman-photoviewer": "^1.2.5",
     "cordova-android": "^9.0.0",
     "cordova-plugin-actionsheet": "^2.3.3",
     "cordova-plugin-android-permissions": "^1.1.0",
@@ -200,7 +202,8 @@
       },
       "android-camera-permission": {},
       "cordova-plugin-audioinput": {},
-      "cordova-plugin-audiotoggle": {}
+      "cordova-plugin-audiotoggle": {},
+      "com-sarriaroman-photoviewer": {}
     },
     "platforms": [
       "android"

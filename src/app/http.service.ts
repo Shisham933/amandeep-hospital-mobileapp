@@ -272,4 +272,15 @@ export class HttpService {
     return this.http.get(this.url + endpoint, httpOptions);
   }
 
+  getAllBanners(endpoint) {
+    let httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Accept': '*/*',
+        'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('token'))
+      })
+    };
+    return this.http.get(this.url + endpoint, httpOptions);
+  }
+
 }

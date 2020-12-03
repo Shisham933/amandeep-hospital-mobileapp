@@ -291,12 +291,11 @@ textarea {
     color: inherit;
 }
 .numeric-input-container {
-    display: -webkit-box;
     display: flex;
     text-align: left;
     margin-top: 9px;
     font-size: 12px;
-    color: #ADADAD;
+    color: black;
 }
 ion-toolbar.ion-color.sc-ion-searchbar-ios-h:not(.ion-color) .searchbar-input.sc-ion-searchbar-ios, ion-toolbar.ion-color .sc-ion-searchbar-ios-h:not(.ion-color) .searchbar-input.sc-ion-searchbar-ios {
     background: rgba(var(--ion-color-contrast-rgb), 0.07);
@@ -365,4 +364,10 @@ ion-toolbar.ion-color.sc-ion-searchbar-ios-h:not(.ion-color) .searchbar-input.sc
     left: auto;
     top: auto;
     display:none
+}
+.numeric-keyboard-key {
+    color: black !important;
+    // background: #ededed;
+    // font-size: 20px;
+    // letter-spacing: -.5px!important;
 }

@@ -18,3 +18,17 @@ ion-col{
 img{
     width: 40px;
 }
+.card-number{
+    border-radius: 10px !important;
+    padding-bottom: 10px;
+    margin: 10px;
+    border: 1px solid #ADADAD;
+}
+.cvv-number{
+    border-radius: 10px !important;
+    padding-bottom: 10px;
+    /* margin: 10px; */
+    border: 1px solid #ADADAD;
+    /* text-align: center; */
+    padding-left: 7px;
+}

@@ -164,6 +164,7 @@ export class AppComponent {
       if (JSON.parse(localStorage.getItem('token')) != undefined) {
         //this.getChats();
         this.user = JSON.parse(localStorage.getItem('user_details'));
+        this.getBanners();
         this.utility.user = JSON.parse(localStorage.getItem('user_details'));
         console.log(this.utility.user)
         if (this.utility.user.profile_photo != null || this.utility.user.profile_photo != undefined) {
@@ -174,19 +175,16 @@ export class AppComponent {
         this.router.navigate(["home"])
       } else {
         this.router.navigate(["login"])
-       }
+      }
 
     });
   }
 
-  // getChats() {
-  //   let user = JSON.parse(localStorage.getItem('user_details'));
-  //   this.chats.getChatUsersList(user.id).subscribe((res: any) => {
-  //     // alert(res)
-  //     localStorage.setItem('chat_lists', JSON.stringify(res));
-  //   }, err => {
-  //   });
-  // }
+  getBanners() {
+    this.http.getAllBanners('getBanners').subscribe((res: any) => {
+      this.utility.banners = res['data']
+    })
+  }
 
   share() {
 
@@ -274,7 +272,9 @@ export class AppComponent {
       }
     }
     if (page == 'Chat with Doctor') {
-      if (this.utility.chat_payment_status == 1) {
+      console.log(localStorage.getItem('payment_status'));
+      let a = localStorage.getItem('payment_status');
+      if (a != 'false') {
         this.router.navigateByUrl('/chat-lists')
       } else {
         this.router.navigateByUrl('/chat-with-doctor');
@@ -383,7 +383,7 @@ export class AppComponent {
           title: notification.title,
           text: notification.message
         });
-        this.utility.showMessageAlert(notification.title, notification.message);
+        //  this.utility.showMessageAlert(notification.title, notification.message);
         this.utility.publishEvent({
           'message:recieved': notification
         });
@@ -393,7 +393,6 @@ export class AppComponent {
 
     pushObject.on('registration').subscribe((registration: any) => {
       this.utility.device_token = registration.registrationId;
-
     });
 
     pushObject.on('error').subscribe(error => console.error('Error with Push plugin', error));

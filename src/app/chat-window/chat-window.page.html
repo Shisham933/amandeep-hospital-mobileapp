@@ -65,17 +65,13 @@
 
 <ion-footer>
   <ion-toolbar>
-    <ion-buttons slot="start" (click)="getPicture()">
+    <ion-buttons slot="start" (click)="getPicture()" style="margin-top: -15px;">
       <ion-button>
         <ion-icon name="add" class="camera-icon"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-input #input type="text" name="message" placeholder="Type message here...." [(ngModel)]="message"></ion-input>
-    <!-- <ion-buttons slot="end">
-      <button ion-button icon-right color="royal" (click)="sendMessage()">
-        <ion-icon name="send"></ion-icon>
-      </button>
-    </ion-buttons> -->
+    <ion-textarea #input type="text" name="message" placeholder="Type message here...." [(ngModel)]="message"></ion-textarea>
+
     <ion-buttons slot="end" *ngIf="message != ''">
       <ion-button (click)="sendMessage()" class="send-btn">
         <ion-icon name="send"></ion-icon>

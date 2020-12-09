@@ -30,7 +30,7 @@ export class ConfirmAppointmentPage implements OnInit {
   show_patient_form: boolean = false;
   show_registered_patients: boolean = false;
   name: any;
-  mobile_no: string;
+  mobile_no: number;
   age: any;
   speciality_name: string;
   choose_self: boolean = false;
@@ -119,54 +119,54 @@ export class ConfirmAppointmentPage implements OnInit {
     this.show_registered_patients = false;
   }
 
-  addPatient() {
-    debugger
-    let regx = /^[A-Za-z]+$/;
-    if (this.name == undefined || this.name == '' || this.age == undefined || this.mobile_no == undefined || this.mobile_no == '') {
-      this.utility.showMessageAlert("Error!", "All fields are required.")
-    } else if (!this.name.match(regx)) {
-      this.utility.showMessageAlert("Invalid Patient name", "Only alphabets are allowed to enter in patient name field.")
-    } else if (this.mobile_no.toString().length != 10 && this.book_for != 'self') {
-      this.utility.showMessageAlert("Invalid mobile number!", "The mobile number you have entered is not valid.")
-    } else if (this.age.toString().length > 2 && this.book_for != 'self') {
-      this.utility.showMessageAlert("Invalid age !", "The age  you have entered is not valid.")
-    } else {
-      this.utility.showLoading();
-      let params = {
-        "name": this.name,
-        "mobile_no": this.mobile_no,
-        "age": this.age
-      }
-      this.http.addPatient("addPatient", params).subscribe(
-        (res: any) => {
-          this.utility.hideLoading();
-          if (res.success || res.message == 'Patient added successfully') {
-            this.utility.showMessageAlert("Patient added!", "Your patient has been added.");
-            this.show_patient_details = true;
-            this.show_patient_form = false;
-            this.book_for = 'relative';
-            this.user = res.data.patient;
-            this.choose_self = false;
-            this.choose_relative = true;
-          } else {
-            this.choose_self = false;
-            this.choose_relative = true;
-            let state = {
-              patient: res.data.patient,
-              location_name: this.location_name,
-              data: this.data,
-              date: this.date,
-              time: this.time,
-              schedule_id: this.schedule_id
-            }
-            this.showAlert('Patient already added', 'Do you want to continue with this patient?', state)
-          }
-        }, err => {
-          this.utility.hideLoading();
-          this.utility.showMessageAlert("Network error!", "Please check your network connection.")
-        })
-    }
-  }
+  // addPatient() {
+  //   debugger
+  //   let regx = /^[A-Za-z]+$/;
+  //   if (this.name == undefined || this.name == '' || this.age == undefined || this.mobile_no == undefined || this.mobile_no == '') {
+  //     this.utility.showMessageAlert("Error!", "All fields are required.")
+  //   } else if (!this.name.match(regx)) {
+  //     this.utility.showMessageAlert("Invalid Patient name", "Only alphabets are allowed to enter in patient name field.")
+  //   } else if (this.mobile_no.toString().length != 10 && this.book_for != 'self') {
+  //     this.utility.showMessageAlert("Invalid mobile number!", "The mobile number you have entered is not valid.")
+  //   } else if (this.age.toString().length > 2 && this.book_for != 'self') {
+  //     this.utility.showMessageAlert("Invalid age !", "The age  you have entered is not valid.")
+  //   } else {
+  //     this.utility.showLoading();
+  //     let params = {
+  //       "name": this.name,
+  //       "mobile_no": this.mobile_no,
+  //       "age": this.age
+  //     }
+  //     this.http.addPatient("addPatient", params).subscribe(
+  //       (res: any) => {
+  //         this.utility.hideLoading();
+  //         if (res.success || res.message == 'Patient added successfully') {
+  //           this.utility.showMessageAlert("Patient added!", "Your patient has been added.");
+  //           this.show_patient_details = true;
+  //           this.show_patient_form = false;
+  //           this.book_for = 'relative';
+  //           this.user = res.data.patient;
+  //           this.choose_self = false;
+  //           this.choose_relative = true;
+  //         } else {
+  //           this.choose_self = false;
+  //           this.choose_relative = true;
+  //           let state = {
+  //             patient: res.data.patient,
+  //             location_name: this.location_name,
+  //             data: this.data,
+  //             date: this.date,
+  //             time: this.time,
+  //             schedule_id: this.schedule_id
+  //           }
+  //           this.showAlert('Patient already added', 'Do you want to continue with this patient?', state)
+  //         }
+  //       }, err => {
+  //         this.utility.hideLoading();
+  //         this.utility.showMessageAlert("Network error!", "Please check your network connection.")
+  //       })
+  //   }
+  // }
 
 
   getAlreadyRegisteredPatients() {
@@ -219,11 +219,12 @@ export class ConfirmAppointmentPage implements OnInit {
 
   confirmAppointment() {
     // debugger
+    console.log(this.mobile_no.toString().length)
     if (this.book_for == '' || this.book_for == undefined) {
       this.utility.showMessageAlert("Patient info required!", "Please select one option for whom you are booking this appointment.")
-    } else if (this.book_for == 'relative' && (this.name == undefined || this.name == '' || this.age == undefined || this.mobile_no == undefined || this.mobile_no == '')) {
+    } else if (this.book_for == 'relative' && (this.name == undefined || this.name == '' || this.age == undefined || this.mobile_no == undefined)) {
       this.utility.showMessageAlert("Error!", "Please enter patient details.")
-    } else if (this.mobile_no.toString().length > 10 && this.book_for != 'self') {
+    } else if (this.mobile_no.toString().length != 10 && this.book_for != 'self') {
       this.utility.showMessageAlert("Invalid mobile number!", "Mobile number should be of 10 digits.")
 
     } else if (this.age != null && this.age.toString().length > 2 && this.book_for != 'self') {
@@ -233,7 +234,7 @@ export class ConfirmAppointmentPage implements OnInit {
       if (this.book_type == 'OPD') {
         let user = JSON.parse(localStorage.getItem('user_details'));
         let params = {}
-        if (this.mobile_no != '') {
+        if (this.mobile_no != undefined) {
           params = {
             "speciality_id": this.data.speciality_id,
             "doctor_id": this.doctor_id,
@@ -277,7 +278,7 @@ export class ConfirmAppointmentPage implements OnInit {
       if (this.book_type == 'videocall') {
         let user = JSON.parse(localStorage.getItem('user_details'));
         let params = {};
-        if (this.mobile_no != '') {
+        if (this.mobile_no != undefined) {
           params = {
             "speciality_id": this.data.speciality_id,
             "doctor_id": this.doctor_id,
